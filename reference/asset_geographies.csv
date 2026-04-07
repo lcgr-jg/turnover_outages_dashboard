@@ -1,0 +1,1143 @@
+﻿asset_type,asset_id,country,micro_region,region,macro_region,waterborne_nowcast
+L,Albania - PIA terminal,Albania,MED,MED,West,
+L,Algeria - Arzew Bethioua terminal,Algeria,NAF,MED,Atlantic,
+L,Algeria - Bejaia terminal,Algeria,NAF,MED,Atlantic,
+L,Algeria - Skikda terminal,Algeria,NAF,MED,Atlantic,
+I,"Algeria - Sonatrach, Algiers refinery",Algeria,NAF,MED,Atlantic,
+I,"Algeria - Sonatrach, Arzew refinery",Algeria,NAF,MED,Atlantic,
+I,"Algeria - Sonatrach, Hassi Messaoud refinery",Algeria,NAF,MED,Atlantic,
+I,"Algeria - Sonatrach, Skikda refinery",Algeria,NAF,MED,Atlantic,
+L,Angola - Armada Olombendo FPSO,Angola,WAF,WAF,Atlantic,
+L,Angola - Clov FPSO,Angola,WAF,WAF,Atlantic,
+L,Angola - Dalia FPSO,Angola,WAF,WAF,Atlantic,
+L,Angola - Gimboa FPSO,Angola,WAF,WAF,Atlantic,
+L,Angola - Girassol FPSO,Angola,WAF,WAF,Atlantic,
+L,Angola - Greater Plutonio FPSO,Angola,WAF,WAF,Atlantic,
+L,Angola - Kaombo Norte FPSO,Angola,WAF,WAF,Atlantic,
+L,Angola - Kaombo Sul FPSO,Angola,WAF,WAF,Atlantic,
+L,Angola - Kizomba A FPSO,Angola,WAF,WAF,Atlantic,
+L,Angola - Kizomba B FPSO,Angola,WAF,WAF,Atlantic,
+L,Angola - Malongo terminal,Angola,WAF,WAF,Atlantic,
+L,Angola - Mondo FPSO,Angola,WAF,WAF,Atlantic,
+L,Angola - Ngoma FPSO,Angola,WAF,WAF,Atlantic,
+L,Angola - Palanca FSO,Angola,WAF,WAF,Atlantic,
+L,Angola - Pazflor FPSO,Angola,WAF,WAF,Atlantic,
+L,Angola - PSVM FPSO,Angola,WAF,WAF,Atlantic,
+L,Angola - Saxi Batuque FPSO,Angola,WAF,WAF,Atlantic,
+D,"Angola - Sonangol, Lobito refinery",Angola,WAF,WAF,Atlantic,Y
+D,"Angola - Sonangol, Luanda refinery",Angola,WAF,WAF,Atlantic,Y
+L,Angola - unknown,Angola,WAF,WAF,Atlantic,
+L,Angola - Agogo FPSO,Angola,WAF,WAF,Atlantic,
+D,"Antilles - SARA, Fort-de-France refinery",French Antilles,Caribs,Latam,Atlantic,Y
+L,Argentina - Caleta Cordova terminal,Argentina,Latam East,Latam,Atlantic,
+L,Argentina - Caleta Olivia terminal,Argentina,Latam East,Latam,Atlantic,
+L,Argentina - Cargadero Cruz del Sur terminal,Argentina,Latam East,Latam,Atlantic,
+L,Argentina - Ebytem Puerto Rosales terminal,Argentina,Latam East,Latam,Atlantic,
+L,Argentina - Puerto Galvan terminal,Argentina,Latam East,Latam,Atlantic,
+D,"Argentina - Puma + YBF + Axion, Oiltanking Ebytem refineries",Argentina,Latam East,Latam,Atlantic,Y
+L,Argentina - Punta Loyola terminal,Argentina,Latam East,Latam,Atlantic,
+D,"Argentina - Raizen, Buenos Aires refinery",Argentina,Latam East,Latam,Atlantic,Y
+L,Argentina - Rio Cullen terminal,Argentina,Latam East,Latam,Atlantic,
+D,"Argentina - YBF, San Lorenzo refinery",Argentina,Latam East,Latam,Atlantic,Y
+B,Aruba - Valero Aruba terminal,Aruba,Caribs,Latam,Atlantic,
+D,"Australia - Ampol, Lytton refinery",Australia,Oceania,Oceania,East,Y
+L,Australia - Armada Claire FPSO,Australia,Oceania,Oceania,East,
+L,Australia - Barrow Island terminal,Australia,Oceania,Oceania,East,
+L,Australia - Blacktip terminal,Australia,Oceania,Oceania,East,
+D,"Australia - BP, Kwinana refinery",Australia,Oceania,Oceania,East,Y
+D,"Australia - Exxon, Altona refinery",Australia,Oceania,Oceania,East,Y
+L,Australia - Ichthys plant,Australia,Oceania,Oceania,East,
+L,Australia - Ichthys Venturer FPSO,Australia,Oceania,Oceania,East,
+L,Australia - Long Island terminal,Australia,Oceania,Oceania,East,
+L,Australia - Modec Venture 11 FPSO,Australia,Oceania,Oceania,East,
+L,Australia - Montara Venture FPSO,Australia,Oceania,Oceania,East,
+L,Australia - Nganhurra FPSO,Australia,Oceania,Oceania,East,
+L,Australia - Ngujima-Yin FPSO,Australia,Oceania,Oceania,East,
+L,Australia - Ningaloo Vision FPSO,Australia,Oceania,Oceania,East,
+L,Australia - Northern Endeavour FPSO,Australia,Oceania,Oceania,East,
+L,Australia - NWS terminal,Australia,Oceania,Oceania,East,
+L,Australia - Okha FPSO,Australia,Oceania,Oceania,East,
+L,Australia - Pluto terminal,Australia,Oceania,Oceania,East,
+L,Australia - Port Bonython terminal,Australia,Oceania,Oceania,East,
+L,Australia - Prelude FLNG,Australia,Oceania,Oceania,East,
+L,Australia - Pyrenees Venture FPSO,Australia,Oceania,Oceania,East,
+L,Australia - Stag FSO,Australia,Oceania,Oceania,East,
+L,Australia - Varanus Island terminal,Australia,Oceania,Oceania,East,
+D,"Australia - Viva Energy, Geelong refinery",Australia,Oceania,Oceania,East,Y
+L,Australia - Wandoo buoy,Australia,Oceania,Oceania,East,
+L,Australia - Wheatstone terminal,Australia,Oceania,Oceania,East,
+B,Bahamas - Buckeye Bahams Hub terminal,Bahamas,Caribs,Latam,Atlantic,
+B,Bahamas - South Riding Point terminal,Bahamas,Caribs,Latam,Atlantic,
+I,"Bahrain - BPC, Sitra refinery",Bahrain,PG Term,PG,East,
+D,"Bangladesh - ERL, Chittagong refinery",Bangladesh,Other SAsia,SAsia,East,Y
+D,"Belarus - MOR, Mozyr refinery",Belarus,FSU,NWE,Atlantic,Y
+D,"Belarus - Naftan, Novopolotsk refinery",Belarus,FSU,NWE,Atlantic,Y
+D,Belgium - Antwerp petchem,Belgium,ARA-UK,NWE,Atlantic,Y
+D,"Belgium - Gunvor, Antwerp refinery",Belgium,ARA-UK,NWE,Atlantic,Y
+D,"Belgium - VTTI, ATPC bitumen refinery",Belgium,ARA-UK,NWE,Atlantic,Y
+L,Belize - Big Creek terminal,Belize,Latam East,Latam,Atlantic,
+L,Benin (Niger) - Seme terminal,Benin,WAF,WAF,Atlantic,
+D,"Brazil - 6R Petroleum, RLCC Potiguar refinery",Brazil,Latam East,Latam,Atlantic,Y
+L,Brazil - Almirante Barroso FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - Almirante Tamandare FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - Anita Garibaldi FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - Anna Nery FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - Aracaju terminal,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - Atlanta FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - Bravo FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - Capixaba FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - Carioca MV30 FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - Cidade de Anchieta FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - Cidade de Angra dos Reis FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - Cidade de Campos dos Goytacazes FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - Cidade de Caraguatatuba FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - Cidade de Ilha Bela FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - Cidade de Itaguai FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - Cidade de Itajai FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - Cidade de Macae MV15 FSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - Cidade de Mangaratiba FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - Cidade de Marica FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - Cidade de Niteroi MV18 FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - Cidade de Paraty FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - Cidade de Santos FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - Cidade de Sao Paulo FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - Cidade de Sao Vicente FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - Cidade de Saquarema FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - Cidade de Vitoria FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - Cidade do Rio de Janeiro MV14 FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - Coari terminal,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - Espirito Santo FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - Fluminense FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - Frade FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - Guamare terminal,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - Guanabara FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - Marechal Duque de Caxias FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - Maria Quiteria FPSO,Brazil,Latam East,Latam,Atlantic,
+D,"Brazil - Mubadala Capital, RLAM Mataripe refinery",Brazil,Latam East,Latam,Atlantic,Y
+L,Brazil - Norte Capixaba terminal,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - P-31 FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - P-32 platform,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - P-33 platform,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - P-35 platform,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - P-37 platform,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - P-38 FSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - P-43 FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - P-47 platform,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - P-48 FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - P-50 FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - P-54 FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - P-57 FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - P-58 FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - P-62 FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - P-63 FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - P-66 FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - P-67 FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - P-68 FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - P-69 FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - P-70 FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - P-71 FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - P-74 FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - P-75 FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - P-76 FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - P-77 FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - Pargo FSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - Peregrino platform,Brazil,Latam East,Latam,Atlantic,
+D,"Brazil - Petrobras, LUBNOR refinery",Brazil,Latam East,Latam,Atlantic,Y
+B,"Brazil - Petrobras, REDUC + REGAP refineries",Brazil,Latam East,Latam,Atlantic,Y
+D,"Brazil - Petrobras, REFAP Alberto Pasqualini refinery",Brazil,Latam East,Latam,Atlantic,Y
+D,"Brazil - Petrobras, REPAR Presidente Getulio Vargas refinery",Brazil,Latam East,Latam,Atlantic,Y
+B,"Brazil - Petrobras, REPLAN + REVAP + RPBC + RECAP refineries",Brazil,Latam East,Latam,Atlantic,Y
+D,"Brazil - Petrobras, RNEST Abreu e Lima refinery",Brazil,Latam East,Latam,Atlantic,Y
+L,Brazil - Pioneiro de Libra FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - Piranema Spirit FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - Polvo FPSO,Brazil,Latam East,Latam,Atlantic,
+D,"Brazil - Ream/Petrobras, REMAN Isaac Sabba refinery",Brazil,Latam East,Latam,Atlantic,Y
+I,"Brazil - Refit, Manguinhos refinery",Brazil,Latam East,Latam,Atlantic,
+L,Brazil - Reman ,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - Rio das Ostras FPSO,Brazil,Latam East,Latam,Atlantic,
+D,"Brazil - RPR, Riograndese refinery",Brazil,Latam East,Latam,Atlantic,Y
+L,Brazil - Sepetiba FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Brazil - Xareu platform,Brazil,Latam East,Latam,Atlantic,
+D,"Brunei - Hengyi, Pulau Muara refinery",Brunei,SEAsia Spot,SEAsia,East,Y
+L,Brunei - Seria terminal,Brunei,SEAsia Spot,SEAsia,East,
+D,"Bulgaria - Lukoil, Burgas refinery",Bulgaria,Black Sea,MED,Atlantic,Y
+L,Cameroon - La Lobe FSO,Cameroon,WAF,WAF,Atlantic,
+L,Cameroon - Massongo FSO,Cameroon,WAF,WAF,Atlantic,
+D,"Cameroon - Sonara, Limbe refinery",Cameroon,WAF,WAF,Atlantic,Y
+L,Cameroon (Chad) - Kome-Kribi FSO,Chad,WAF,WAF,Atlantic,
+I,Canada - Alberta fields,Canada,Alberta,North of Cushing,US Midcon,
+I,Canada - Edmonton terminals,Canada,Alberta,North of Cushing,US Midcon,
+I,Canada - Hardisty terminals,Canada,Alberta,North of Cushing,US Midcon,
+D,"Canada - Irving, Saint John refinery",Canada,East Canada,NAEC,Atlantic,Y
+D,"Canada - NARL, Come-by-Chance refinery",Canada,East Canada,NAEC,Atlantic,Y
+I,Canada - Ontario refineries,Canada,Alberta,North of Cushing,US Midcon,
+I,Canada - Pacific pipeline,Canada,Alberta,North of Cushing,US Midcon,
+I,Canada - South US pipeline,Canada,Alberta,North of Cushing,US Midcon,
+D,"Canada - Suncor, Montreal refinery",Canada,East Canada,NAEC,Atlantic,Y
+D,"Canada - Valero, Jean Gaudin refinery",Canada,East Canada,NAEC,Atlantic,Y
+I,Canada - Western refineries,Canada,Alberta,North of Cushing,US Midcon,
+L,Canada (EC) - Hebron platform,Canada,East Canada,NAEC,Atlantic,
+L,Canada (EC) - Hibernia platform,Canada,East Canada,NAEC,Atlantic,
+L,Canada (EC) - Line 9 Valero Montreal East terminal,Canada,East Canada,NAEC,Atlantic,
+B,Canada (EC) - NTL terminal,Canada,East Canada,NAEC,Atlantic,
+B,Canada (EC) - Point Tupper storage terminal,Canada,East Canada,NAEC,Atlantic,
+L,Canada (EC) - SeaRose FPSO,Canada,East Canada,NAEC,Atlantic,
+L,Canada (EC) - Terra Nova FPSO,Canada,East Canada,NAEC,Atlantic,
+L,Canada (WC) - Westridge terminal,Canada,West Canada,NAWC,East,
+D,Caspian Sea - Baku terminal,Azerbaijan,Caspian Sea,Caspian Sea,Caspian Sea,
+D,Caspian Sea - Dubendi terminal,Azerbaijan,Caspian Sea,Caspian Sea,Caspian Sea,
+D,Caspian Sea - Makhachkala terminal,Azerbaijan,Caspian Sea,Caspian Sea,Caspian Sea,
+D,Caspian Sea - Sangachal terminal,Azerbaijan,Caspian Sea,Caspian Sea,Caspian Sea,
+I,"Chad - CNPC, Djarmaya refinery",Chad,WAF,WAF,Atlantic,
+L,Chile - Arica terminal,Chile,Latam West,Latam,East,
+D,"Chile - ENAP, Aconcagua refinery",Chile,Latam West,Latam,East,Y
+D,"Chile - ENAP, Bio Bio refinery",Chile,Latam West,Latam,East,Y
+L,Chile - San Vicente terminal,Chile,Latam West,Latam,East,
+L,China - Bohai Century FPSO,China,North China,China,East,
+L,China - Bohai Pengbo HYSY117 FPSO,China,North China,China,East,
+L,China - Bohai Youyi FPSO,China,North China,China,East,
+D,"China - CNOOC + Hebei Xinhai, Cangzhou refineries",China,Shandong,China,East,Y
+D,"China - CNOOC, Dongfang refinery",China,South China,China,East,Y
+D,"China - CNOOC, Huizhou refinery",China,South China,China,East,Y
+D,"China - CNOOC, Taizhou refinery",China,Yangze River,China,East,Y
+D,"China - CNOOC, Zhoushan refinery",China,Yangze River,China,East,Y
+L,China - Dongying terminal,China,Shandong,China,East,
+D,"China - Fujian, Dragon Tenglong Aromatic teapot",China,South China,China,East,Y
+L,China - Hai Yang Shi You 102 FPSO,China,North China,China,East,
+L,China - Hai Yang Shi You 111 FPSO,China,South China,China,East,
+L,China - Hai Yang Shi You 112 FPSO,China,North China,China,East,
+L,China - Hai Yang Shi You 118 FPSO,China,South China,China,East,
+D,"China - Hengli, Xianren Island refinery",China,North China,China,East,Y
+B,China - Herun Jinrun terminal,China,Yangze River,China,East,
+B,"China - Huaying Petrochemical, Huizhou terminal",China,South China,China,East,
+D,"China - Jiangsu Rizhao, Xinhai Petrochemical teapot",China,Shandong,China,East,Y
+L,China - Nanhai Shengkai FSO + Lufeng FPSO,China,South China,China,East,
+L,China - Nanhai Shengli FPSO,China,North China,China,East,
+L,China - Nanjai Fenjin FPSO,China,South China,China,East,
+D,"China - Panjin Haoye + Panjin North Asphalt + North Huajin, Liaoning teapots",China,North China,China,East,Y
+D,"China - Petrochina + WEPEC, Dalian refineries",China,North China,China,East,Y
+I,"China - Petrochina, ESPO pipeline refineries",China,North China,China,East,
+D,"China - Petrochina, Huabei + Dagang refineries",China,North China,China,East,Y
+D,"China - Petrochina, Jieyang refinery",China,South China,China,East,Y
+D,"China - Petrochina, Jinxi + Jinzhou refineries + SPR",China,North China,China,East,Y
+D,"China - Petrochina, Qinzhou refinery",China,South China,China,East,Y
+D,"China - Petrochina, Yunnan Anning refinery",China,South China,China,East,Y
+L,China - Rizhao terminal,China,Yangze River,China,East,
+D,China - Shengda Liuheng Island Oil terminal,China,Yangze River,China,East,
+D,"China - Shenghong Petrochemical, Lianyungang refinery",China,Yangze River,China,East,Y
+D,"China - Sinochem, Quanzhou refinery",China,South China,China,East,Y
+D,"China - Sinopec + Rizhao teapots, Wuhan + Jingmen + Jiujiang + Baling + Changling + Anqing refineries",China,Yangze River,China,East,Y
+D,"China - Sinopec + Yulong + teapots, Shandong refineries",China,Shandong,China,East,Y
+D,"China - Sinopec FREP, Quanzhou refinery",China,South China,China,East,Y
+D,"China - Sinopec, Guangzhou refinery",China,South China,China,East,Y
+B,"China - Sinopec, Hainan refinery",China,South China,China,East,Y
+D,"China - Sinopec, Maoming + Zhanjaing + Beihai refineries",China,South China,China,East,Y
+D,"China - Sinopec, Tianjin + Cangzhou + Beijing + Shijiazhuang refineries",China,North China,China,East,Y
+D,"China - Sinopec, Yangzhou Petrochemical",China,Yangze River,China,East,Y
+D,"China - Sinopec, Zhongke refinery",China,South China,China,East,Y
+D,"China - Sinopec/CNOOC, Zhenhai + Shanghai + Gaoqiao + Jinling + Yangzi + Daxie refineries",China,Yangze River,China,East,Y
+L,China - Suizhong terminal,China,North China,China,East,
+L,China - Weizhou terminal,China,South China,China,East,
+L,China - Wenchang II HYSY 116 FPSO,China,South China,China,East,
+L,China - Xijiang HYSY 115 FPSO,China,South China,China,East,
+B,China - Yangshan Shengang INE terminal,China,Yangze River,China,East,
+D,"China - Zhejiang Petrochemical, Zhoushan refinery",China,Yangze River,China,East,Y
+D,"China - Zhoushan Huatai Petroeum, East Bailian Island terminal",China,Yangze River,China,East,
+L,Colombia - Covenas terminal,Colombia,Latam East,Latam,Atlantic,
+D,"Colombia - Ecopetrol, Cartagena Reficar refinery",Colombia,Latam East,Latam,Atlantic,Y
+L,Colombia - Puerto Bahia terminal,Colombia,Latam East,Latam,Atlantic,
+L,Colombia - Tumaco terminal,Colombia,Latam West,Latam,East,
+I,"Congo - CORAF, Pointe Noire refinery",Congo,WAF,WAF,Atlantic,
+L,Congo - Djeno terminal,Congo,WAF,WAF,Atlantic,
+L,Congo - La Noumbi FPSO,Congo,WAF,WAF,Atlantic,
+L,Croatia - Janaf Omisalj terminal,Croatia,MED,MED,Atlantic,
+D,Croatia - JANAF pipeline system,Croatia,MED,MED,Atlantic,Y
+D,"Cuba - Cupet, Camilo Cienfuegos refinery",Cuba,Caribs,Latam,Atlantic,Y
+D,"Cuba - Cupet, Hermanos Diaz refinery",Cuba,Caribs,Latam,Atlantic,Y
+D,"Cuba - Cupet, Matanzas power plants",Cuba,Caribs,Latam,Atlantic,Y
+D,"Cuba - Cupet, Nico Lopez refinery",Cuba,Caribs,Latam,Atlantic,Y
+D,Cuba - Moa nickel plant,Cuba,Caribs,Latam,Atlantic,
+D,"Cuba - Union Electrica de Cuba, Felton power plant",Cuba,Caribs,Latam,Atlantic,Y
+B,Curacao - Bullen Bay terminal,Curacao,Caribs,Latam,Atlantic,
+D,"Curacao - PdVSA, Isla refinery",Curacao,Caribs,Latam,Atlantic,Y
+I,"Czech - Orlen, Litvinov refinery",Czech Republic,MED,MED,Atlantic,
+D,"Denmark - Crossbridge Energy, Fredericia refinery",Denmark,Baltics,NWE,Atlantic,Y
+L,Denmark - Fredericia terminal,Denmark,Baltics,NWE,Atlantic,
+D,"Denmark - Klesh, Kalundborg refinery",Denmark,Baltics,NWE,Atlantic,Y
+L,Denmark - Siri platform,Denmark,Baltics,NWE,Atlantic,
+D,Denmark - SOT fuel blending terminal,Denmark,Baltics,NWE,Atlantic,Y
+L,Denmark - South Arne platform,Denmark,Baltics,NWE,Atlantic,
+D,"Dominican Republic - Refidomsa, Haina refinery",Dominican Republic,Caribs,Latam,Atlantic,Y
+L,DRC - Kalamu FSO,DRC,WAF,WAF,Atlantic,
+L,Ecuador - Esmeraldas terminal,Ecuador,Latam West,Latam,East,
+D,"Ecuador - Petroecuador, La Libertad refinery",Ecuador,Latam West,Latam,East,Y
+B,Egypt - SUMED + Alexandria refineries,Egypt,Egypt,PG,East,Y
+L,Egypt - Al Zaafarana FPSO,Egypt,Egypt,PG,East,
+I,"Egypt - ASORC, Assiut refinery",Egypt,Egypt,PG,East,
+I,"Egypt - CORC, Tanta refinery",Egypt,Egypt,PG,East,
+L,Egypt - El Hamra terminal,Egypt,Egypt,PG,East,
+D,Egypt - Mostorod + Suez refineries,Egypt,Egypt,PG,East,Y
+L,Egypt - Ras Budran terminal,Egypt,Egypt,PG,East,
+L,Egypt - Ras Gharib terminal,Egypt,Egypt,PG,East,
+L,Egypt - Ras Shukheir terminal,Egypt,Egypt,PG,East,
+L,Egypt - Ras Sudr terminal,Egypt,Egypt,PG,East,
+L,Egypt - Wadi Ferran terminal,Egypt,Egypt,PG,East,
+L,Egypt - Zeit Bay terminal,Egypt,Egypt,PG,East,
+B,EOPL LIGHTERING,STS,STS,SEAsia,East,
+L,Equatorial Guinea - AMPCO plant,Equatorial Guinea,WAF,WAF,Atlantic,
+L,Equatorial Guinea - Aseng FPSO,Equatorial Guinea,WAF,WAF,Atlantic,
+L,Equatorial Guinea - Sendje Ceiba FPSO,Equatorial Guinea,WAF,WAF,Atlantic,
+L,Equatorial Guinea - Serpentina FPSO,Equatorial Guinea,WAF,WAF,Atlantic,
+D,"Finland - Neste, Naantali refinery",Finland,Baltics,NWE,Atlantic,Y
+D,"Finland - Neste, Porvoo refinery",Finland,Baltics,NWE,Atlantic,Y
+L,France - Chane Bayonne terminal,France,ARA-UK,NWE,Atlantic,
+D,"France - Exxon + Total, Le Havre refineries",France,ARA-UK,NWE,Atlantic,Y
+L,France - SPBA Ambes terminal,France,ARA-UK,NWE,Atlantic,
+D,"France - Total, Donges refinery",France,ARA-UK,NWE,Atlantic,Y
+D,France + Switzerland - Fos refineries,France,MED,MED,Atlantic,Y
+L,Gabon - Bw Adolo FPSO,Gabon,WAF,WAF,Atlantic,
+L,Gabon - Cap Lopez terminal,Gabon,WAF,WAF,Atlantic,
+L,Gabon - Etame FSO,Gabon,WAF,WAF,Atlantic,
+L,Gabon - Fernan Vaz FSO,Gabon,WAF,WAF,Atlantic,
+L,Gabon - Gamba terminal,Gabon,WAF,WAF,Atlantic,
+L,Gabon - Knock Allen FPSO,Gabon,WAF,WAF,Atlantic,
+L,Gabon - Mayumba FSO,Gabon,WAF,WAF,Atlantic,
+I,"Gabon - SOGARA, Port Gentil refinery",Gabon,WAF,WAF,Atlantic,
+L,Georgia - Batumi terminal,Georgia,Black Sea,MED,Atlantic,
+L,Georgia - Supsa terminal,Georgia,Black Sea,MED,Atlantic,
+D,"Germany - HES, Wilhelshaven VDU refunery",Germany,ARA-UK,NWE,Atlantic,Y
+D,"Germany - Klesh, Heide refinery",Germany,Baltics,NWE,Atlantic,Y
+L,Germany - NWO terminal,Germany,ARA-UK,NWE,Atlantic,
+D,"Germany - Nynas, Hamburg refinery",Germany,ARA-UK,NWE,Atlantic,Y
+D,"Germany - Total, Brunsbuttel bitumen plant",Germany,Baltics,NWE,Atlantic,Y
+D,Germany East + Poland refineries,Germany,Baltics,NWE,Atlantic,Y
+D,Germany South + Austria - TAL refineries,Germany,MED,MED,Atlantic,Y
+D,Germany West + Belgium - Wilhelmshaven refineries + Total Antwerp,Germany,ARA-UK,NWE,Atlantic,Y
+L,Ghana - John Agyekum Kufuor FPSO,Ghana,WAF,WAF,Atlantic,
+L,Ghana - Kwame Nkrumah FPSO,Ghana,WAF,WAF,Atlantic,
+L,Ghana - Prof. John Evans Atta Mills FPSO,Ghana,WAF,WAF,Atlantic,
+D,Ghana - Takoradi crude power plant,Ghana,WAF,WAF,Atlantic,Y
+D,"Ghana - TORL + Sentuo, Tema refineries",Ghana,WAF,WAF,Atlantic,Y
+D,Greece - HelleniQ - Aspropyrgos + Elefsina refineries,Greece,MED,MED,Atlantic,Y
+D,"Greece - HelleniQ, Thessaloniki refinery",Greece,MED,MED,Atlantic,Y
+D,"Greece - Motor Oil, Corinth refinery",Greece,MED,MED,Atlantic,Y
+L,Guatemala - Santo Tomas de Castilal terminal,Guatemala,Latam West,Latam,Atlantic,
+L,Guyana - Liza Destiny FPSO,Guyana,Latam East,Latam,Atlantic,
+L,Guyana - Liza Unity FPSO,Guyana,Latam East,Latam,Atlantic,
+L,Guyana - Prosperity FPSO,Guyana,Latam East,Latam,Atlantic,
+I,"Hungary - MOL, Szazhalombatta refinery",Hungary,MED,MED,Atlantic,
+L,India - Armada Sterling FPSO,India,India,SAsia,East,
+L,India - Armada Sterling II FPSO,India,India,SAsia,East,
+L,India - Bhogat terminal,India,India,SAsia,East,
+D,"India - BPCL + HPCL, Mumbai refineries",India,India,SAsia,East,Y
+D,"India - BPCL, Bina refinery",India,India,SAsia,East,Y
+D,"India - BPCL, Kochi refinery",India,India,SAsia,East,Y
+L,India - Cauvery terminal,India,India,SAsia,East,
+D,"India - CPCL, Cauvery Basin refinery",India,India,SAsia,East,Y
+D,"India - CPCL, Chennai refinery",India,India,SAsia,East,Y
+I,"India - CPCL, Manali refinery",India,India,SAsia,East,
+L,India - Hazira terminal,India,India,SAsia,East,
+D,"India - HMEL, Guru Gobind Singh refineries",India,India,SAsia,East,Y
+D,"India - HPCL, Visakhapatnam refinery + SPR",India,India,SAsia,East,Y
+I,"India - IOC, local refineries",India,India,SAsia,East,
+D,"India - IOC, Panipat + Mathura + Koyali refineries",India,India,SAsia,East,Y
+D,"India - IOC, Paradip + Haldia + Barauni refineries",India,India,SAsia,East,Y
+L,India - Kakinada FPSO,India,India,SAsia,East,
+L,India - Mangalore SPR,India,India,SAsia,East,
+D,"India - MRPL, Mangalore refinery + Mangalore/Padur SPR",India,India,SAsia,East,Y
+L,India - Mumbai High platform,India,India,SAsia,East,
+L,India - Mumbai terminal,India,India,SAsia,East,
+D,"India - Nayara, Vadinar refinery",India,India,SAsia,East,Y
+I,"India - NRL, Numaligarh refinery",India,India,SAsia,East,
+L,India - Padur SPR,India,India,SAsia,East,
+L,India - Panna platform,India,India,SAsia,East,
+L,India - Ravva terminal,India,India,SAsia,East,
+D,"India - Reliance, Jamnagar refinery",India,India,SAsia,East,Y
+L,India - Ruby FPSO,India,India,SAsia,East,
+L,Indonesia - Arjuna Prima FSO,Indonesia,SEAsia Term,SEAsia,East,
+L,Indonesia - Arun LNG,Indonesia,SEAsia Term,SEAsia,East,
+L,Indonesia - Belanak FPSO,Indonesia,SEAsia Term,SEAsia,East,
+L,Indonesia - Belida FPSO,Indonesia,SEAsia Term,SEAsia,East,
+L,Indonesia - Bula terminal,Indonesia,SEAsia Term,SEAsia,East,
+L,Indonesia - Bunyu terminal,Indonesia,SEAsia Term,SEAsia,East,
+L,Indonesia - Cinta FSO,Indonesia,SEAsia Term,SEAsia,East,
+L,Indonesia - Dumai terminal,Indonesia,SEAsia Term,SEAsia,East,
+L,Indonesia - Gagak Rimang FSO,Indonesia,SEAsia Term,SEAsia,East,
+L,Indonesia - Geragai FSO,Indonesia,SEAsia Term,SEAsia,East,
+L,Indonesia - Kakap Natuna FPSO,Indonesia,SEAsia Term,SEAsia,East,
+L,Indonesia - Kasim terminal,Indonesia,SEAsia Term,SEAsia,East,
+L,Indonesia - Ladinda FSO,Indonesia,SEAsia Term,SEAsia,East,
+L,Indonesia - Maxus Widuri FPSO,Indonesia,SEAsia Term,SEAsia,East,
+L,Indonesia - Pertamina Abherka FSO,Indonesia,SEAsia Term,SEAsia,East,
+D,"Indonesia - Pertamina, RU II Dumai refinery",Indonesia,SEAsia Term,SEAsia,East,Y
+D,"Indonesia - Pertamina, RU III Plaju refinery",Indonesia,SEAsia Term,SEAsia,East,Y
+D,"Indonesia - Pertamina, RU IV Cilacap refinery",Indonesia,SEAsia Term,SEAsia,East,Y
+D,"Indonesia - Pertamina, RU V Balikpapan refinery",Indonesia,SEAsia Term,SEAsia,East,Y
+D,"Indonesia - Pertamina, RU VI Balongan refinery",Indonesia,SEAsia Term,SEAsia,East,Y
+I,"Indonesia - Pertamina, RU VII Kasim refinery",Indonesia,SEAsia Term,SEAsia,East,
+D,"Indonesia - Pertamina, TPPI Tuban refinery",Indonesia,SEAsia Term,SEAsia,East,Y
+D,Indonesia - PT Karimun fuel blending terminal,Indonesia,SEAsia Term,SEAsia,East,Y
+L,Indonesia - Ratu Nusantara FPSO,Indonesia,SEAsia Term,SEAsia,East,
+L,Indonesia - Sampang FSO,Indonesia,SEAsia Term,SEAsia,East,
+L,Indonesia - Santan terminal,Indonesia,SEAsia Term,SEAsia,East,
+L,Indonesia - Senipah terminal,Indonesia,SEAsia Term,SEAsia,East,
+L,Indonesia - Senoro terminal,Indonesia,SEAsia Term,SEAsia,East,
+L,Indonesia - Ship 111 FSO,Indonesia,SEAsia Term,SEAsia,East,
+L,Indonesia - Success Challenger FSO,Indonesia,SEAsia Term,SEAsia,East,
+L,Indonesia - Tangguh LNG,Indonesia,SEAsia Term,SEAsia,East,
+L,Iran - Assaluyeh terminal,Iran,Iran,PG,East,
+L,Iran - Bahregan terminal,Iran,Iran,PG,East,
+L,Iran - Cyrus FPSO,Iran,Iran,PG,East,
+L,Iran - Jask terminal,Iran,Iran,PG,East,
+L,Iran - Kharg Island terminal,Iran,Iran,PG,East,
+L,Iran - Lavan Island terminal,Iran,Iran,PG,East,
+I,"Iran - NIORDC, Abadan refinery",Iran,Iran,PG,East,
+I,"Iran - NIORDC, Imam Khomeini refinery",Iran,Iran,PG,East,
+I,"Iran - NIORDC, Isfahan refinery",Iran,Iran,PG,East,
+I,"Iran - NIORDC, Kerman Shah refinery",Iran,Iran,PG,East,
+I,"Iran - NIORDC, Lavan refinery",Iran,Iran,PG,East,
+I,"Iran - NIORDC, Persian Gulf Star refinery",Iran,Iran,PG,East,
+I,"Iran - NIORDC, Shiraz refinry",Iran,Iran,PG,East,
+I,"Iran - NIORDC, Tabriz refinery",Iran,Iran,PG,East,
+I,"Iran - NIORDC, Tehran refinery",Iran,Iran,PG,East,
+L,Iran - Sirri Island terminal,Iran,Iran,PG,East,
+L,Iran - Soorena FSU,Iran,Iran,PG,East,
+L,Iran - South Pars terminal,Iran,Iran,PG,East,
+B,Iran - unknown,Iran,Iran,PG,East,
+D,"Iran -NIORDC, Bandar Abbas refinery",Iran,Iran,PG,East,Y
+L,Iraq - Al Basrah Oil terminal,Iraq,PG Term,PG,East,
+L,Iraq - Khor Al Zubair terminal,Iraq,PG Term,PG,East,
+I,"Iraq - MRC, Daura refinery",Iraq,PG Term,PG,East,
+I,"Iraq - MRC, Karbala refinery",Iraq,PG Term,PG,East,
+I,"Iraq - SRC, Basra refinery",Iraq,PG Term,PG,East,
+I,"Iraq - SRC, Dhi Qar refinery",Iraq,PG Term,PG,East,
+B,Ireland - Bantry Bay terminal,Ireland,ARA-UK,NWE,Atlantic,
+D,"Ireland - Irving, Whitegate refinery",Ireland,ARA-UK,NWE,Atlantic,Y
+L,Israel - Energean Power FPSO,Israel,MED,MED,Atlantic,
+B,Israel - PAZ + Ashdod refineries + EILAT storage,Israel,MED,MED,Atlantic,Y
+L,Italy - Alba Marina FSO,Italy,MED,MED,Atlantic,
+D,"Italy - Alma Petroli, Ravenna refinery",Italy,MED,MED,Atlantic,Y
+D,"Italy - Api, Falconara refinery",Italy,MED,MED,Atlantic,Y
+D,"Italy - Eni + Iplom, Sannazzaro + Busalla refineries",Italy,MED,MED,Atlantic,Y
+D,"Italy - Eni, Livorno refinery",Italy,MED,MED,Atlantic,Y
+D,"Italy - Eni, Taronto refinery",Italy,MED,MED,Atlantic,Y
+L,Italy - Gela terminal,Italy,MED,MED,Atlantic,
+D,"Italy - ISAB, Priolo Gargallo refinery",Italy,MED,MED,Atlantic,Y
+D,"Italy - RdM, Milazzo refinery",Italy,MED,MED,Atlantic,Y
+D,"Italy - Saras, Sarroch refinery",Italy,MED,MED,Atlantic,Y
+D,"Italy - Sarpom, Trecate refinery",Italy,MED,MED,Atlantic,Y
+D,"Italy - Sonatrach, Augusta refinery",Italy,MED,MED,Atlantic,Y
+L,Italy - Taranto terminal,Italy,MED,MED,Atlantic,
+L,Ivory Coast - Baobab FPSO,Ivory Coast,WAF,WAF,Atlantic,
+L,Ivory Coast - Espoir Ivoirien FPSO,Ivory Coast,WAF,WAF,Atlantic,
+L,Ivory Coast - Firenze FPSO,Ivory Coast,WAF,WAF,Atlantic,
+D,"Ivory Coast - SIR, Abidjan refinery",Ivory Coast,WAF,WAF,Atlantic,Y
+L,Ivory Coast - Yamoussoukro FSO,Ivory Coast,WAF,WAF,Atlantic,
+D,"Jamaica - Petrojam, Kingston refinery",Jamaica,Caribs,Latam,Atlantic,Y
+B,Japan - Akita SPR,Japan,East Asia,East Asia,East,
+D,Japan - Chiba refineries,Japan,East Asia,East Asia,East,Y
+D,"Japan - Cosmo, Sakai refinery",Japan,East Asia,East Asia,East,Y
+D,"Japan - Cosmo, Yokkaichi refinery",Japan,East Asia,East Asia,East,Y
+D,Japan - Daitoh Tank Terminal fuel blending,Japan,East Asia,East Asia,East,Y
+D,"Japan - Eneos Kashima Oil, Kashima refinery",Japan,East Asia,East Asia,East,Y
+D,"Japan - Eneos, Kawasaki refinery",Japan,East Asia,East Asia,East,Y
+B,"Japan - Eneos, Kiire terminal",Japan,East Asia,East Asia,East,Y
+D,"Japan - Eneos, Marifu refinery",Japan,East Asia,East Asia,East,Y
+D,"Japan - Eneos, Mizushima refinery",Japan,East Asia,East Asia,East,Y
+D,"Japan - Eneos, Negishi refinery",Japan,East Asia,East Asia,East,Y
+D,"Japan - Eneos, Oita refinery",Japan,East Asia,East Asia,East,Y
+D,"Japan - Eneos, Osaka refinery",Japan,East Asia,East Asia,East,Y
+D,"Japan - Eneos, Sakai refinery",Japan,East Asia,East Asia,East,Y
+D,"Japan - Eneos, Sendai refinery",Japan,East Asia,East Asia,East,Y
+D,"Japan - Eneos, Wakayama refinery",Japan,East Asia,East Asia,East,Y
+B,Japan - Fukui SPR,Japan,East Asia,East Asia,East,
+D,"Japan - Idemitsu Seibu, Yamaguchi refinery",Japan,East Asia,East Asia,East,Y
+D,"Japan - Idemitsu Showa, Yokkaichi refinery",Japan,East Asia,East Asia,East,Y
+D,"Japan - Idemitsu Toa Oil, Keihin refinery",Japan,East Asia,East Asia,East,Y
+D,"Japan - Idemitsu, Aichi refinery",Japan,East Asia,East Asia,East,Y
+D,"Japan - Idemitsu, Hokkaido refinery",Japan,East Asia,East Asia,East,Y
+B,Japan - Kamigotou SPR,Japan,East Asia,East Asia,East,
+L,Japan - Kanokawa terminal,Japan,East Asia,East Asia,East,
+B,Japan - Mutsu-Ogawara SPR,Japan,East Asia,East Asia,East,
+B,Japan - Niigata Joint Oil Stockpilling SPR,Japan,East Asia,East Asia,East,
+B,Japan - Okinawa terminal,Japan,East Asia,East Asia,East,
+B,Japan - Onahama terminal,Japan,East Asia,East Asia,East,
+B,Japan - Shibushi SPR,Japan,East Asia,East Asia,East,
+B,Japan - Shirashima SPR,Japan,East Asia,East Asia,East,
+D,"Japan - Taiyo Oil, Shikoku refinery",Japan,East Asia,East Asia,East,Y
+L,Japan - Tomakomai-Tobu SPR,Japan,East Asia,East Asia,East,
+D,"Jordan - JPRC, Zarqa refinery",Jordan,PG Spot,PG,East,Y
+B,"Korea - GS Caltex, Yeosu refinery + KNOC/OKYC storage",Korea,East Asia,East Asia,East,Y
+D,"Korea - Hanwah Total, Daesan condensate splitter",Korea,East Asia,East Asia,East,Y
+B,"Korea - Hyundai, Daesan refinery",Korea,East Asia,East Asia,East,Y
+B,"Korea - KNOC, Geoje SPR",Korea,East Asia,East Asia,East,
+D,"Korea - SK, Incheon refinery",Korea,East Asia,East Asia,East,Y
+D,"Korea - SK, Ulsan refinery",Korea,East Asia,East Asia,East,Y
+D,"Korea - S-Oil, Onsan refinery",Korea,East Asia,East Asia,East,Y
+I,"Kuwait - KPC, Al Zour refinery",Kuwait,PG Term,PG,East,
+I,"Kuwait - KPC, Mina Abdulla refinery",Kuwait,PG Term,PG,East,
+I,"Kuwait - KPC, Mina al-Ahmadi refinery",Kuwait,PG Term,PG,East,
+I,"Kuwait - KPC, Shuaiba refinery",Kuwait,PG Term,PG,East,
+L,Kuwait - Mina al Ahmadi terminal,Kuwait,PG Term,PG,East,
+I,"Libya - AGOCO, Sarir refinery",Libya,NAF,MED,Atlantic,
+I,"Libya - AGOCO, Tobruk refinery",Libya,NAF,MED,Atlantic,
+I,"Libya - ARC, Azzawiya refinery",Libya,NAF,MED,Atlantic,
+L,Libya - Bouri FSO,Libya,NAF,MED,Atlantic,
+L,Libya - Es Sider terminal,Libya,NAF,MED,Atlantic,
+L,Libya - Farwah FPSO,Libya,NAF,MED,Atlantic,
+I,"Libya - LERCO, Ras Lanuf refinery",Libya,NAF,MED,Atlantic,
+L,Libya - Marsa al Brega terminal,Libya,NAF,MED,Atlantic,
+L,Libya - Marsa al Hariga terminal,Libya,NAF,MED,Atlantic,
+L,Libya - Melitah terminal,Libya,NAF,MED,Atlantic,
+L,Libya - Ras Lanuf terminal,Libya,NAF,MED,Atlantic,
+L,Libya - Zawiya terminal,Libya,NAF,MED,Atlantic,
+L,Libya - Zueitina terminal,Libya,NAF,MED,Atlantic,
+D,LIGHTERING - Acu STS,STS,STS,STS,Atlantic,
+D,LIGHTERING - Aruba Buckeye Bahamas,STS,STS,STS,Atlantic,
+D,LIGHTERING - Asia Sanctionned bbls,STS,STS,STS,East,
+D,LIGHTERING - Bahamas Freeport,STS,STS,STS,Atlantic,
+D,LIGHTERING - Brazil Santos,STS,STS,STS,Atlantic,
+D,LIGHTERING - Ceuta,STS,STS,STS,Atlantic,
+D,LIGHTERING - Cyprus,STS,STS,STS,Atlantic,
+D,LIGHTERING - Denmark,STS,STS,STS,Atlantic,
+D,LIGHTERING - Greece,STS,STS,STS,Atlantic,
+D,LIGHTERING - Indonesia Muntok,STS,STS,STS,East,
+D,LIGHTERING - Indonesia Nipah,STS,STS,STS,East,
+D,LIGHTERING - Indonesia Semangka Bay,STS,STS,STS,East,
+D,LIGHTERING - Iran Kharg Isand,STS,STS,STS,East,
+D,LIGHTERING - Iraq KOZ,STS,STS,STS,East,
+D,LIGHTERING - Japan Nagasaki,STS,STS,STS,East,
+D,LIGHTERING - Korea Yeosu,STS,STS,STS,East,
+D,LIGHTERING - Lerwick NS,STS,STS,STS,Atlantic,
+D,LIGHTERING - Malaysia Batu Pahat,STS,STS,STS,East,
+D,LIGHTERING - Malaysia Linggi,STS,STS,STS,East,
+D,LIGHTERING - Malaysia Pelepas,STS,STS,STS,East,
+D,LIGHTERING - Malaysia Tanjung Bruas,STS,STS,STS,East,
+D,LIGHTERING - Malta,STS,STS,STS,Atlantic,
+D,LIGHTERING - MENA sanctionned bbls,STS,STS,STS,East,
+D,LIGHTERING - Oman Sohar,STS,STS,STS,East,
+D,LIGHTERING - Panama,STS,STS,STS,Atlantic,
+D,LIGHTERING - Panama Canal,STS,STS,STS,Atlantic,
+D,LIGHTERING - Red Sea,STS,STS,STS,East,
+D,LIGHTERING - Scapa Flow NS,STS,STS,STS,Atlantic,
+D,LIGHTERING - Southwold NS,STS,STS,STS,Atlantic,
+D,LIGHTERING - UAE Dubai,STS,STS,STS,East,
+D,LIGHTERING - UAE Fujairah,STS,STS,STS,East,
+D,LIGHTERING - Uruguay Alpah Zone,STS,STS,STS,Atlantic,
+D,LIGHTERING - Uruguay Delta Zone,STS,STS,STS,Atlantic,
+D,LIGHTERING - US WC PAL Light,STS,STS,STS,East,
+D,LIGHTERING - USGC Southwest,STS,STS,STS,US Midcon,
+D,LIGHTERING - WAF Jubilee Light,STS,STS,STS,Atlantic,
+D,LIGHTERING - WAF Lome,STS,STS,STS,Atlantic,
+B,LIGHTERING CORRECTION,STS,STS,STS,Unknown,
+D,LIGHTERING USGC - GoM,STS,STS,STS,US Midcon,
+D,"Lithuania - Orlen, Mazeikiai refinery",Lithuania,Baltics,NWE,Atlantic,Y
+L,Malaysia - Angsi FSO,Malaysia,SEAsia Spot,SEAsia,East,
+L,Malaysia - Berantai FPSO,Malaysia,SEAsia Spot,SEAsia,East,
+L,Malaysia - Bergading FSO,Malaysia,SEAsia Spot,SEAsia,East,
+L,Malaysia - Bertam FPSO,Malaysia,SEAsia Spot,SEAsia,East,
+L,Malaysia - Bintulu terminal,Malaysia,SEAsia Spot,SEAsia,East,
+L,Malaysia - Bunga Kertas FPSO,Malaysia,SEAsia Spot,SEAsia,East,
+L,Malaysia - Cakerawara Puteri FSO,Malaysia,SEAsia Spot,SEAsia,East,
+L,Malaysia - Caspian Sea FSO,Malaysia,SEAsia Spot,SEAsia,East,
+L,Malaysia - Cendor FSO,Malaysia,SEAsia Spot,SEAsia,East,
+D,Malaysia - Dialog Langsat fuel blending,Malaysia,SEAsia Spot,SEAsia,East,Y
+D,Malaysia - Feoso Pasir Gudang fuel terminal,Malaysia,SEAsia Spot,SEAsia,East,Y
+L,Malaysia - Helang FPSO,Malaysia,SEAsia Spot,SEAsia,East,
+D,"Malaysia - Hengyuan + Petron, Port Dickson refineries",Malaysia,SEAsia Spot,SEAsia,East,Y
+L,Malaysia - Jitang FPSO,Malaysia,SEAsia Spot,SEAsia,East,
+L,Malaysia - KBM FSO,Malaysia,SEAsia Spot,SEAsia,East,
+L,Malaysia - Kikeh FPSO,Malaysia,SEAsia Spot,SEAsia,East,
+L,Malaysia - Labuan terminal,Malaysia,SEAsia Spot,SEAsia,East,
+L,Malaysia - MaMPU 1 FPSO,Malaysia,SEAsia Spot,SEAsia,East,
+L,Malaysia - Miri terminal,Malaysia,SEAsia Spot,SEAsia,East,
+L,Malaysia - Orkid FSO,Malaysia,SEAsia Spot,SEAsia,East,
+D,"Malaysia - Petronas, Kertih refinery",Malaysia,SEAsia Spot,SEAsia,East,Y
+D,"Malaysia - Petronas, Melaka refinery",Malaysia,SEAsia Spot,SEAsia,East,Y
+L,Malaysia - PM3 CAA FSO,Malaysia,SEAsia Spot,SEAsia,East,
+L,Malaysia - Puteri Dulang FSO,Malaysia,SEAsia Spot,SEAsia,East,
+B,"Malaysia - RAPID, Pengerang refinery",Malaysia,SEAsia Spot,SEAsia,East,Y
+L,Malaysia - Ratu Songkhla FSO,Malaysia,SEAsia Spot,SEAsia,East,
+L,Malaysia - Sabah terminal,Malaysia,SEAsia Spot,SEAsia,East,
+L,Malaysia - Sepat FSO,Malaysia,SEAsia Spot,SEAsia,East,
+L,Malaysia - Tembikai FSO,Malaysia,SEAsia Spot,SEAsia,East,
+L,Malaysia - Terengganu terminal,Malaysia,SEAsia Spot,SEAsia,East,
+D,"Malaysia - TIPCO, Kemaman bitumen refinery",Malaysia,SEAsia Spot,SEAsia,East,Y
+D,"Malaysia - Vitol, ATB refinery  + Tanjung Bin fuel blending",Malaysia,SEAsia Spot,SEAsia,East,Y
+L,Mauritania - Berge Helene FPSO,Mauritania,WAF,WAF,Atlantic,
+L,Mexico - Cayo Arcas SBM,Mexico,Latam East,Latam,Atlantic,
+D,Mexico - crude imports,Mexico,Latam East,Latam,Atlantic,
+L,Mexico - Dos Bocas terminal,Mexico,Latam East,Latam,Atlantic,
+L,Mexico - Miamte FPSO,Mexico,Latam East,Latam,Atlantic,
+L,Mexico - Pajaritos terminal,Mexico,Latam East,Latam,Atlantic,
+I,"Mexico - PEMEX, Cadereyta refinery",Mexico,Latam East,Latam,Atlantic,
+I,"Mexico - PEMEX, Madero refinery",Mexico,Latam East,Latam,Atlantic,
+I,"Mexico - PEMEX, Minatitlan refinery",Mexico,Latam East,Latam,Atlantic,
+I,"Mexico - PEMEX, Salamanca refinery",Mexico,Latam East,Latam,Atlantic,
+I,"Mexico - PEMEX, Salina Cruz refinery",Mexico,Latam East,Latam,Atlantic,
+I,"Mexico - PEMEX, Tula refinery",Mexico,Latam East,Latam,Atlantic,
+L,Mexico - Salina Cruz terminal,Mexico,Latam West,Latam,Atlantic,
+L,Mexico - TASP Madero terminal,Mexico,Latam East,Latam,Atlantic,
+L,Mexico - Yuum Kak Naab FPSO,Mexico,Latam East,Latam,Atlantic,
+D,MIDDLE EAST IRANIAN UNKNOWN,STS,STS,PG,East,
+L,Mozambique - Coral South FLNG,Mozambique,East Africa,WAF,Atlantic,
+L,Mozambique - Maputo terminal,Mozambique,East Africa,WAF,Atlantic,
+L,Myanmar - Yet Sena FSO,Myanmar,SEAsia Term,SEAsia,East,
+D,Netherlands - Amsterdam petchem,Netherlands,ARA-UK,NWE,Atlantic,Y
+L,Netherlands - De Ruyter platform,Netherlands,ARA-UK,NWE,Atlantic,
+D,Netherlands - Dow Terneuzen plant,Netherlands,ARA-UK,NWE,Atlantic,Y
+D,"Netherlands - Gunvor, Rotterdam refinery",Netherlands,ARA-UK,NWE,Atlantic,Y
+L,Netherlands - Hanze platform,Netherlands,ARA-UK,NWE,Atlantic,
+L,Netherlands - Neptune platform,Netherlands,ARA-UK,NWE,Atlantic,
+D,Netherlands - Rotterdam fuel bunkering,Netherlands,ARA-UK,NWE,Atlantic,Y
+D,"Netherlands - Vitol, VPR refinery",Netherlands,ARA-UK,NWE,Atlantic,Y
+D,Netherlands + Belgium - Rotterdam refineries + Exxon Antwerp,Netherlands,ARA-UK,NWE,Atlantic,Y
+L,Neutral Zone - Khafji terminal,Neutral Zone,PG Term,PG,East,
+L,Neutral Zone - Mina Saud terminal,Neutral Zone,PG Term,PG,East,
+D,"New Zealand - NZRC, Mardsen Point refinery",New Zealand,Oceania,Oceania,East,Y
+L,New Zealand - Raora FPSO,New Zealand,Oceania,Oceania,East,
+L,New Zealand - Taranaki terminal,New Zealand,Oceania,Oceania,East,
+L,New Zealand - Umuroa FPSO,New Zealand,Oceania,Oceania,East,
+D,"Nicaragua - Puma Energy, Managua refinery",Nicaragua,Latam West,Latam,Atlantic,Y
+I,"Niger - CNPC, Zinder refinery",Niger,WAF,WAF,Atlantic,
+L,Nigeria - Abigail-Joseph FPSO,Nigeria,WAF,WAF,Atlantic,
+L,Nigeria - Abo FPSO,Nigeria,WAF,WAF,Atlantic,
+L,Nigeria - Agbami FPSO,Nigeria,WAF,WAF,Atlantic,
+L,Nigeria - Ailsa Craig FSO,Nigeria,WAF,WAF,Atlantic,
+L,Nigeria - Akpo FPSO,Nigeria,WAF,WAF,Atlantic,
+L,Nigeria - Amenam FSO,Nigeria,WAF,WAF,Atlantic,
+L,Nigeria - Bonga FPSO,Nigeria,WAF,WAF,Atlantic,
+L,Nigeria - Bonny terminal,Nigeria,WAF,WAF,Atlantic,
+L,Nigeria - Brass River terminal,Nigeria,WAF,WAF,Atlantic,
+L,Nigeria - Britannia-U FPSO,Nigeria,WAF,WAF,Atlantic,
+D,"Nigeria - Dangote, Lekki refinery",Nigeria,WAF,WAF,Atlantic,Y
+L,Nigeria - Ebok FSO,Nigeria,WAF,WAF,Atlantic,
+L,Nigeria - Egina FPSO,Nigeria,WAF,WAF,Atlantic,
+L,Nigeria - Erha FPSO,Nigeria,WAF,WAF,Atlantic,
+L,Nigeria - Escravos terminal,Nigeria,WAF,WAF,Atlantic,
+L,Nigeria - Forcados terminal,Nigeria,WAF,WAF,Atlantic,
+L,Nigeria - Front Puffin FPSO,Nigeria,WAF,WAF,Atlantic,
+L,Nigeria - Galilean 7 FSO,Nigeria,WAF,WAF,Atlantic,
+I,"Nigeria - KRPCL, Kaduna refinery",Nigeria,WAF,WAF,Atlantic,
+L,Nigeria - Nium Antan FPSO,Nigeria,WAF,WAF,Atlantic,
+I,"Nigeria - NNPC, Port Harcourt refinery",Nigeria,WAF,WAF,Atlantic,
+I,"Nigeria - NNPC, Warri refinery",Nigeria,WAF,WAF,Atlantic,
+L,Nigeria - Okono FPSO,Nigeria,WAF,WAF,Atlantic,
+L,Nigeria - Otakikpo FPSO,Nigeria,WAF,WAF,Atlantic,
+L,Nigeria - Pennington FPSO,Nigeria,WAF,WAF,Atlantic,
+L,Nigeria - Qua Iboe terminal,Nigeria,WAF,WAF,Atlantic,
+L,Nigeria - Sea Eagle FPSO,Nigeria,WAF,WAF,Atlantic,
+L,Nigeria - Tamara Elmina FPSO,Nigeria,WAF,WAF,Atlantic,
+L,Nigeria - Tamara Tokoni FPSO,Nigeria,WAF,WAF,Atlantic,
+L,Nigeria - Trinity Spirit FPSO,Nigeria,WAF,WAF,Atlantic,
+L,Nigeria - Tulja FSO,Nigeria,WAF,WAF,Atlantic,
+L,Nigeria - Tulja Kalyani FSO,Nigeria,WAF,WAF,Atlantic,
+L,Nigeria - Ugo Ocha FSO,Nigeria,WAF,WAF,Atlantic,
+L,Nigeria - Usan FPSO,Nigeria,WAF,WAF,Atlantic,
+L,Nigeria - Yoho FPSO,Nigeria,WAF,WAF,Atlantic,
+L,Norway - Aasta Hansteen platform,Norway,North Sea,NWE,Atlantic,
+L,Norway - Alvheim FPSO,Norway,North Sea,NWE,Atlantic,
+L,Norway - Asgard C FSO,Norway,North Sea,NWE,Atlantic,
+L,Norway - Balder FPSO,Norway,North Sea,NWE,Atlantic,
+L,Norway - Draugen buoy,Norway,North Sea,NWE,Atlantic,
+D,"Norway - Equinor, Mongstad refinery",Norway,Baltics,NWE,Atlantic,Y
+D,"Norway - Exxon, Slagen refinery",Norway,Baltics,NWE,Atlantic,Y
+L,Norway - Goliat FPSO,Norway,North Sea,NWE,Atlantic,
+L,Norway - Gullfaks buoys,Norway,North Sea,NWE,Atlantic,
+L,Norway - Heidrun FSO,Norway,North Sea,NWE,Atlantic,
+L,Norway - Johan Castberg FPSO,Norway,North Sea,NWE,Atlantic,
+L,Norway - Jotun FPSO,Norway,North Sea,NWE,Atlantic,
+L,Norway - Karsto terminal,Norway,North Sea,NWE,Atlantic,
+L,Norway - Martin Linge FSO,Norway,North Sea,NWE,Atlantic,
+L,Norway - Melkoya terminal,Norway,North Sea,NWE,Atlantic,
+L,Norway - Mongstad terminal,Norway,North Sea,NWE,Atlantic,
+L,Norway - Navion Saga FSO,Norway,North Sea,NWE,Atlantic,
+L,Norway - Njord Bravo FSO,Norway,North Sea,NWE,Atlantic,
+L,Norway - Norne FPSO,Norway,North Sea,NWE,Atlantic,
+L,Norway - Nyhamna terminal,Norway,North Sea,NWE,Atlantic,
+L,Norway - Petrojarl Knarr FPSO,Norway,North Sea,NWE,Atlantic,
+L,Norway - Petrojarl Varg FPSO,Norway,North Sea,NWE,Atlantic,
+L,Norway - Randgrid FSO,Norway,North Sea,NWE,Atlantic,
+L,Norway - Skarv FPSO,Norway,North Sea,NWE,Atlantic,
+L,Norway - Statfjord platform,Norway,North Sea,NWE,Atlantic,
+L,Norway - Sture terminal,Norway,North Sea,NWE,Atlantic,
+L,Norway - Yme platform,Norway,North Sea,NWE,Atlantic,
+L,Oman - MGP Musandam gas plant,Oman,PG Spot,PG,East,
+L,Oman - Mina al Fahal terminal,Oman,PG Spot,PG,East,
+I,"Oman - OQ, Mina al-Fahal refinery",Oman,PG Spot,PG,East,
+I,"Oman - OQ, Sohar refinery",Oman,PG Spot,PG,East,
+D,"Oman - OQ8, Duqm refinery",Oman,PG Spot,PG,East,Y
+L,Oman - Yumna FSO,Oman,PG Spot,PG,East,
+D,"Pakistan - Cynergyico, Byco Mouza Kund refinery",Pakistan,Other SAsia,SAsia,East,Y
+L,Pakistan - FOTCO terminal,Pakistan,Other SAsia,SAsia,East,
+D,Pakistan - Karachi refineries,Pakistan,Other SAsia,SAsia,East,Y
+D,Pakistan - Pipri power plant,Pakistan,Other SAsia,SAsia,East,Y
+B,Panama - Atlantic terminal,Panama,Latam East,Latam,Atlantic,
+B,Panama - Pacific terminal,Panama,Latam West,Latam,East,
+L,Papua - Kumul terminal,Papua New Guinea,Oceania,Oceania,East,
+L,Papua - PNG LNG terminal,Papua New Guinea,Oceania,Oceania,East,
+D,"Papua - Puma Energy, Napa Napa refinery",Papua New Guinea,Oceania,Oceania,East,Y
+L,Peru - Bayovar terminal,Peru,Latam West,Latam,East,
+D,"Peru - Petroperu, Conchan refinery",Peru,Latam West,Latam,East,Y
+D,"Peru - Petroperu, Talara refinery",Peru,Latam West,Latam,East,Y
+D,"Peru - Repsol, La Pampilla refinery",Peru,Latam West,Latam,East,Y
+L,Peru - Talara refinery terminal,Peru,Latam West,Latam,East,
+L,Philippines - Malampaya platform,Philippines,SEAsia Spot,SEAsia,East,
+D,"Philippines - Petron, Bataan refinery",Philippines,SEAsia Spot,SEAsia,East,Y
+L,Philippines - Rubicon Intrepid FPSO,Philippines,SEAsia Spot,SEAsia,East,
+D,Philippines - San Gabriel power station,Philippines,SEAsia Spot,SEAsia,East,Y
+D,"Philippines - Shell, Tabangao refinery",Philippines,SEAsia Spot,SEAsia,East,Y
+L,Poland - Apatyth FSU,Poland,Baltics,NWE,Atlantic,
+L,Poland - Gdansk terminal,Poland,Baltics,NWE,Atlantic,
+D,"Portugal - Galp, Matosinhos refinery",Portugal,MED,MED,Atlantic,Y
+D,"Portugal - Galp, Sines refinery",Portugal,MED,MED,Atlantic,Y
+L,Qatar - Al Rayyan FSO,Qatar,PG Spot,PG,East,
+L,Qatar - Al Shaheen FSOs,Qatar,PG Spot,PG,East,
+L,Qatar - Halul Island terminal,Qatar,PG Spot,PG,East,
+L,Qatar - Mesaieed terminal,Qatar,PG Spot,PG,East,
+I,"Qatar - Qatar Energy, Mesaieed refinery",Qatar,PG Spot,PG,East,
+L,Qatar - Ras Laffan terminal,Qatar,PG Spot,PG,East,
+D,"Romania - OMV + Lukoil, Petrobrazi + Petrotel refineries",Romania,Black Sea,MED,Atlantic,Y
+D,"Romania - Rompetrol, Petromidia refinery",Romania,Black Sea,MED,Atlantic,Y
+L,Russia - CPC terminal,Kazakhstan,Black Sea,FSU,Atlantic,
+L,Russia - De Kastri terminal,Russia,FSU East,FSU,East,
+I,"Russia - Gazpromneft, Moscow refinery",Russia,Inland Russia,FSU,Atlantic,
+I,"Russia - Gazpromneft, Omsk refinery",Russia,Inland Russia,FSU,Atlantic,
+I,"Russia - Independent, Taneko refinery",Russia,Inland Russia,FSU,Atlantic,
+L,Russia - Kaliningrad terminal,Russia,Baltics,FSU,Atlantic,
+L,Russia - Kozmino terminal,Russia,FSU East,FSU,East,
+B,Russia - Murmansk Kola FSO,Russia,Artic,FSU,Atlantic,
+B,Russia - Murmansk Umba FSO,Russia,Artic,FSU,Atlantic,
+B,Russia - Murmansk unknown,Russia,Artic,FSU,Atlantic,
+L,Russia - Novatek Ust-Luga terminal,Russia,Baltics,FSU,Atlantic,
+L,Russia - Novoportovskoye terminal,Russia,Artic,FSU,Atlantic,
+L,Russia - Novorossiysk terminal,Russia,Black Sea,FSU,Atlantic,
+L,Russia - Primorsk terminal,Russia,Baltics,FSU,Atlantic,
+L,Russia - Prirazlomnoye terminal,Russia,Artic,FSU,Atlantic,
+L,Russia - Sakhalin terminal,Russia,FSU East,FSU,East,
+L,Russia - TNTK Ust-Luga terminal,Russia,Baltics,FSU,Atlantic,
+L,Russia - Varandey terminal,Russia,Artic,FSU,Atlantic,
+L,Russia - Yamal LNG terminal,Russia,Artic,FSU,Atlantic,
+B,Saint Lucia - Buckeye St. Lucia terminal,Saint Lucia,Caribs,Latam,Atlantic,
+I,"Saudi Arabia - ex-Shell JV, SASREF refinery",Saudi Arabia,PG Term,PG,East,
+I,"Saudi Arabia - Exxon JV, SAMREF refinery",Saudi Arabia,PG Term,PG,East,
+D,Saudi Arabia - Jeddah South power plant,Saudi Arabia,PG Term,PG,East,Y
+L,Saudi Arabia - Ras Tanura Juaymah terminals,Saudi Arabia,PG Term,PG,East,
+D,"Saudi Arabia - Saudi Aramco, Jeddah refinery",Saudi Arabia,PG Term,PG,East,Y
+D,"Saudi Arabia - Saudi Aramco, Jizan refinery",Saudi Arabia,PG Term,PG,East,Y
+I,"Saudi Arabia - Saudi Aramco, Ras Tanura refinery",Saudi Arabia,PG Term,PG,East,
+I,"Saudi Arabia - Saudi Aramco, Riyadh refinery",Saudi Arabia,PG Term,PG,East,
+I,"Saudi Arabia - Saudi Aramco, Yanbu refinery",Saudi Arabia,PG Term,PG,East,
+D,"Saudi Arabia - SEC, Rabigh power plant",Saudi Arabia,PG Term,PG,East,Y
+D,"Saudi Arabia - SEC, Shoaiba power plant",Saudi Arabia,PG Term,PG,East,Y
+D,"Saudi Arabia - SEC, Shuqaiq IWPP power plant",Saudi Arabia,PG Term,PG,East,Y
+D,"Saudi Arabia - Sinopec JV, YASREF refinery",Saudi Arabia,PG Term,PG,East,Y
+D,"Saudi Arabia - Sumimoto JV, Petrorabigh refinery",Saudi Arabia,PG Term,PG,East,Y
+I,"Saudi Arabia - Total JV, SATORP refinery",Saudi Arabia,PG Term,PG,East,
+L,Saudi Arabia - Yanbu Muajjiz terminals,Saudi Arabia,PG Term,PG,East,
+I,"Saudi Arabia - Saudi/Total/ex-Shell, SATORP + SASREF refineries",Saudi Arabia,PG Term,PG,East,
+L,Senegal - Leopold Sedar Senghor FPSO,Senegal,WAF,WAF,Atlantic,
+D,"Senegal - SAR, Mbao Dakar refinery",Senegal,WAF,WAF,Atlantic,Y
+D,Singapore - Advario fuel blending,Singapore,SEAsia Spot,SEAsia,East,Y
+D,"Singapore - Aster, Bukom refinery",Singapore,SEAsia Spot,SEAsia,East,Y
+D,"Singapore - Exxon Banyan SCP, aromatics plant 100kbd condensate splitter",Singapore,SEAsia Spot,SEAsia,East,Y
+D,"Singapore - Exxon, Jurong refinery",Singapore,SEAsia Spot,SEAsia,East,Y
+D,Singapore - Horizon SGP fuel blending,Singapore,SEAsia Spot,SEAsia,East,Y
+L,Singapore - Jurong Rock Caverns,Singapore,SEAsia Spot,SEAsia,East,
+D,Singapore - Oiltanking Helios fuel blending,Singapore,SEAsia Spot,SEAsia,East,Y
+D,"Singapore - SRC, Jurong refinery",Singapore,SEAsia Spot,SEAsia,East,Y
+D,Singapore - Tankstore fuel blending,Singapore,SEAsia Spot,SEAsia,East,Y
+D,Singapore - Universal fuel blending,Singapore,SEAsia Spot,SEAsia,East,Y
+D,Singapore - Vopak Sebarok fuel blending,Singapore,SEAsia Spot,SEAsia,East,Y
+D,Singapore - YTL PowerSeraya fuel blending,Singapore,SEAsia Spot,SEAsia,East,Y
+I,"Slovakia - MOL, Bratislava refinery",Slovakia,MED,MED,Atlantic,
+B,"South Africa - Astron, Capetown refinery + Saldanha Bay storage",South Africa,SAF,WAF,Atlantic,Y
+D,South Africa - Durban refineries,South Africa,SAF,WAF,Atlantic,Y
+D,South Africa - Mossel Bay GTL plant,South Africa,SAF,WAF,Atlantic,Y
+D,"Spain - ASESA, Tarragona asphalt refinery",Spain,MED,MED,Atlantic,Y
+D,"Spain - BP, Castellon refinery",Spain,MED,MED,Atlantic,Y
+D,"Spain - Moeve, Gibraltar-San Roque refinery",Spain,MED,MED,Atlantic,Y
+D,"Spain - Moeve, La Rabida refinery",Spain,MED,MED,Atlantic,Y
+D,"Spain - Repsol Petronor, Bilbao refinery",Spain,MED,MED,Atlantic,Y
+D,"Spain - Repsol, Cartagena + Puertollano refineries",Spain,MED,MED,Atlantic,Y
+D,"Spain - Repsol, La Coruna refinery",Spain,MED,MED,Atlantic,Y
+D,"Spain - Repsol, Tarragona refinery",Spain,MED,MED,Atlantic,Y
+D,"Sri Lanka - Ceylon, Colombo refinery",Sri Lanka,Other SAsia,SAsia,East,Y
+B,St Eustatius - St Eustatius terminal,St Eustatius,Caribs,Latam,Atlantic,
+L,Sudan - Bashair Marine Terminal,Sudan,PG Spot,PG,East,
+I,"Sudan - CNPC, Khartoum refinery",Sudan,PG Spot,PG,East,
+I,"Sudan - ORC, Elobeid refinery",Sudan,PG Spot,PG,East,
+I,"Sudan - Sudapet, Port Sudan refinery",Sudan,PG Spot,PG,East,
+L,Sweden - Goteborg terminal,Sweden,Baltics,NWE,Atlantic,
+D,"Sweden - Nynas, Nynashamn bitumen refinery",Sweden,Baltics,NWE,Atlantic,Y
+D,"Sweden - Preem + St1 + Nynas + caverns, Gothenburg refineries",Sweden,Baltics,NWE,Atlantic,Y
+D,"Sweden - Preem, Lysekil refinery",Sweden,Baltics,NWE,Atlantic,Y
+D,"Syria - BRC, Banias refinery",Syria,MED,MED,Atlantic,Y
+D,"Taiwan - CPC, Dalin refinery",Taiwan,East Asia,East Asia,East,Y
+D,"Taiwan - CPC, Taoyuan refinery",Taiwan,East Asia,East Asia,East,Y
+D,"Taiwan - Formosa, Mailiao refinery",Taiwan,East Asia,East Asia,East,Y
+D,"Thailand - Bangchak, Bangkok refinery",Thailand,SEAsia Spot,SEAsia,East,Y
+L,Thailand - Benchamas 2 FSO,Thailand,SEAsia Spot,SEAsia,East,
+L,Thailand - Bualuang FSO,Thailand,SEAsia Spot,SEAsia,East,
+L,Thailand - Erawan FSO,Thailand,SEAsia Spot,SEAsia,East,
+D,"Thailand - IRPC, Rayong refinery",Thailand,SEAsia Spot,SEAsia,East,Y
+L,Thailand - Jasmine Venture MV7,Thailand,SEAsia Spot,SEAsia,East,
+L,Thailand - Manora Princess FSO,Thailand,SEAsia Spot,SEAsia,East,
+L,Thailand - Nong Yao FSO,Thailand,SEAsia Spot,SEAsia,East,
+L,Thailand - Pathumabaha FSO,Thailand,SEAsia Spot,SEAsia,East,
+L,Thailand - Platong FSO,Thailand,SEAsia Spot,SEAsia,East,
+D,"Thailand - PTTGC + SPRC, Rayong refineries",Thailand,SEAsia Spot,SEAsia,East,Y
+D,"Thailand - PTTGC, Aromatics condensate splitter (part of Rayong refinery)",Thailand,SEAsia Spot,SEAsia,East,Y
+B,Thailand - Sichang Thong terminal,Thailand,SEAsia Spot,SEAsia,East,
+L,Thailand - Songkhla FSO,Thailand,SEAsia Spot,SEAsia,East,
+L,Thailand - Suksan Salamander FSO,Thailand,SEAsia Spot,SEAsia,East,
+L,Thailand - Tantawan Explorer FPSO,Thailand,SEAsia Spot,SEAsia,East,
+D,"Thailand - Thai Oil + Bangchak, Sri Racha refineries",Thailand,SEAsia Spot,SEAsia,East,Y
+L,Thailand - Wassana FSO,Thailand,SEAsia Spot,SEAsia,East,
+L,Timor Leste - Liberdade FSO,Timor Leste,Oceania,Oceania,East,
+L,Trinidad - Galeota terminal,Trinidad,Caribs,Latam,Atlantic,
+D,"Trinidad - Petrotrin, Pointe-a-Pierre refinery",Trinidad,Caribs,Latam,Atlantic,Y
+L,Trinidad - Pointe-a-Pierre terminal,Trinidad,Caribs,Latam,Atlantic,
+L,Tunisia - Ashtart platform,Tunisia,NAF,MED,Atlantic,
+L,Tunisia - La Skhirra terminal,Tunisia,NAF,MED,Atlantic,
+D,"Tunisia - STIR, Bizerte refinery",Tunisia,NAF,MED,Atlantic,Y
+L,Tunisia - Thapsus FSO,Tunisia,NAF,MED,Atlantic,
+L,Turkey - Ceyhan Botas terminal,Iraq,MED,MED,Atlantic,
+L,Turkey - Ceyhan BTC terminal,Azerbaijan,MED,MED,Atlantic,
+L,Turkey - Dorytol terminal,Turkey,MED,MED,Atlantic,
+D,"Turkey - SOCAR, STAR Aegean refinery",Turkey,MED,MED,Atlantic,Y
+I,"Turkey - Tupras, Batman refinery",Turkey,MED,MED,Atlantic,
+D,"Turkey - Tupras, Izmir refinery",Turkey,MED,MED,Atlantic,Y
+D,"Turkey - Tupras, Izmit refinery",Turkey,MED,MED,Atlantic,Y
+D,"Turkey - Tupras, Kirikkale refinery",Turkey,MED,MED,Atlantic,Y
+D,"UAE - ADNOC, Ruwais refinery",UAE,PG Spot,PG,East,Y
+I,"UAE - ADNOC, Umm Al-Nar refinery",UAE,PG Spot,PG,East,
+L,UAE - Das Island terminal,UAE,PG Spot,PG,East,
+D,"UAE - ENOC, Jebel Ali refinery",UAE,PG Spot,PG,East,Y
+L,UAE - Fateh terminal,UAE,PG Spot,PG,East,
+D,UAE - Fujairah refineries,UAE,PG Spot,PG,East,Y
+L,UAE - Fujairah terminal,UAE,PG Spot,PG,East,
+L,UAE - Jebel Dhanna terminal,UAE,PG Spot,PG,East,
+L,UAE - Mubarraz Island terminal,UAE,PG Spot,PG,East,
+L,UAE - SNOC condensate terminal,UAE,PG Spot,PG,East,
+L,UAE - Zirku Island terminal,UAE,PG Spot,PG,East,
+L,UAE - Zirku Island Umm Lulu SBM,UAE,PG Spot,PG,East,
+L,UK - Alba FSO,UK,North Sea,NWE,Atlantic,
+L,UK - Anasuria FPSO,UK,North Sea,NWE,Atlantic,
+L,UK - Aoka Mizu FPSO,UK,North Sea,NWE,Atlantic,
+L,UK - Armada Kraken FPSO,UK,North Sea,NWE,Atlantic,
+L,UK - Banff FPSO,UK,North Sea,NWE,Atlantic,
+L,UK - Beryl platform,UK,North Sea,NWE,Atlantic,
+L,UK - Bleo Holm FPSO,UK,North Sea,NWE,Atlantic,
+L,UK - BW Catcher FPSO,UK,North Sea,NWE,Atlantic,
+L,UK - Captain FPSO,UK,North Sea,NWE,Atlantic,
+L,UK - Culzean Ailsa FSO,UK,North Sea,NWE,Atlantic,
+L,UK - Curlew FPSO,UK,North Sea,NWE,Atlantic,
+L,UK - EnQuest Producer FPSO,UK,North Sea,NWE,Atlantic,
+D,"UK - Essar, Stanlow refinery",UK,ARA-UK,NWE,Atlantic,Y
+D,"UK - Exxon, Fawley refinery",UK,ARA-UK,NWE,Atlantic,Y
+L,UK - Flotta terminal,UK,North Sea,NWE,Atlantic,
+L,UK - Glen Lyon FPSO,UK,North Sea,NWE,Atlantic,
+L,UK - Global Producer 3 FPSO,UK,North Sea,NWE,Atlantic,
+L,UK - Gryphon FPSO,UK,North Sea,NWE,Atlantic,
+L,UK - Haewene Brim FPSO,UK,North Sea,NWE,Atlantic,
+L,UK - Hamble terminal,UK,North Sea,NWE,Atlantic,
+L,UK - harding platform,UK,North Sea,NWE,Atlantic,
+L,UK - Hound Point terminal,UK,North Sea,NWE,Atlantic,
+L,UK - Hummingbird Spirit FPSO,UK,North Sea,NWE,Atlantic,
+L,UK - Huntington Voyageur Spirit FPSO,UK,North Sea,NWE,Atlantic,
+D,"UK - Ineos, Grangemouth refinery",UK,ARA-UK,NWE,Atlantic,Y
+L,UK - Liverpool Bay offshore storage,UK,North Sea,NWE,Atlantic,
+L,UK - Mariner FSO,UK,North Sea,NWE,Atlantic,
+L,UK - Nigg terminal,UK,North Sea,NWE,Atlantic,
+D,"UK - P66, Humber refinery",UK,ARA-UK,NWE,Atlantic,Y
+L,UK - Penguins FPSO,UK,North Sea,NWE,Atlantic,
+L,UK - Petrojarl Foinaven FPSO,UK,North Sea,NWE,Atlantic,
+D,"UK - Prax, Lindsey refinery",UK,ARA-UK,NWE,Atlantic,Y
+L,UK - Solan platform,UK,North Sea,NWE,Atlantic,
+L,UK - Sullom Voe terminal,UK,North Sea,NWE,Atlantic,
+L,UK - Teesside terminal,UK,North Sea,NWE,Atlantic,
+L,UK - Triton FPSO,UK,North Sea,NWE,Atlantic,
+D,"UK - Valero, Pembroke refinery",UK,ARA-UK,NWE,Atlantic,Y
+L,UK - Western Isles FPSO,UK,North Sea,NWE,Atlantic,
+D,"Ukraine - Ukrtatnafta, Kremenchug refinery",Ukraine,Black Sea,MED,Atlantic,Y
+D,Unknown,Unknown,Unknown,Unknown,Unknown,
+D,"Uruguay - ANCAP, La Teja refinery",Uruguay,Latam East,Latam,Atlantic,Y
+L,US (Alaska) - Drift River terminal,USA,USWC,NAWC,East,
+L,US (Alaska) - Valdez terminal,USA,USWC,NAWC,East,
+L,US (EC) - PAA York Town terminal,USA,USEC,NAEC,Atlantic,
+D,"US EC - Monroe Energy, Trainer refinery",USA,USEC,NAEC,Atlantic,Y
+D,"US EC - P66, Bayway refinery",USA,USEC,NAEC,Atlantic,Y
+D,"US EC - PBF, CPI Operations fuel terminal",USA,USEC,NAEC,Atlantic,Y
+D,"US EC - PBF, Delaware refinery",USA,USEC,NAEC,Atlantic,Y
+D,"US EC - PBF, Paulsboro refinery",USA,USEC,NAEC,Atlantic,Y
+D,"US EC - PES, Philadelphia refinery",USA,USEC,NAEC,Atlantic,Y
+D,"US GC Alabama - Hunt Refining, Tuscaloosa refinery",USA,USGC,USGC,US Midcon,Y
+D,"US GC Alabama - Vertex, Mobile refinery",USA,USGC,USGC,US Midcon,Y
+I,"US GC LA - Calcasieu, Lake Charles refinery",USA,USGC,USGC,US Midcon,
+I,"US GC LA - Delek, Krotz Springs refinery",USA,USGC,USGC,US Midcon,
+D,"US GC LA - IMTT, St Rose asphalt plant",USA,USGC,USGC,US Midcon,Y
+D,"US GC LA - Marathon, Garyville refinery + LOOP caverns",USA,USGC,USGC,US Midcon,Y
+D,"US GC LA - P66, Alliance refinery",USA,USGC,USGC,US Midcon,Y
+D,"US GC LA - PBF, Chalmette refinery",USA,USGC,USGC,US Midcon,Y
+D,"US GC LA - Shell, Convent refinery",USA,USGC,USGC,US Midcon,Y
+D,"US GC LA - Shell, Norco refinery",USA,USGC,USGC,US Midcon,Y
+D,US GC LA - St James Hub,USA,USGC,USGC,US Midcon,Y
+D,"US GC LA - Valero, Saint Charles refinery",USA,USGC,USGC,US Midcon,Y
+D,"US GC LA Lake Charles - CITGO, Lake Charles refinery",USA,USGC,USGC,US Midcon,Y
+D,"US GC LA Lake Charles - P66, Lake Charles refinery",USA,USGC,USGC,US Midcon,Y
+D,"US GC Mississippi - Chevron, Pascagoula refinery",USA,USGC,USGC,US Midcon,Y
+I,US GC TX - Beaumont terminals,USA,USGC,USGC,US Midcon,
+D,"US GC TX Corpus - CITGO, Corpus Christi refinery",USA,USGC,USGC,US Midcon,Y
+D,"US GC TX Corpus - Flint Hills, Corpus Christi refinery",USA,USGC,USGC,US Midcon,Y
+I,US GC TX Corpus - Magellan Corpus condensate splitter,USA,USGC,USGC,US Midcon,
+D,"US GC TX Corpus - Valero, Bill Greehey refinery",USA,USGC,USGC,US Midcon,Y
+D,"US GC TX Freeport - P66, Sweeny refinery",USA,USGC,USGC,US Midcon,Y
+D,US GC TX Houston - BOSTCO fuel blending,USA,USGC,USGC,US Midcon,Y
+D,"US GC TX Houston - Chevron, Pasadena refinery",USA,USGC,USGC,US Midcon,Y
+D,"US GC TX Houston - Exxon, Baytown refinery",USA,USGC,USGC,US Midcon,Y
+D,"US GC TX Houston - LyondellBasell, Houston refinery",USA,USGC,USGC,US Midcon,Y
+D,"US GC TX Houston - PEMEX, Deer Park refinery",USA,USGC,USGC,US Midcon,Y
+I,"US GC TX Houston - Valero, Houston refinery (no waterborne imp)",USA,USGC,USGC,US Midcon,
+D,"US GC TX Port Arthur - Exxon, Beaumont refinery",USA,USGC,USGC,US Midcon,Y
+D,"US GC TX Port Arthur - Motiva, Port Arthur refinery",USA,USGC,USGC,US Midcon,Y
+D,"US GC TX Port Arthur - Total, Port Arthur refinery",USA,USGC,USGC,US Midcon,Y
+D,"US GC TX Port Arthur - Valero, Port Arthur refinery",USA,USGC,USGC,US Midcon,Y
+D,"US GC TX Texas City - Marathon, Galveston Bay refinery",USA,USGC,USGC,US Midcon,Y
+D,"US GC TX Texas City - Valero, Texas City refinery",USA,USGC,USGC,US Midcon,Y
+I,"US Inland Arkansas - Delek, El Dorado refinery",USA,PADD3,PADD3,US Midcon,
+I,"US Inland Louisiana - Calumet, Shreveport refinery",USA,PADD3,PADD3,US Midcon,
+I,"US Inland Mississippi - Ergon, Vicksburg refinery",USA,PADD3,PADD3,US Midcon,
+I,"US Inland Mississippi - Hunt Refining, Sandersville refinery",USA,PADD3,PADD3,US Midcon,
+L,US LA - BW Pioneer FPSO,USA,USGC,USGC,US Midcon,
+L,US LA - Chevron Empire terminal,USA,USGC,USGC,US Midcon,
+L,US LA - ExxonMobil St James terminal,USA,USGC,USGC,US Midcon,
+I,US LA - Gulf Coast pipelines,USA,USGC,USGC,US Midcon,
+L,US LA - LOOP terminal,USA,USGC,USGC,US Midcon,
+I,US LA - Louisiana pipelines,USA,USGC,USGC,US Midcon,
+L,US LA - PAA St James terminal,USA,USGC,USGC,US Midcon,
+L,US LA - Sonoco St James terminal,USA,USGC,USGC,US Midcon,
+L,US LA - Stones FPSO,USA,USGC,USGC,US Midcon,
+I,US others - Mayersville terminals,USA,PADD3,PADD3,US Midcon,
+I,US others - MS Liberty terminals,USA,PADD3,PADD3,US Midcon,
+I,US others - North Texas terminals,USA,PADD3,PADD3,US Midcon,
+I,US P2 - Bakken terminals,USA,North Cushing,PADD2-4,US Midcon,
+I,"US P2 - BP, Whiting refinery",USA,North Cushing,PADD2-4,US Midcon,
+I,"US P2 - Cenovus, Lima refinery",USA,North Cushing,PADD2-4,US Midcon,
+I,"US P2 - Cenovus, Toledo refinery",USA,North Cushing,PADD2-4,US Midcon,
+I,US P2 - Cushing terminals,USA,North Cushing,PADD2-4,US Midcon,
+I,"US P2 - CVR Energy, Wynnewood refinery",USA,North Cushing,PADD2-4,US Midcon,
+I,US P2 - Enbridge pipeline,USA,North Cushing,PADD2-4,US Midcon,
+I,"US P2 - Flint Hills,Pine Bend refinery",USA,North Cushing,PADD2-4,US Midcon,
+I,"US P2 - Marathon, Canton refinery",USA,North Cushing,PADD2-4,US Midcon,
+I,"US P2 - Marathon, Catlettsburg refinery",USA,North Cushing,PADD2-4,US Midcon,
+I,"US P2 - Marathon, Detroit refinery",USA,North Cushing,PADD2-4,US Midcon,
+I,"US P2 - Marathon, Mandan refinery",USA,North Cushing,PADD2-4,US Midcon,
+I,US P2 - Midland Centurion pipeline,USA,North Cushing,PADD2-4,US Midcon,
+I,US P2 - Navigator Anadarko STACK terminals,USA,North Cushing,PADD2-4,US Midcon,
+I,"US P2 - P66, Ponca City refinery",USA,North Cushing,PADD2-4,US Midcon,
+I,US P2 - Patoka terminals,USA,North Cushing,PADD2-4,US Midcon,
+I,"US P2 - PBF, Toledo refinery",USA,North Cushing,PADD2-4,US Midcon,
+I,US P2 - Rocky pipeline,USA,North Cushing,PADD2-4,US Midcon,
+I,"US P2 - Valero, Ardmore refinery",USA,North Cushing,PADD2-4,US Midcon,
+I,"US P2 - Valero, Memphis refinery",USA,North Cushing,PADD2-4,US Midcon,
+I,"US P2 - WRB Refining, Wood River refinery",USA,North Cushing,PADD2-4,US Midcon,
+I,"US P3 - Marathon, Gallup refinery",USA,PADD3,PADD3,US Midcon,
+I,"US P3 - Sinclair, Navajo Artesia refinery",USA,PADD3,PADD3,US Midcon,
+I,"US P3 Texas Inland - Delek, Big Spring refinery",USA,PADD3,PADD3,US Midcon,
+I,"US P3 Texas Inland - Delek, Tyler refinery",USA,PADD3,PADD3,US Midcon,
+I,"US P3 Texas Inland - Lazarus, Nixon refinery",USA,PADD3,PADD3,US Midcon,
+I,"US P3 Texas Inland - P66, Borger refinery",USA,PADD3,PADD3,US Midcon,
+I,"US P3 Texas Inland - Valero, McKee refinery",USA,PADD3,PADD3,US Midcon,
+I,"US P3 Texas Inland - Valero, Three Rivers refinery",USA,PADD3,PADD3,US Midcon,
+I,"US P4 - Big West Oil, North Salt Lake refinery",USA,North Cushing,PADD2-4,US Midcon,
+I,"US P4 - Chevron, Salt Lake City refinery",USA,North Cushing,PADD2-4,US Midcon,
+I,"US P4 - P66, Billings refinery",USA,North Cushing,PADD2-4,US Midcon,
+I,US P4 - Rocky pipeline,USA,North Cushing,PADD2-4,US Midcon,
+I,"US P4 - Sinclair, Casper refinery",USA,North Cushing,PADD2-4,US Midcon,
+I,"US P4 - Sinclair, Cheyenne refinery",USA,North Cushing,PADD2-4,US Midcon,
+I,"US P4 - Sinclair, Woods Cross refinery",USA,North Cushing,PADD2-4,US Midcon,
+I,"US P4 - Sinclair, Wyoming refinery",USA,North Cushing,PADD2-4,US Midcon,
+I,"US P4 - Suncor, Denver Commerce City refinery",USA,North Cushing,PADD2-4,US Midcon,
+I,US SPR,USA,USGC,USGC,US Midcon,
+L,US TX - Energy Transfer Nederland terminal,USA,USGC,USGC,US Midcon,
+L,US TX - Enterprise Beaumont terminal,USA,USGC,USGC,US Midcon,
+L,US TX - Jefferson Energy Beaumont terminal,USA,USGC,USGC,US Midcon,
+I,US TX - Louisiana pipelines,USA,USGC,USGC,US Midcon,
+I,US TX - MEH terminal,USA,USGC,USGC,US Midcon,
+L,US TX - P66 Beaumont terminal,USA,USGC,USGC,US Midcon,
+I,US TX - Permian terminals,USA,USGC,USGC,US Midcon,
+L,US TX - Seaway Freeport terminal,USA,USGC,USGC,US Midcon,
+L,US TX - Texas International Galveston terminal,USA,USGC,USGC,US Midcon,
+I,US TX - Texas pipelines,USA,USGC,USGC,US Midcon,
+L,US TX - Valero Corpus refineries,USA,USGC,USGC,US Midcon,
+L,US TX (Dated) - Buckeye South Texas Gateway Corpus terminal,USA,USGC,USGC,US Midcon,
+L,US TX (Dated) - Buckeye Texas Hub Corpus terminal,USA,USGC,USGC,US Midcon,
+L,US TX (Dated) - Eagle Ford Corpus terminal,USA,USGC,USGC,US Midcon,
+L,US TX (Dated) - Enbridge Ingleside Corpus terminal,USA,USGC,USGC,US Midcon,
+L,US TX (Dated) - Energy Transfer Houston terminal,USA,USGC,USGC,US Midcon,
+L,US TX (Dated) - Enterprise Houston terminal,USA,USGC,USGC,US Midcon,
+L,US TX (Dated) - EPIC Corpus terminal,USA,USGC,USGC,US Midcon,
+L,US TX (Dated) - Flint Hills Ingleside Corpus terminal,USA,USGC,USGC,US Midcon,
+L,US TX (Dated) - NuStar North Beach Corpus terminal,USA,USGC,USGC,US Midcon,
+L,US TX (Dated) - Pin Oak Corpus terminal,USA,USGC,USGC,US Midcon,
+L,US TX (Dated) - Seabrook Logistics Houston terminal,USA,USGC,USGC,US Midcon,
+L,US TX (Dated) - Seaway Texas City terminal,USA,USGC,USGC,US Midcon,
+I,US TX-LA inter-pipelines,USA,USGC,USGC,US Midcon,
+B,US Virgin Islands - St Croix terminal,US Virgin Islands,Caribs,Latam,Atlantic,
+D,"US WC - BP, Cherry Point refinery",USA,USWC,NAWC,East,Y
+I,US WC - California Central refineries,USA,USWC,NAWC,East,
+D,"US WC - Chevron, El Segundo refinery",USA,USWC,NAWC,East,Y
+D,"US WC - Chevron, Richmond refinery",USA,USWC,NAWC,East,Y
+D,US WC - LA refineries,USA,USWC,NAWC,East,Y
+D,"US WC - Marathon, Anacortes refinery",USA,USWC,NAWC,East,Y
+D,"US WC - Marathon, Kenai refinery",USA,USWC,NAWC,East,Y
+I,"US WC - Marathon, Martinez refinery",USA,USWC,NAWC,East,
+D,"US WC - P66, Ferndale refinery",USA,USWC,NAWC,East,Y
+D,"US WC - P66, Rodeo refinery",USA,USWC,NAWC,East,Y
+D,"US WC - Par Hawaii + IES (closed), Kopolei refineries",USA,USWC,NAWC,East,Y
+D,"US WC - Par Pacific, Tacoma refinery",USA,USWC,NAWC,East,Y
+D,"US WC - PBF, Martinez refinery",USA,USWC,NAWC,East,Y
+D,"US WC - Sinclair, Puget Sound refinery",USA,USWC,NAWC,East,Y
+D,"US WC - Valero, Benicia refinery",USA,USWC,NAWC,East,Y
+I,US West Texas - Eagle Ford pipelines,USA,USGC,USGC,US Midcon,
+B,USEC - United Riverhead Storage,USA,USEC,NAEC,Atlantic,
+D,USGC - LIGHTERING Galveston,STS,STS,STS,US Midcon,
+D,Venezuela - Amuay Lightering (unknown destination),Venezuela,Venezuela,Latam,Atlantic,
+L,Venezuela - Bajo Grande terminal,Venezuela,Venezuela,Latam,Atlantic,
+L,Venezuela - Jose terminal,Venezuela,Venezuela,Latam,Atlantic,
+D,Venezuela - Jose upgraders imports,Venezuela,Venezuela,Latam,Atlantic,
+L,Venezuela - La Salina terminal,Venezuela,Venezuela,Latam,Atlantic,
+L,Venezuela - Nabarima FSO,Venezuela,Venezuela,Latam,Atlantic,
+D,"Venezuela - PdVSA, Amuay refinery",Venezuela,Venezuela,Latam,Atlantic,Y
+D,"Venezuela - PdVSA, Cardon refinery",Venezuela,Venezuela,Latam,Atlantic,Y
+D,"Venezuela - PdVSA, El Palito refinery",Venezuela,Venezuela,Latam,Atlantic,Y
+D,"Venezuela - PdVSA, Puerto la Cruz refinery",Venezuela,Venezuela,Latam,Atlantic,Y
+L,Venezuela - Puerto Miranda terminal,Venezuela,Venezuela,Latam,Atlantic,
+L,Venezuela - unknown,Venezuela,Venezuela,Latam,Atlantic,
+D,VENEZUELA UNKNOWN,Venezuela,Venezuela,Latam,Atlantic,
+L,Vietnam - Armada TGT 1 FPSO,Vietnam,SEAsia Term,SEAsia,East,
+D,"Vietnam - BSR, Dung Quat refinery",Vietnam,SEAsia Term,SEAsia,East,Y
+L,Vietnam - Dai Hung Queen FSO,Vietnam,SEAsia Term,SEAsia,East,
+L,Vietnam - Lewek Emas FPSO,Vietnam,SEAsia Term,SEAsia,East,
+L,Vietnam - MV12 FSO,Vietnam,SEAsia Term,SEAsia,East,
+D,"Vietnam - NSRP, Nghi Son refinery",Vietnam,SEAsia Term,SEAsia,East,Y
+L,Vietnam - PTSC Bach Ho FSO,Vietnam,SEAsia Term,SEAsia,East,
+L,Vietnam - PTSC Bien Dong 1 FSO,Vietnam,SEAsia Term,SEAsia,East,
+L,Vietnam - PTSC Lam Son FPSO,Vietnam,SEAsia Term,SEAsia,East,
+D,"Vietnam - PV GAS, Nam Viet + Dong Phuong condensate plants",Vietnam,SEAsia Term,SEAsia,East,Y
+L,Vietnam - Rang Dong MV17 FSO,Vietnam,SEAsia Term,SEAsia,East,
+L,Vietnam - Ruby Princess FPSO,Vietnam,SEAsia Term,SEAsia,East,
+L,Vietnam - Song Doc Pride MV19 FPSO,Vietnam,SEAsia Term,SEAsia,East,
+L,Vietnam - Thaibinh-VN FPSO,Vietnam,SEAsia Term,SEAsia,East,
+L,-,To Correct,To Correct,To Correct,To Correct,
+D,"Yemen - ARC, Aden refinery",Yemen,PG Spot,PG,East,Y
+L,Yemen - Ash Shihr terminal,Yemen,PG Spot,PG,East,
+L,Yemen - Bir Ali terminal,Yemen,PG Spot,PG,East,
+L,Yemen - Safer FSO,Yemen,PG Spot,PG,East,
+L,Brazil - Alexandre de Gusmao FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Guyana - One Guyana FPSO,Guyana,Latam East,Latam,Atlantic,
+L,"US GC MS - PAA, EOTT Mobile",USA,USGC,USGC,US Midcon,
+L,Syria - Tartous terminal,Syria,MED,MED,Atlantic,
+I,"Iraq - MRC, Najaf refinery",Iraq,PG Term,PG,East,
+I,"Iraq - MRC, Diwaniya refinery",Iraq,PG Term,PG,East,
+I,"Iraq - MRC, Samawah refinery",Iraq,PG Term,PG,East,
+I,"Iraq - KOC, Kurdistan Dukan refinery",Iraq,PG Term,PG,East,
+I,"Iraq - Kar Group, Erbil refinery",Iraq,PG Term,PG,East,
+I,"Iraq - NRC, Haditha refinery",Iraq,PG Term,PG,East,
+I,"Iraq - NRC, Siniya refinery",Iraq,PG Term,PG,East,
+I,"Iraq - NRC, Qayarah refinery",Iraq,PG Term,PG,East,
+I,"Iraq - NRC, Baiji refinery",Iraq,PG Term,PG,East,
+I,"Iraq - NRC, Kasak refinery",Iraq,PG Term,PG,East,
+I,"Iraq - NRC, Kirkuk refinery",Iraq,PG Term,PG,East,
+I,"Iraq - Taurus, Kurdistan Bazian refinery",Iraq,PG Term,PG,East,
+I,"Iraq - SRC, Maysan refinery",Iraq,PG Term,PG,East,
+P,Iraq - Umm Qasr,Iraq,PG Term,PG,East,
+P,Iraq - Khor al Zubair,Iraq,PG Term,PG,East,
+I,"Iran - NIORDC, Gulf Mehr refinery",Iran,Iran,PG,East,
+I,"Iran - NIORDC, South Adish condensate refinery",Iran,Iran,PG,East,
+P,Iran - Assaluyeh,Iran,Iran,PG,East,
+P,Iran - Bandar Abbas,Iran,Iran,PG,East,
+P,Iran - Bandar Mahshahr,Iran,Iran,PG,East,
+P,Iran - Chahabar,Iran,Iran,PG,East,
+I,"Iran - Bahman Geno, Morvarid Makran refinery",Iran,Iran,PG,East,
+I,"Iran - NIORDC, Shahid Ghasem Soleimani refinery",Iran,Iran,PG,East,
+P,Russia Baltic - Artic terminal,Russia,Artic,FSU,Atlantic,
+P,Russia Black Sea - Kavkaz terminal,Russia,Black Sea,FSU,Atlantic,
+P,Russia Black Sea - Kerch terminal,Russia,Black Sea,FSU,Atlantic,
+P,"Russia - Rosneft, Komsomolsk refinery",Russia,FSU East,FSU,East,
+P,Russia Black Sea - Azov terminal,Russia,Black Sea,FSU,Atlantic,
+P,Russia Baltic - Kaliningrad terminal,Russia,Baltics,FSU,Atlantic,
+P,Russia Black Sea - Novorossiysk terminal,Russia,Black Sea,FSU,Atlantic,
+P,Russia Baltic - Primorsk terminal,Russia,Baltics,FSU,Atlantic,
+P,Russia Baltic - St Petersburg terminal,Russia,Baltics,FSU,Atlantic,
+P,Russia Black Sea - Taganrog terminal,Russia,Black Sea,FSU,Atlantic,
+P,Russia Black Sea - Taman terminal,Russia,Black Sea,FSU,Atlantic,
+P,Russia Black Sea - Temryuk terminal,Russia,Black Sea,FSU,Atlantic,
+P,Russia Black Sea - Rostov terminal,Russia,Black Sea,FSU,Atlantic,
+P,Russia Black Sea - Tuapse terminal,Russia,Black Sea,FSU,Atlantic,
+P,Russia Baltic - Ust Luga terminal,Russia,Baltics,FSU,Atlantic,
+P,Russia Baltic - Vysotsk terminal,Russia,Baltics,FSU,Atlantic,
+P,Russia Black Sea - Yeisk terminal,Russia,Black Sea,FSU,Atlantic,
+I,"Kazakhstan - KazMunayGas, Atyrau refinery",Kazakhstan,Black Sea,FSU,Atlantic,
+I,"Kazakhstan - KazMunayGas, Shymkent refinery",Kazakhstan,Black Sea,FSU,Atlantic,
+I,"Kazakhstan - KazMunayGas, Pavlodar refinery",Kazakhstan,Black Sea,FSU,Atlantic,
+I,"Azerbaijan - SOCAR, Heydar Aliyev Baku refinery",Azerbaijan,MED,FSU,Atlantic,
+I,"Russia - Bashneftekhim, Novoil refinery",Russia,Inland Russia,FSU,Atlantic,
+I,"Russia - Bashneftekhim, Ufa Ufimsky refinery",Russia,Inland Russia,FSU,Atlantic,
+I,"Russia - Bashneftekhim, Ufaneftekhim refinery",Russia,Inland Russia,FSU,Atlantic,
+I,"Russia - ForteInvest, Orsk refinery",Russia,Inland Russia,FSU,Atlantic,
+I,"Russia - Gazprom, Astrakhan refinery",Russia,Inland Russia,FSU,Atlantic,
+I,"Russia - Gazpromneft, Salavat refinery",Russia,Inland Russia,FSU,Atlantic,
+I,"Russia - Independent, Afipsky refinery",Russia,Inland Russia,FSU,Atlantic,
+I,"Russia - Independent, Antipinsk refinery",Russia,Inland Russia,FSU,Atlantic,
+I,"Russia - Independent, Ilsky refinery",Russia,Inland Russia,FSU,Atlantic,
+I,"Russia - Independent, Khabarovsk refinery",Russia,Inland Russia,FSU,Atlantic,
+I,"Russia - Independent, Krasnodar Afipsky refinery",Russia,Inland Russia,FSU,Atlantic,
+I,"Russia - Independent, Mariysky refinery",Russia,Inland Russia,FSU,Atlantic,
+I,"Russia - Independent, Novoshaktinsky refinery",Russia,Inland Russia,FSU,Atlantic,
+I,"Russia - Independent, Taif refinery",Russia,Inland Russia,FSU,Atlantic,
+I,"Russia - Independent, Yaysky refinery",Russia,Inland Russia,FSU,Atlantic,
+I,"Russia - Lukoil, Norsi refinery",Russia,Inland Russia,FSU,Atlantic,
+I,"Russia - Lukoil, Perm refinery",Russia,Inland Russia,FSU,Atlantic,
+I,"Russia - Lukoil, Ukhtinsk refinery",Russia,Inland Russia,FSU,Atlantic,
+I,"Russia - Lukoil, Volgograd refinery",Russia,Inland Russia,FSU,Atlantic,
+I,"Russia - Mini refinery, Lukoil Kogalym",Russia,Inland Russia,FSU,Atlantic,
+I,"Russia - Mini refinery, Lukoil Urai",Russia,Inland Russia,FSU,Atlantic,
+I,"Russia - Novatek, Ust-Luga condensate splitter",Russia,Inland Russia,FSU,Atlantic,
+I,"Russia - Rosneft, Achinsk refinery",Russia,Inland Russia,FSU,Atlantic,
+I,"Russia - Rosneft, Angarsk refinery",Russia,Inland Russia,FSU,Atlantic,
+I,"Russia - Rosneft, Kuibyshev refinery",Russia,Inland Russia,FSU,Atlantic,
+I,"Russia - Rosneft, Novokuibyshevsk refinery",Russia,Inland Russia,FSU,Atlantic,
+I,"Russia - Rosneft, Ryazan refinery",Russia,Inland Russia,FSU,Atlantic,
+I,"Russia - Rosneft, Saratov refinery",Russia,Inland Russia,FSU,Atlantic,
+I,"Russia - Rosneft, Syzran refinery",Russia,Inland Russia,FSU,Atlantic,
+I,"Russia - Rosneft, Tuapse refinery",Russia,Inland Russia,FSU,Atlantic,
+I,"Russia - Slavneft, Mendeleev refinery",Russia,Inland Russia,FSU,Atlantic,
+I,"Russia - Slavneft, Yaroslav refinery",Russia,Inland Russia,FSU,Atlantic,
+I,"Russia - Surgutneftegaz, Kirishi refinery",Russia,Inland Russia,FSU,Atlantic,
+I,"Mexico - PEMEX, Dos Bocas refinery",Mexico,Latam East,Latam,Atlantic,
+L,US GC LA - LOOP caverns,USA,USGC,USGC,US Midcon,
+L,Caspian Sea - Kazakhstan Aktau,Kazakhstan,Caspian Sea,Caspian Sea,Caspian Sea,
+L,Caspian Sea - Kazakhstan Aladzha,Kazakhstan,Caspian Sea,Caspian Sea,Caspian Sea,
+L,Caspian Sea - Kazakhstan Kianly,Kazakhstan,Caspian Sea,Caspian Sea,Caspian Sea,
+L,Caspian Sea - Kazakhstan Okarem,Kazakhstan,Caspian Sea,Caspian Sea,Caspian Sea,
+L,Caspian Sea - Turkmenistan,Turkmenistan,Caspian Sea,Caspian Sea,Caspian Sea,
+L,Caspian Sea - Azerbaijan Baku,Azerbaijan,Caspian Sea,Caspian Sea,Caspian Sea,
+L,Caspian Sea - Azerbaijan Dubendi,Azerbaijan,Caspian Sea,Caspian Sea,Caspian Sea,
+L,Caspian Sea - Azerbaijan Sangachal,Azerbaijan,Caspian Sea,Caspian Sea,Caspian Sea,
+L,Caspian Sea - Russia Makhachkala,Russia,Caspian Sea,Caspian Sea,Caspian Sea,
+L,Caspian Sea - Russia Yuri Korchagin FSO,Russia,Caspian Sea,Caspian Sea,Caspian Sea,
+L,Brazil - Bacalhau FPSO,Brazil,Latam East,Latam,Atlantic,
+L,Barbados - Oistins terminal,Barbados,Caribs,Latam,Atlantic,
+D,"India - HRRL, Barmer refinery",India,India,SAsia,East,Y
+L,India - Svetah Venetia FPSO,India,India,SAsia,East,
+L,Tanzania - EACOP Tanga terminal,Uganda,EAF,WAF,Atlantic,
+B,China - LIGHETERING Hong Kong,China,South China,China,East,
+L,Nigeria - Cawthorne FSO,Nigeria,WAF,WAF,Atlantic,
+L,Brazil - P-78 FPSO,Brazil,Latam East,Latam,Atlantic,
+,United Arab Emirates,PG Spot,PG,East,,
+,United Kingdom,North Sea,NWE,Atlantic,,
+,Republic of Korea - South Korea,East Asia,East Asia,East,,
+,Republic of China-Taiwan,East Asia,East Asia,East,,
+,Myanmar (Burma),SEAsia Term,SEAsia,East,,
