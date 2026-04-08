@@ -27,6 +27,22 @@ ACTION_COLORS = {
     'New': '#d4edda', 'Updated': '#fff3cd', 'Past': '#e8eaf6',
 }
 
+SUMMARY_FMT = {
+    'Capacity (kbd)': '{:,.1f}',
+    'Fwd Impact (kb)': '{:,.0f}',
+    'Fwd Impact Δ (kb)': '{:+,.0f}',
+    'Largest (kbd)': '{:,.1f}',
+}
+
+
+# ── Shared table styles ──
+TABLE_STYLES = [
+    {'selector':'table','props':[('border-collapse','collapse'),('width','100%'),('font-family','Calibri, sans-serif'),('font-size','12px')]},
+    {'selector':'th','props':[('background-color','#1a1a2e'),('color','white'),('font-size','11px'),('padding','8px 10px'),('text-align','center'),('white-space','nowrap')]},
+    {'selector':'td','props':[('padding','6px 10px'),('border-bottom','1px solid #ddd'),('vertical-align','top')]},
+    {'selector':'caption','props':[('font-size','14px'),('font-weight','bold'),('text-align','left'),('padding','10px 0')]},
+]
+
 # Chart color palette
 CLR_PLANNED = '#1a3a5c'
 CLR_UNPLANNED = '#e07b39'

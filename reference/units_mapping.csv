@@ -1,0 +1,44 @@
+﻿UNIT_TYPE,refinery_unit,category
+Amine Treatment,-,Gas Treatment
+Aromatics,Aromatics,Petrochemicals
+Asphalt,Asphalt,Residue
+Atmospheric Distillation,CDU,Crude
+Benzene,Aromatics,Petrochemicals
+CCR(Continuous Catalytic Reformer),Reformer,Gasoline
+Condensate Splitter,Cond Splitter,Crude
+Condensate Stabilizer,-,-
+Delayed Coker,Coker,Residue
+Diesel Hydrotreater,DHDT,Middle Distillates
+Diluent Recovery Unit (DRU),DRU (Upgraders),Crude
+Distillate Hydrocracker,HCK,Middle Distillates
+Distillate Hydrotreater,DHDT,Middle Distillates
+FCCU (Fluid Catalytic Cracker),FCC,Gasoline
+FCCU Feed Hydrotreater,HDT,Gasoline
+FCCU Gasoline Hydrotreater,HDT,Gasoline
+Fluidized-Bed Coker,Coker,Residue
+HGO (Heavy Gas Oils) Hydrotreater,DHDT,Middle Distillates
+Hydrodealkylation,-,Petrochemicals
+Hydrofluoric Alkylation,Alky,Gasoline
+Isomerization,Isomerization,Gasoline
+Light Naphtha Hydrotreater,HDT,Gasoline
+Lube Oil Hydrocracker,Lube HCK,Lubes
+Lube Oil Hydrotreater,HDT,Lubes
+Mid Distillate Hydrotreater,DHDT,Middle Distillates
+Naphtha Splitter,-,Gasoline
+Olefin/Aromatics Hydrotreater,HDT,Petrochemicals
+Petroleum Coke Calciner,-,Residue
+Propylene Splitter,Petchem,Petrochemicals
+Refinery Gas/Lights Ends,Petchem,Gas Treatment
+Reformate Splitter,Petchem,Gasoline
+Reformer Feed Hydrotreater,HDT,Gasoline
+Residual Hydrocracker,RHCK,Residue
+Residual Hydrotreater,RHDT,Residue
+RFCCU (Residue Fluid Catalytic Cracker),RFCC,Residue
+Semiregen/Cyclic Reformer,Reformer,Gasoline
+SR (Straight-Run) Hydrotreater,HDT,Middle Distillates
+Sulfur Recovery (SRU),SRU,Gas Treatment
+Sulfuric Alkylation,Alky,Gasoline
+TCCU Thermal Catalytic Cracking Unit,Thermal cracker,-
+Vacuum (No Atmospheric),VDU,Crude
+Vacuum Distillation,VDU,Crude
+Visbreaker,Visbreaker,Residue

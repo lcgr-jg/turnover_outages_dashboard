@@ -16,16 +16,18 @@ import numpy as np
 import dash
 from dash import dcc, html, dash_table, callback, Input, Output, State, ctx
 import dash_bootstrap_components as dbc
+import plotly.graph_objects as go
 
 # ── Local modules ───────────────────────────────────────────────────────
-from config import DEFAULT_UNIT_TYPES, ACTION_COLORS, MONTHS
+from config import DEFAULT_UNIT_TYPES, ACTION_COLORS, MONTHS, SUMMARY_FMT
+from config import TABLE_STYLES
 from data import load_and_prepare, check_for_updates
 from classification import classify_events, enrich_events
-from charts import build_seasonal_chart, build_daily_ops_chart
+from charts import build_seasonal_chart, build_daily_ops_chart, build_combined_monthly_chart
 from tables import build_actions_table, build_change_summary, build_forward_matrix
 from analytics import build_ta_cycle_analysis, build_reliability_scores, find_ta_announcement_gaps
 from core import get_latest_snapshot
-
+from export import style_actions, style_matrix, fmt_kbd
 
 # ═══════════════════════════════════════════════════════════════════════
 # DATA STORE (in-memory, shared across all users)
@@ -136,8 +138,7 @@ def make_filter_bar():
                 html.Label("Unit Types", className="small fw-bold"),
                 dcc.Dropdown(
                     id='filter-unit-types',
-                    options=[],  # populated on load
-                    value=DEFAULT_UNIT_TYPES,
+                    options=[], value=DEFAULT_UNIT_TYPES,
                     multi=True, placeholder="All unit types",
                 ),
             ], md=3),
@@ -169,19 +170,19 @@ def make_filter_bar():
                 dcc.DatePickerSingle(id='filter-prev-date', date=prev,
                                      display_format='DD MMM YYYY'),
             ], md=2),
-        ]),
-    ]), className="mb-3")
-
-
-def make_chart_controls():
-    """Year selector for seasonal charts."""
-    return dbc.Card(dbc.CardBody([
+            dbc.Col([
+                html.Label(" ", className="small"),
+                dbc.Button("▶ Apply", id='btn-apply', color='primary',
+                           size='sm', className="w-100 mt-1"),
+            ], md=1),
+        ], className="mb-2"),
+        # ── Chart controls (second row) ──
         dbc.Row([
             dbc.Col([
-                html.Label("Show Individual Years", className="small fw-bold"),
+                html.Label("Overlay Years", className="small fw-bold"),
                 dcc.Dropdown(id='chart-show-years', options=[], value=[],
                              multi=True, placeholder="Select years to overlay"),
-            ], md=4),
+            ], md=3),
             dbc.Col([
                 html.Label("Band Range", className="small fw-bold"),
                 dcc.RangeSlider(id='chart-band-range', min=2015, max=2026,
@@ -192,9 +193,15 @@ def make_chart_controls():
                 html.Label("Regional Drill-Down", className="small fw-bold"),
                 dcc.Dropdown(id='chart-region-select', options=[],
                              value=None, placeholder="Global (all regions)"),
-            ], md=4),
+            ], md=3),
+            dbc.Col([
+                html.Label(" ", className="small"),  # spacer
+                dbc.Button("📥 Export HTML", id='btn-export', color='secondary',
+                           size='sm', className="w-100"),
+            ], md=2),
         ]),
-    ]), className="mb-3", style={"backgroundColor": "#f8f9fa"})
+    ]), className="mb-3")
+
 
 
 def make_actions_table():
@@ -256,30 +263,6 @@ def make_summary_table():
     )
 
 
-def make_forward_matrix():
-    return dash_table.DataTable(
-        id='forward-matrix',
-        columns=[], data=[],
-        sort_action='native',
-        page_size=50,
-        style_table={'overflowX': 'auto'},
-        style_header={
-            'backgroundColor': '#1a1a2e', 'color': 'white',
-            'fontWeight': 'bold', 'fontSize': '11px', 'textAlign': 'center',
-        },
-        style_cell={
-            'fontSize': '12px', 'padding': '5px 8px', 'whiteSpace': 'nowrap',
-        },
-        style_cell_conditional=[
-            {'if': {'column_id': 'Refinery'}, 'minWidth': '160px', 'maxWidth': '220px',
-             'whiteSpace': 'normal', 'wordWrap': True},
-        ],
-        style_data_conditional=[
-            {'if': {'filter_query': '{Region} contains "▸"'},
-             'fontWeight': 'bold', 'backgroundColor': '#e9ecef'},
-        ],
-    )
-
 
 # ═══════════════════════════════════════════════════════════════════════
 # MAIN LAYOUT
@@ -330,8 +313,6 @@ app.layout = dbc.Container([
 
 def tab_dashboard():
     return html.Div([
-        # Chart controls
-        make_chart_controls(),
 
         # Seasonal charts
         dbc.Row([
@@ -339,6 +320,11 @@ def tab_dashboard():
             dbc.Col(dcc.Graph(id='chart-unplanned'), md=6),
         ]),
 
+        # Combined monthly (NEW)
+        dbc.Card(dbc.CardBody([
+            dcc.Graph(id='chart-combined-monthly'),
+        ]), className="mb-3"),
+        
         # Daily ops
         dbc.Card(dbc.CardBody([
             html.H6("Daily Offline Capacity — Near-Term View", className="mb-2"),
@@ -364,18 +350,15 @@ def tab_dashboard():
             make_actions_table(),
         ]), className="mb-3"),
 
-        # Forward Matrix
+        # Forward Matrix (collapsible by region)
         dbc.Card(dbc.CardBody([
             html.H6("12-Month Forward Offline Capacity (kbd)", className="mb-2"),
-            make_forward_matrix(),
+            html.Div(id='forward-matrix-container'),
         ]), className="mb-3"),
 
         # Regional drill-down charts
         html.Div(id='regional-charts-container'),
 
-        # Export button
-        dbc.Button("📥 Export HTML Report", id='btn-export', color='secondary',
-                   size='sm', className="mb-4"),
     ])
 
 
@@ -428,6 +411,7 @@ def render_tab(active_tab):
 
 @callback(
     [Output('filter-unit-types', 'options'),
+     Output('filter-unit-types', 'value'),      # ← ADD this
      Output('filter-regions', 'options'),
      Output('chart-show-years', 'options'),
      Output('chart-region-select', 'options'),
@@ -437,13 +421,24 @@ def render_tab(active_tab):
     [Input('btn-refresh', 'n_clicks'),
      Input('filter-report-date', 'date'),
      Input('filter-prev-date', 'date')],
+    [State('filter-unit-types', 'value')],       # ← ADD: read current value
     prevent_initial_call=False,
 )
-def load_data(n_clicks, report_date, prev_date):
+def load_data(n_clicks, report_date, prev_date, current_ut_value):
     """Load/reload data from Snowflake."""
     store.load(report_date, prev_date)
 
     ut_options = [{'label': u, 'value': u} for u in store.available_unit_types]
+    for ut in DEFAULT_UNIT_TYPES:
+        if ut not in store.available_unit_types:
+            ut_options.append({'label': ut, 'value': ut})
+
+    # Keep current selection if user has changed it, otherwise use defaults
+    if current_ut_value:
+        ut_value = current_ut_value
+    else:
+        ut_value = DEFAULT_UNIT_TYPES
+
     rgn_options = [{'label': r, 'value': r} for r in store.available_regions]
     yr_options = [{'label': str(y), 'value': y} for y in store.available_years]
 
@@ -452,24 +447,26 @@ def load_data(n_clicks, report_date, prev_date):
     refreshed = f"Last refreshed: {store.last_loaded.strftime('%H:%M')}"
     version = (n_clicks or 0) + 1
 
-    return ut_options, rgn_options, yr_options, rgn_options, subtitle, refreshed, version
+    return ut_options, ut_value, rgn_options, yr_options, rgn_options, subtitle, refreshed, version
 
 
 @callback(
     [Output('chart-planned', 'figure'),
      Output('chart-unplanned', 'figure'),
+     Output('chart-combined-monthly', 'figure'),
      Output('chart-daily', 'figure')],
     [Input('data-version', 'data'),
-     Input('filter-unit-types', 'value'),
-     Input('filter-regions', 'value'),
-     Input('chart-show-years', 'value'),
-     Input('chart-band-range', 'value'),
-     Input('chart-region-select', 'value')],
+     Input('btn-apply', 'n_clicks')],
+    [State('filter-unit-types', 'value'),
+     State('filter-regions', 'value'),
+     State('chart-show-years', 'value'),
+     State('chart-band-range', 'value'),
+     State('chart-region-select', 'value')],
 )
-def update_charts(version, unit_types, regions, show_years, band_range, chart_region):
+def update_charts(version, n_clicks, unit_types, regions, show_years, band_range, chart_region):
     if store.classified is None:
         empty = go.Figure()
-        return empty, empty, empty
+        return empty, empty, empty, empty
 
     # Pre-filter by region if selected in drill-down
     if chart_region:
@@ -497,6 +494,8 @@ def update_charts(version, unit_types, regions, show_years, band_range, chart_re
                                   store.report_date)
     fig_u = build_seasonal_chart(df_chart, {**config_base, 'event_type': 'Unplanned'},
                                   store.report_date)
+    fig_c = build_seasonal_chart(df_chart, {**config_base, 'event_type': None},
+                                  store.report_date)
     fig_d = build_daily_ops_chart(df_chart, store.report_date,
                                    {'unit_types': unit_types or None, 'region': None})
 
@@ -504,9 +503,10 @@ def update_charts(version, unit_types, regions, show_years, band_range, chart_re
     if chart_region:
         fig_p.update_layout(title_text=f'{chart_region.upper()}<br><sub>PLANNED MAINTENANCE</sub>')
         fig_u.update_layout(title_text=f'{chart_region.upper()}<br><sub>UNPLANNED MAINTENANCE</sub>')
+        fig_c.update_layout(title_text=f'{chart_region.upper()}<br><sub>MONTHLY OFFLINE CAPACITY</sub>')
         fig_d.update_layout(title_text=f'{chart_region} — Daily Offline Capacity')
 
-    return fig_p, fig_u, fig_d
+    return fig_p, fig_u, fig_c, fig_d
 
 
 @callback(
@@ -515,13 +515,13 @@ def update_charts(version, unit_types, regions, show_years, band_range, chart_re
      Output('actions-table', 'columns'),
      Output('actions-table', 'data'),
      Output('actions-table', 'tooltip_data'),
-     Output('forward-matrix', 'columns'),
-     Output('forward-matrix', 'data')],
+    ],
     [Input('data-version', 'data'),
-     Input('filter-unit-types', 'value'),
-     Input('filter-regions', 'value')],
+     Input('btn-apply', 'n_clicks')],
+    [State('filter-unit-types', 'value'),
+     State('filter-regions', 'value')],
 )
-def update_tables(version, unit_types, regions):
+def update_tables(version, n_clicks, unit_types, regions):
     if store.classified is None:
         return [], [], [], [], [], [], []
 
@@ -549,13 +549,143 @@ def update_tables(version, unit_types, regions):
         else:
             tooltips.append({c: {'value': '', 'type': 'text'} for c in display_cols})
 
-    # ── Forward Matrix ──
-    matrix_config = {'unit_types': unit_types or None, 'forward_months': 12}
-    matrix_df, ml = build_forward_matrix(df, matrix_config, store.report_date)
-    mat_cols = [{'name': c, 'id': c} for c in matrix_df.columns] if not matrix_df.empty else []
-    mat_data = matrix_df.to_dict('records') if not matrix_df.empty else []
 
-    return sum_cols, sum_data, act_cols, act_data, tooltips, mat_cols, mat_data
+    return sum_cols, sum_data, act_cols, act_data, tooltips
+
+
+@callback(
+    Output('forward-matrix-container', 'children'),
+    [Input('data-version', 'data'),
+     Input('btn-apply', 'n_clicks')],
+    [State('filter-unit-types', 'value'),
+     State('filter-regions', 'value')],
+)
+def update_forward_matrix(version, n_clicks, unit_types, regions):
+    if store.classified is None:
+        return html.P("No data loaded.")
+
+    df = store.filter(unit_types=unit_types, regions=regions or None)
+    matrix_config = {'unit_types': unit_types or None, 'forward_months': 12}
+
+    # ── Regional summary (one row per region) ──
+    rgn_col = 'jg_region' if 'jg_region' in df.columns else 'Region'
+    regional_df, ml = build_forward_matrix(df, matrix_config, store.report_date, group_col='Region')
+
+    regional_table = html.Div()
+    if not regional_df.empty:
+        # Style: heatmap on numeric columns
+        num_max = regional_df[ml].max().max() if not regional_df[ml].empty else 1
+        heat_conditions = []
+        for m in ml:
+            for threshold in [0.25, 0.5, 0.75]:
+                heat_conditions.append({
+                    'if': {'column_id': m,
+                           'filter_query': f'{{{m}}} > {num_max * threshold}'},
+                    'backgroundColor': f'rgba(255, {int(200 - 150 * threshold)}, {int(200 - 200 * threshold)}, 0.3)',
+                })
+
+        idx_col = regional_df.columns[0]  # 'index' or region col name
+        display_cols = [idx_col] + ml
+        regional_table = html.Div([
+            html.H6("Regional Summary (kbd)", className="mb-2",
+                     style={'color': '#1a1a2e'}),
+            dash_table.DataTable(
+                columns=[{'name': c, 'id': c} for c in display_cols],
+                data=regional_df[display_cols].to_dict('records'),
+                sort_action='native',
+                style_table={'overflowX': 'auto'},
+                style_header={'backgroundColor': '#1a1a2e', 'color': 'white',
+                              'fontWeight': 'bold', 'fontSize': '11px',
+                              'textAlign': 'center', 'padding': '6px 8px'},
+                style_cell={'fontSize': '12px', 'padding': '5px 8px',
+                            'textAlign': 'center', 'whiteSpace': 'nowrap'},
+                style_cell_conditional=[
+                    {'if': {'column_id': idx_col}, 'textAlign': 'left',
+                     'fontWeight': 'bold', 'minWidth': '120px'},
+                ],
+                style_data_conditional=[
+                    {'if': {'filter_query': f'{{{idx_col}}} = "TOTAL"'},
+                     'fontWeight': 'bold', 'backgroundColor': '#d5dbe0'},
+                ] + heat_conditions,
+            ),
+        ], className="mb-4")
+
+    # ── Detail matrix (collapsible by region) ──
+    detail_df, ml2 = build_forward_matrix(df, matrix_config, store.report_date)
+    if detail_df.empty:
+        return html.Div([regional_table, html.P("No detail events.")])
+
+    # Parse into region groups
+    current_region = None
+    region_rows = {}
+    for _, row in detail_df.iterrows():
+        rgn = str(row.get('Region', ''))
+        if rgn.startswith('▸') and 'TOTAL' not in rgn:
+            current_region = rgn.replace('▸ ', '')
+            region_rows[current_region] = {'header': row, 'detail': []}
+        elif current_region and not rgn.startswith('▸'):
+            region_rows[current_region]['detail'].append(row)
+
+    # Build accordion
+    items = []
+    for region_label, data in sorted(region_rows.items(),
+                                      key=lambda x: -sum(x[1]['header'].get(m, 0)
+                                                         for m in ml2
+                                                         if isinstance(x[1]['header'].get(m, 0), (int, float)))):
+        detail_list = data['detail']
+        if not detail_list:
+            continue
+        detail = pd.DataFrame(detail_list)
+
+        # Clean event count from label
+        import re
+        match = re.search(r'\((\d+) events?\)', region_label)
+        n_events = match.group(1) if match else len(detail_list)
+        clean_name = re.sub(r'\s*\(\d+ events?\)', '', region_label)
+
+        # First-month total for the title
+        first_nonzero = next(
+            (f"{data['header'].get(m, 0):.1f} kbd" for m in ml2
+             if isinstance(data['header'].get(m, 0), (int, float)) and data['header'].get(m, 0) > 0.05),
+            '—'
+        )
+
+        detail_cols = ['Country', 'Refinery', 'Unit'] + ml2
+        detail_cols = [c for c in detail_cols if c in detail.columns]
+
+        detail_table = dash_table.DataTable(
+            columns=[{'name': c, 'id': c} for c in detail_cols],
+            data=detail[detail_cols].to_dict('records'),
+            sort_action='native',
+            page_size=25,
+            style_table={'overflowX': 'auto'},
+            style_header={'backgroundColor': '#1a1a2e', 'color': 'white',
+                          'fontWeight': 'bold', 'fontSize': '10px',
+                          'textAlign': 'center', 'padding': '4px 6px'},
+            style_cell={'fontSize': '11px', 'padding': '4px 6px',
+                        'whiteSpace': 'nowrap', 'textAlign': 'center'},
+            style_cell_conditional=[
+                {'if': {'column_id': 'Refinery'}, 'minWidth': '150px', 'maxWidth': '200px',
+                 'whiteSpace': 'normal', 'textAlign': 'left'},
+                {'if': {'column_id': 'Country'}, 'textAlign': 'left', 'minWidth': '80px'},
+                {'if': {'column_id': 'Unit'}, 'textAlign': 'left', 'minWidth': '120px'},
+            ],
+        )
+
+        items.append(dbc.AccordionItem(
+            detail_table,
+            title=f"{clean_name}  ({n_events} events,  {ml2[0]}: {first_nonzero})",
+        ))
+
+    accordion = dbc.Accordion(items, start_collapsed=True, flush=True)
+
+    return html.Div([
+        regional_table,
+        html.H6("Unit Detail — click region to expand", className="mb-2",
+                 style={'color': '#1a1a2e'}),
+        accordion,
+    ])
+
 
 
 @callback(
@@ -627,62 +757,225 @@ def update_analytics(active_tab, unit_types):
     Output('download-html', 'data'),
     Input('btn-export', 'n_clicks'),
     [State('filter-unit-types', 'value'),
-     State('filter-regions', 'value')],
+     State('filter-regions', 'value'),
+     State('chart-show-years', 'value'),
+     State('chart-band-range', 'value'),
+     State('chart-region-select', 'value')],
     prevent_initial_call=True,
 )
-def export_html(n_clicks, unit_types, regions):
-    """Export current dashboard state as standalone HTML."""
+def export_html(n_clicks, unit_types, regions, show_years, band_range, chart_region):
+    """Export current dashboard state as standalone HTML — same format as notebook."""
     from plotly.io import to_html
+    import re
 
     df = store.filter(unit_types=unit_types, regions=regions or None)
-    config = {
-        'unit_types': unit_types or None, 'event_type': 'Planned',
+    if chart_region:
+        rgn_col = 'jg_region' if 'jg_region' in df.columns else 'WORLD_REG'
+        df = df[df[rgn_col] == chart_region]
+
+    hist_years = list(range(band_range[0], band_range[1] + 1)) if band_range else list(range(2021, 2026))
+    config_base = {
+        'unit_types': unit_types or None,
         'region': None, 'country': None,
-        'hist_years': list(range(2021, 2026)), 'exclude_years': [2020],
-        'show_years': [],
+        'hist_years': hist_years,
+        'exclude_years': [2020],
+        'show_years': show_years or [],
     }
 
-    fig_p = build_seasonal_chart(df, {**config, 'event_type': 'Planned'}, store.report_date)
-    fig_u = build_seasonal_chart(df, {**config, 'event_type': 'Unplanned'}, store.report_date)
-    fig_d = build_daily_ops_chart(df, store.report_date, config)
+    # ── Build all charts ──
+    fig_planned = build_seasonal_chart(df, {**config_base, 'event_type': 'Planned'}, store.report_date)
+    fig_unplanned = build_seasonal_chart(df, {**config_base, 'event_type': 'Unplanned'}, store.report_date)
+    fig_combined = build_seasonal_chart(df, {**config_base, 'event_type': None}, store.report_date)
+    fig_daily = build_daily_ops_chart(df, store.report_date,
+                                       {'unit_types': unit_types or None, 'region': None})
 
-    chart1 = to_html(fig_p, full_html=False, include_plotlyjs='cdn')
-    chart2 = to_html(fig_u, full_html=False, include_plotlyjs=False)
-    chart_d = to_html(fig_d, full_html=False, include_plotlyjs=False)
+    chart1 = to_html(fig_planned, full_html=False, include_plotlyjs='cdn')
+    chart2 = to_html(fig_unplanned, full_html=False, include_plotlyjs=False)
+    chart_comb = to_html(fig_combined, full_html=False, include_plotlyjs=False)
+    chart_daily = to_html(fig_daily, full_html=False, include_plotlyjs=False)
 
-    summary = build_change_summary(df)
-    actions = build_actions_table(df)
+    # ── Build all tables ──
+    summary_df = build_change_summary(df)
+    actions_df = build_actions_table(df)
+    matrix_config = {'unit_types': unit_types or None, 'forward_months': 12}
+    #regional_df, ml = build_forward_matrix(df, matrix_config, store.report_date, group_col='Region')
+    detail_df, ml2 = build_forward_matrix(df, matrix_config, store.report_date)
 
-    # Simple HTML tables
-    sum_html = summary.to_html(index=False, na_rep='—') if not summary.empty else ''
-    act_html = actions.to_html(index=False, na_rep='—') if not actions.empty else ''
+    # ── Style tables as HTML ──
+    # (Paste your notebook's style_actions, style_matrix, etc. here
+    #  or use the simpler pandas .to_html() approach below)
 
-    yr = store.report_date.year
+    actions_html = style_actions(actions_df, unit_types, store.report_date).to_html(index=False, na_rep='—', classes='styled-table') if not actions_df.empty else ''
+    #summary_html = summary_df.to_html(index=False, na_rep='—', classes='styled-table') if not summary_df.empty else ''
+    #regional_html = regional_df.to_html(index=False, na_rep='—', classes='styled-table') if not regional_df.empty else ''
+
+    summary_html = (summary_df.style.format(SUMMARY_FMT, na_rep='—')
+    .set_table_styles(TABLE_STYLES)
+    .set_caption(f'Change Summary — {store.report_date.strftime("%d %b %Y")} vs {store.prev_report_date.strftime("%d %b %Y")}')
+    .hide(axis='index').to_html()) if not summary_df.empty else ''
+    # ── Collapsible detail matrix (same JS as notebook) ──
+    # You can paste your matrix_to_collapsible_html() function here
+    # and call it: detail_html = matrix_to_collapsible_html(detail_df, ml2, '...')
+
+    # Collapsible regions JS for the detail matrix
+    collapse_js = """
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.region-header').forEach(function(header) {
+        header.style.cursor = 'pointer';
+        header.addEventListener('click', function() {
+        var region = this.dataset.region;
+        var rows = document.querySelectorAll('.region-detail[data-region="' + region + '"]');
+        var visible = rows[0] && rows[0].style.display !== 'none';
+        rows.forEach(function(r) { r.style.display = visible ? 'none' : ''; });
+        // Toggle arrow
+        var arrow = this.querySelector('.arrow');
+        if (arrow) arrow.textContent = visible ? '▸' : '▾';
+        });
+        // Start collapsed
+        var region = header.dataset.region;
+        document.querySelectorAll('.region-detail[data-region="' + region + '"]').forEach(function(r) {
+        r.style.display = 'none';
+        });
+    });
+    });
+    </script>
+    """
+
+    # Build collapsible detail matrix HTML manually
+    def matrix_to_collapsible_html(df, ml, caption):
+        if df.empty: return ''
+        header_cols = ['Country','Refinery','Unit','Unit Type'] + ml
+        cols = [c for c in header_cols if c in df.columns]
+        h = f'<table style="border-collapse:collapse;width:100%;font-family:Calibri,sans-serif;font-size:12px">'
+        h += f'<caption style="font-size:14px;font-weight:bold;text-align:left;padding:10px 0">{caption}</caption>'
+        h += '<thead><tr>'
+        for c in cols:
+            h += f'<th style="background:#1a1a2e;color:white;font-size:11px;padding:8px 10px;text-align:center;white-space:nowrap">{c}</th>'
+        h += '</tr></thead><tbody>'
+        for _, row in df.iterrows():
+            rgn = str(row.get('Region',''))
+            if rgn.startswith('▸ TOTAL'):
+                h += '<tr style="background:#d5dbe0;font-weight:bold">'
+                for c in cols:
+                    v = row.get(c,'')
+                    if c in ml:
+                        try: v = fmt_kbd(v)
+                        except: pass
+                    h += f'<td style="padding:6px 10px;border-bottom:2px solid #1a1a2e">{v}</td>'
+                h += '</tr>'
+            elif rgn.startswith('▸'):
+                import re
+                clean_rgn = re.sub(r'\s*\(\d+\s*events?\)\s*$', '', rgn.replace('▸ ', ''))
+                #clean_rgn = rgn.replace('▸ ','').split(' (')[0]
+                h += f'<tr class="region-header" data-region="{clean_rgn}" style="background:#e9ecef;font-weight:bold">'
+                for c in cols:
+                    v = row.get(c,'')
+                    if c == cols[0]:
+                        v = f'<span class="arrow">▸</span> {rgn.replace("▸ ","")}'
+                    elif c in ml:
+                        try: v = fmt_kbd(v)
+                        except: pass
+                    h += f'<td style="padding:6px 10px;border-bottom:1px solid #ccc">{v}</td>'
+                h += '</tr>'
+            else:
+                clean_rgn = str(row.get('Region',''))
+                h += f'<tr class="region-detail" data-region="{clean_rgn}">'
+                for c in cols:
+                    v = row.get(c,'')
+                    if c in ml:
+                        try: v = fmt_kbd(v)
+                        except: pass
+                    style = 'padding:5px 10px;border-bottom:1px solid #eee'
+                    if c == 'Refinery':
+                        style += ';min-width:160px;max-width:220px;white-space:normal;word-wrap:break-word'
+                    h += f'<td style="{style}">{v}</td>'
+                h += '</tr>'
+        h += '</tbody></table>'
+        return h
+
+    detail_html = matrix_to_collapsible_html(detail_df, ml2, f'')
+    
+    #detail_html = detail_df.to_html(index=False, na_rep='—', classes='styled-table') if not detail_df.empty else ''
+
+    # ── Assemble HTML (paste your notebook template here) ──
+    REPORT_YEAR = store.report_date.year
     dt = store.report_date.strftime('%d %B %Y')
+    ut_label = ' & '.join(unit_types) if unit_types else 'All'
 
+    # This is where you paste the full HTML template from your notebook Cell 35
     html_content = f"""<!DOCTYPE html>
-<html><head><meta charset="UTF-8">
-<title>Refinery Maintenance — {dt}</title>
-<style>
-body {{ font-family: Calibri, sans-serif; margin: 30px; background: #f9f9f9; color: #1a1a2e; }}
-h1 {{ font-size: 18px; }} h3 {{ font-size: 14px; margin: 20px 0 8px; }}
-.charts {{ display:flex; gap:20px; flex-wrap:wrap; margin-bottom:20px; }}
-.chart {{ flex:1; min-width:400px; background:white; border-radius:6px; padding:10px; box-shadow:0 1px 4px rgba(0,0,0,0.1); }}
-.tw {{ background:white; border-radius:6px; padding:16px; margin-bottom:20px; overflow-x:auto; box-shadow:0 1px 4px rgba(0,0,0,0.1); }}
-table {{ border-collapse:collapse; width:100%; font-size:12px; }}
-th {{ background:#1a1a2e; color:white; padding:8px 10px; text-align:center; }}
-td {{ padding:6px 10px; border-bottom:1px solid #ddd; }}
-</style></head><body>
-<h1>DAILY IIR REPORTED MAINTENANCE ACTIVITY</h1>
-<p style="color:#666">Jain Global Research Desk | {dt}</p>
-<div class="charts"><div class="chart">{chart1}</div><div class="chart">{chart2}</div></div>
-<div class="tw"><h3>Daily Offline Capacity</h3>{chart_d}</div>
-<div class="tw"><h3>Change Summary</h3>{sum_html}</div>
-<div class="tw"><h3>Recent Event Actions</h3>{act_html}</div>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Refinery Maintenance Report — {REPORT_YEAR}</title>
+  <style>
+    body {{ font-family: Calibri, Arial, sans-serif; margin: 30px; background: #f9f9f9; color: #1a1a2e; }}
+    h1 {{ font-size: 18px; margin-bottom: 4px; }}
+    h2 {{ font-size: 13px; color: #555; font-weight: normal; margin-top: 0; }}
+    h3 {{ font-size: 14px; color: #1a1a2e; margin: 24px 0 8px 0; }}
+    .charts {{ display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 30px; }}
+    .chart {{ flex: 1; min-width: 400px; background: white; border-radius: 6px;
+              box-shadow: 0 1px 4px rgba(0,0,0,0.1); padding: 10px; }}
+    .tw {{ background: white; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+           padding: 20px; overflow-x: auto; margin-bottom: 24px; }}
+    .legend {{ font-size: 12px; margin-bottom: 12px; }}
+    .legend span {{ display: inline-block; width: 14px; height: 14px;
+                    border-radius: 2px; margin-right: 4px; vertical-align: middle; }}
+    .styled-table {{ border-collapse: collapse; width: 100%; font-size: 12px; }}
+    .styled-table th {{ background: #1a1a2e; color: white; padding: 8px 10px; text-align: center; font-size: 11px; }}
+    .styled-table td {{ padding: 6px 10px; border-bottom: 1px solid #ddd; }}
+    .region-header:hover {{ background-color: #dde3e8 !important; }}
+  </style>
+</head>
+<body>
+  <h1>DAILY IIR REPORTED MAINTENANCE ACTIVITY</h1>
+  <h2>Jain Global Research Desk &nbsp;|&nbsp; {dt} &nbsp;|&nbsp; {ut_label}</h2>
+
+  <div class="charts">
+    <div class="chart">{chart1}</div>
+    <div class="chart">{chart2}</div>
+  </div>
+
+  <div class="tw">
+    <h3>Monthly Offline Capacity (Planned + Unplanned)</h3>
+    {chart_comb}
+  </div>
+
+  <div class="tw">
+    <h3>Daily Offline Capacity — Near-Term View</h3>
+    {chart_daily}
+  </div>
+
+  <div class="tw">
+    <h3>Change Summary</h3>
+    {summary_html}
+  </div>
+
+  <div class="tw">
+    <h3>Recent Event Actions</h3>
+    <div class="legend">
+      <span style="background:#d4edda"></span>New &nbsp;
+      <span style="background:#fff3cd"></span>Updated &nbsp;
+      <span style="background:#fce4ec"></span>Cancelled &nbsp;
+      <span style="background:#d1ecf1"></span>Completed &nbsp;
+      <span style="background:#e8eaf6"></span>Past
+    </div>
+    {actions_html}
+  </div>
+
+  <div class="tw">
+    <h3>12-Month Forward Offline Capacity (kbd) | Planned & Unplanned</h3>
+    {detail_html}
+  </div>
+
+    {collapse_js}
 </body></html>"""
 
-    return dict(content=html_content,
-                filename=f"refinery_report_{store.report_date.strftime('%Y%m%d')}.html")
+    return dict(
+        content=html_content,
+        filename=f"refinery_report_{store.report_date.strftime('%Y%m%d')}.html"
+    )
 
 
 # ═══════════════════════════════════════════════════════════════════════

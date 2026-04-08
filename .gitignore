@@ -1,0 +1,8 @@
+# Rsa key
+rsa_key.p8
+
+# Loginfiles
+login.py
+
+__pycache__/
+*.pyc

@@ -130,9 +130,10 @@ def build_seasonal_chart(df_ev, config, report_date):
 
     rgn = (config.get('region') or 'GLOBAL').upper()
     etype = (et or 'ALL').upper()
+    utype = (' + '.join(ut or []) or 'ALL').upper()
     fig.update_layout(
         title=dict(
-            text=f'{rgn} PETROLEUM MARKETS<br><sub>{etype} ATMOSPHERIC DISTILLATION MAINTENANCE</sub>',
+            text=f'{rgn} PETROLEUM MARKETS<br><sub>{etype} {utype} MAINTENANCE</sub>',
             font=dict(size=13, color='#1a3a5c'), x=0.02),
         xaxis=dict(title='', showgrid=False),
         yaxis=dict(title='mb/d', showgrid=True, gridcolor='#ececec', rangemode='tozero'),
@@ -146,7 +147,7 @@ def build_seasonal_chart(df_ev, config, report_date):
     return fig
 
 
-def build_daily_ops_chart(df_ev, report_date, config, lookback_days=90, forward_days=60):
+def build_daily_ops_chart(df_ev, report_date, config, lookback_days=90, forward_days=120):
     """
     Time-series chart of daily offline capacity (mb/d).
     Stacked Planned + Unplanned with Total line.
@@ -215,5 +216,90 @@ def build_daily_ops_chart(df_ev, report_date, config, lookback_days=90, forward_
         margin=dict(l=50, r=20, t=60, b=40),
         annotations=[dict(text='Source: IIR Energy', xref='paper', yref='paper',
                           x=0, y=-0.1, showarrow=False, font=dict(size=9, color='grey'))],
+    )
+    return fig
+
+
+def build_combined_monthly_chart(df_ev, config, report_date):
+    """
+    Combined monthly chart — stacked Planned + Unplanned bars with Total line.
+    Shows the full-year monthly picture in one view.
+    """
+    ut = config.get('unit_types')
+    hist_years = config.get('hist_years', [])
+    show_years = config.get('show_years', [])
+    cur_year = report_date.year
+
+    kw = dict(unit_types=ut, countries=None, world_regions=None)
+
+    # Current year
+    planned = monthly_capacity(df_ev, cur_year, event_type='Planned', **kw)
+    unplanned = monthly_capacity(df_ev, cur_year, event_type='Unplanned', **kw)
+    total = planned + unplanned
+
+    rm = report_date.month - 1  # last actual month index
+
+    fig = go.Figure()
+
+    # Planned bars
+    fig.add_trace(go.Bar(
+        x=MONTHS, y=planned.tolist(), name='Planned',
+        marker_color=CLR_PLANNED, opacity=0.85,
+    ))
+
+    # Unplanned bars (stacked)
+    fig.add_trace(go.Bar(
+        x=MONTHS, y=unplanned.tolist(), name='Unplanned',
+        marker_color=CLR_UNPLANNED, opacity=0.85,
+    ))
+
+    # Total line
+    fig.add_trace(go.Scatter(
+        x=MONTHS, y=total.tolist(), name='Total',
+        mode='lines+markers',
+        line=dict(color=CLR_TOTAL, width=2.5, dash='dot'),
+        marker=dict(size=5),
+    ))
+
+    # Vertical line at current month boundary (actual vs estimate)
+    if 0 < rm < 11:
+        fig.add_shape(type='line',
+                      x0=rm + 0.5, x1=rm + 0.5,
+                      y0=0, y1=1, yref='paper',
+                      line=dict(dash='dash', color='red', width=1))
+        fig.add_annotation(x=rm + 0.5, y=1, yref='paper',
+                           text='Actual | Estimate', showarrow=False,
+                           font=dict(size=9, color='red'),
+                           yanchor='bottom')
+
+    # Historical median total for context
+    exclude = config.get('exclude_years', [])
+    med_yrs = [y for y in hist_years if y not in exclude]
+    if med_yrs:
+        med_totals = np.median([
+            monthly_capacity(df_ev, y, event_type='Planned', **kw) +
+            monthly_capacity(df_ev, y, event_type='Unplanned', **kw)
+            for y in med_yrs
+        ], axis=0)
+        fig.add_trace(go.Scatter(
+            x=MONTHS, y=med_totals.tolist(), name='Median Total',
+            mode='lines',
+            line=dict(color=CLR_MEDIAN, width=1.5, dash='dash', shape='spline'),
+        ))
+
+    rgn = (config.get('region') or 'GLOBAL').upper()
+    fig.update_layout(
+        barmode='stack',
+        title=dict(
+            text=f'{rgn} — MONTHLY OFFLINE CAPACITY (PLANNED + UNPLANNED)',
+            font=dict(size=13, color='#1a3a5c'), x=0.02),
+        xaxis=dict(title='', showgrid=False),
+        yaxis=dict(title='mb/d', showgrid=True, gridcolor='#ececec', rangemode='tozero'),
+        legend=dict(orientation='h', x=0.5, xanchor='center', y=1.08),
+        plot_bgcolor='white', paper_bgcolor='white', height=380,
+        margin=dict(l=50, r=20, t=70, b=40),
+        annotations=[dict(text='Source: IIR Energy, Jain Global Research Desk',
+                          xref='paper', yref='paper', x=0, y=-0.12,
+                          showarrow=False, font=dict(size=9, color='grey'))],
     )
     return fig
