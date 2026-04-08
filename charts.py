@@ -134,10 +134,10 @@ def build_seasonal_chart(df_ev, config, report_date):
     fig.update_layout(
         title=dict(
             text=f'{rgn} PETROLEUM MARKETS<br><sub>{etype} {utype} MAINTENANCE</sub>',
-            font=dict(size=13, color='#1a3a5c'), x=0.02),
+            font=dict(size=13, color='#1a3a5c'), x=0.02, y=0.98, yanchor='top'),
         xaxis=dict(title='', showgrid=False),
         yaxis=dict(title='mb/d', showgrid=True, gridcolor='#ececec', rangemode='tozero'),
-        legend=dict(orientation='h', x=0.5, xanchor='center', y=1.12),
+        legend=dict(orientation='h', x=0.5, xanchor='center', y=1.12, yanchor= 'bottom', font =dict(size=9)),
         plot_bgcolor='white', paper_bgcolor='white', height=380,
         margin=dict(l=50, r=20, t=70, b=40),
         annotations=[dict(text='Source: IIR Energy, Jain Global Research Desk',

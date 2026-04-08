@@ -7,50 +7,39 @@ Schedule: Mon-Fri at 9:15 AM (before team arrives, after IIR overnight update)
 
 import os
 import sys
-import smtplib
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
+import json
+import logging
 from datetime import datetime, timedelta
 import pandas as pd
 
 # ── Add project root to path ──
 sys.path.insert(0, os.path.dirname(__file__))
 
-from config import DEFAULT_UNIT_TYPES
+from config import DEFAULT_UNIT_TYPES, TABLE_STYLES, SUMMARY_FMT
+from export import style_actions, style_matrix, fmt_kbd
 from data import load_and_prepare
 from classification import classify_events, enrich_events
 from charts import build_seasonal_chart, build_daily_ops_chart, build_combined_monthly_chart
 from tables import build_actions_table, build_change_summary, build_forward_matrix
 from plotly.io import to_html
 
+# ── Import the firm's email sender ──
+# Adjust path if sender.py lives elsewhere
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from sender import send_email
+
 
 # ═══════════════════════════════════════════════════════════════════════
-# CONFIG — edit these
+# CONFIG
 # ═══════════════════════════════════════════════════════════════════════
 
-RECIPIENTS = [
- #   'Yves.Mindren@jainglobal.com',
- #   'abderrahmane.mahoudi@jainglobal.com',
-    'luiscarlos.gaitan@jainglobal.com',
-    # add more as needed
-]
-
-# SMTP settings — ask your IT team for the correct server
-# Option A: Outlook/Exchange
-SMTP_SERVER = 'smtp.office365.com'
-SMTP_PORT = 587
-SMTP_USER = 'luiscarlos.gaitan@jainglobal.com'  # your email
-SMTP_PASSWORD = os.environ.get('SMTP_PASSWORD', '')  # set as environment variable, never hardcode
-
-# Option B: If your firm uses an internal relay that doesn't need auth
-#SMTP_SERVER = 'mail.jainglobal.com'
-#SMTP_PORT = 25
-#SMTP_USER = None
-#SMTP_PASSWORD = None
+RECIPIENTS = 'luiscarlos.gaitan@jainglobal.com, Yves.Mindren@jainglobal.com, abderrahmane.mahoudi@jainglobal.com'  # comma-separated string
+RECIPIENTS_CC = None  # e.g. 'teammate1@jainglobal.com,teammate2@jainglobal.com'
+FROM_ADDRESS = 'jg_research_desk@jainglobal.com'
 
 UNIT_TYPES = DEFAULT_UNIT_TYPES
-SAVE_COPY = True  # also save HTML to disk
-SAVE_DIR = os.path.join(os.path.dirname(__file__), '..', 'scratch')
+SAVE_COPY = True
+SAVE_DIR = os.path.join(os.path.dirname(__file__), 'scratch')
 
 
 # ═══════════════════════════════════════════════════════════════════════
@@ -94,10 +83,28 @@ def generate_report():
     fig_c = build_seasonal_chart(classified, {**config, 'event_type': None}, today)
     fig_d = build_daily_ops_chart(classified, today, config)
 
-    chart1 = to_html(fig_p, full_html=False, include_plotlyjs='cdn')
-    chart2 = to_html(fig_u, full_html=False, include_plotlyjs=False)
-    chart_comb = to_html(fig_c, full_html=False, include_plotlyjs=False)
-    chart_daily = to_html(fig_d, full_html=False, include_plotlyjs=False)
+    import base64
+
+    def fig_to_img_tag(fig, width=700, height=380):
+        """Convert Plotly figure to an inline <img> tag for email."""
+        img_bytes = fig.to_image(format='png', width=width, height=height, scale=2)
+        b64 = base64.b64encode(img_bytes).decode('utf-8')
+        return f'<img src="data:image/png;base64,{b64}" width="{width}" style="max-width:100%;">'
+
+
+#    chart1 = to_html(fig_p, full_html=False, include_plotlyjs='cdn')
+#    chart2 = to_html(fig_u, full_html=False, include_plotlyjs=False)
+#    chart_comb = to_html(fig_c, full_html=False, include_plotlyjs=False)
+#    chart_daily = to_html(fig_d, full_html=False, include_plotlyjs=False)
+
+    # Replace:
+    # chart1 = to_html(fig_p, full_html=False, include_plotlyjs='cdn')
+    # With:
+    chart1 = fig_to_img_tag(fig_p)
+    chart2 = fig_to_img_tag(fig_u)
+    chart_comb = fig_to_img_tag(fig_c, width=900)
+    chart_daily = fig_to_img_tag(fig_d, width=900)
+
 
     # ── Tables ──
     summary_df = build_change_summary(cf)
@@ -105,9 +112,94 @@ def generate_report():
     matrix_config = {'unit_types': UNIT_TYPES, 'forward_months': 12}
     regional_df, ml = build_forward_matrix(cf, matrix_config, today, group_col='Region')
 
-    summary_html = summary_df.to_html(index=False, na_rep='—', border=0) if not summary_df.empty else '<p>No changes.</p>'
-    actions_html = actions_df.to_html(index=False, na_rep='—', border=0) if not actions_df.empty else ''
+#    summary_html = summary_df.to_html(index=False, na_rep='—', border=0) if not summary_df.empty else '<p>No changes.</p>'
+    summary_html = (summary_df.style.format(SUMMARY_FMT, na_rep='—')
+    .set_table_styles(TABLE_STYLES)
+#    .set_caption(f'Change Summary — {today.strftime("%d %b %Y")} vs {prev.strftime("%d %b %Y")}')
+    .hide(axis='index').to_html()) if not summary_df.empty else ''
+
+    actions_html = style_actions(actions_df, config['unit_types'], today).to_html(index=False, na_rep='—', classes='styled-table') if not actions_df.empty else ''
+    #actions_html = actions_df.to_html(index=False, na_rep='—', border=0) if not actions_df.empty else ''
     regional_html = regional_df.to_html(index=False, na_rep='—', border=0) if not regional_df.empty else ''
+
+    # Collapsible regions JS for the detail matrix
+    collapse_js = """
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.region-header').forEach(function(header) {
+        header.style.cursor = 'pointer';
+        header.addEventListener('click', function() {
+        var region = this.dataset.region;
+        var rows = document.querySelectorAll('.region-detail[data-region="' + region + '"]');
+        var visible = rows[0] && rows[0].style.display !== 'none';
+        rows.forEach(function(r) { r.style.display = visible ? 'none' : ''; });
+        // Toggle arrow
+        var arrow = this.querySelector('.arrow');
+        if (arrow) arrow.textContent = visible ? '▸' : '▾';
+        });
+        // Start collapsed
+        var region = header.dataset.region;
+        document.querySelectorAll('.region-detail[data-region="' + region + '"]').forEach(function(r) {
+        r.style.display = 'none';
+        });
+    });
+    });
+    </script>
+    """
+
+    # Build collapsible detail matrix HTML manually
+    def matrix_to_collapsible_html(df, ml, caption):
+        if df.empty: return ''
+        header_cols = ['Country','Refinery','Unit','Unit Type'] + ml
+        cols = [c for c in header_cols if c in df.columns]
+        h = f'<table style="border-collapse:collapse;width:100%;font-family:Calibri,sans-serif;font-size:12px">'
+        h += f'<caption style="font-size:14px;font-weight:bold;text-align:left;padding:10px 0">{caption}</caption>'
+        h += '<thead><tr>'
+        for c in cols:
+            h += f'<th style="background:#1a1a2e;color:white;font-size:11px;padding:8px 10px;text-align:center;white-space:nowrap">{c}</th>'
+        h += '</tr></thead><tbody>'
+        for _, row in df.iterrows():
+            rgn = str(row.get('Region',''))
+            if rgn.startswith('▸ TOTAL'):
+                h += '<tr style="background:#d5dbe0;font-weight:bold">'
+                for c in cols:
+                    v = row.get(c,'')
+                    if c in ml:
+                        try: v = fmt_kbd(v)
+                        except: pass
+                    h += f'<td style="padding:6px 10px;border-bottom:2px solid #1a1a2e">{v}</td>'
+                h += '</tr>'
+            elif rgn.startswith('▸'):
+                import re
+                clean_rgn = re.sub(r'\s*\(\d+\s*events?\)\s*$', '', rgn.replace('▸ ', ''))
+                #clean_rgn = rgn.replace('▸ ','').split(' (')[0]
+                h += f'<tr class="region-header" data-region="{clean_rgn}" style="background:#e9ecef;font-weight:bold">'
+                for c in cols:
+                    v = row.get(c,'')
+                    if c == cols[0]:
+                        v = f'<span class="arrow">▸</span> {rgn.replace("▸ ","")}'
+                    elif c in ml:
+                        try: v = fmt_kbd(v)
+                        except: pass
+                    h += f'<td style="padding:6px 10px;border-bottom:1px solid #ccc">{v}</td>'
+                h += '</tr>'
+            else:
+                clean_rgn = str(row.get('Region',''))
+                h += f'<tr class="region-detail" data-region="{clean_rgn}">'
+                for c in cols:
+                    v = row.get(c,'')
+                    if c in ml:
+                        try: v = fmt_kbd(v)
+                        except: pass
+                    style = 'padding:5px 10px;border-bottom:1px solid #eee'
+                    if c == 'Refinery':
+                        style += ';min-width:160px;max-width:220px;white-space:normal;word-wrap:break-word'
+                    h += f'<td style="{style}">{v}</td>'
+                h += '</tr>'
+        h += '</tbody></table>'
+        return h
+
+    #regional_html = matrix_to_collapsible_html(regional_df, ml, f'')
 
     # ── Count key metrics for subject line ──
     n_actions = len(actions_df) if not actions_df.empty else 0
@@ -176,6 +268,7 @@ td {{ padding: 5px 8px; border-bottom: 1px solid #ddd; white-space: nowrap; }}
   <h3>Forward Impact by Region (kbd)</h3>
   {regional_html}
 </div>
+    {collapse_js}
 
 </body></html>"""
 
@@ -185,62 +278,28 @@ td {{ padding: 5px 8px; border-bottom: 1px solid #ddd; white-space: nowrap; }}
 
 
 # ═══════════════════════════════════════════════════════════════════════
-# SEND EMAIL
-# ═══════════════════════════════════════════════════════════════════════
-
-def send_email(html_content, subject, recipients):
-    """Send HTML email via SMTP."""
-    msg = MIMEMultipart('alternative')
-    msg['Subject'] = subject
-    msg['From'] = SMTP_USER
-    msg['To'] = ', '.join(recipients)
-
-    # Plain text fallback
-    text_part = MIMEText("Open this email in an HTML-capable client to see the report.", 'plain')
-    html_part = MIMEText(html_content, 'html')
-
-    msg.attach(text_part)
-    msg.attach(html_part)
-
-    try:
-        if SMTP_USER and SMTP_PASSWORD:
-            # Authenticated SMTP (Office 365, Gmail, etc.)
-            with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
-                server.starttls()
-                server.login(SMTP_USER, SMTP_PASSWORD)
-                server.send_message(msg)
-        else:
-            # Unauthenticated relay (internal mail server)
-            with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
-                server.send_message(msg)
-
-        print(f"Email sent to {len(recipients)} recipients")
-
-    except Exception as e:
-        print(f"ERROR sending email: {e}")
-        raise
-
-
-# ═══════════════════════════════════════════════════════════════════════
 # MAIN
 # ═══════════════════════════════════════════════════════════════════════
 
 if __name__ == '__main__':
-    html, subject = generate_report()
+    html_body, subject = generate_report()
 
-    # Save a copy to disk
+    # Save a copy
     if SAVE_COPY:
         os.makedirs(SAVE_DIR, exist_ok=True)
         fname = f"refinery_report_{datetime.now().strftime('%Y%m%d')}.html"
         path = os.path.join(SAVE_DIR, fname)
         with open(path, 'w', encoding='utf-8') as f:
-            f.write(html)
+            f.write(html_body)
         print(f"Saved: {path}")
 
-    # Send email
-    if RECIPIENTS:
-        send_email(html, subject, RECIPIENTS)
-    else:
-        print("No recipients configured — skipping email")
+    # Send via Kafka email service
+    send_email(
+        recipients=RECIPIENTS,
+        subject=subject,
+        body=html_body,
+        from_address=FROM_ADDRESS,
+        recipients_cc=RECIPIENTS_CC,
+    )
 
     print("Done.")
