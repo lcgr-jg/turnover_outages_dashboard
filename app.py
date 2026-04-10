@@ -19,8 +19,8 @@ import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
 
 # ── Local modules ───────────────────────────────────────────────────────
-from config import DEFAULT_UNIT_TYPES, ACTION_COLORS, MONTHS, SUMMARY_FMT
-from config import TABLE_STYLES
+from config import DEFAULT_UNIT_TYPES, ACTION_COLORS, MONTHS
+from config import TABLE_STYLES, SUMMARY_FMT
 from data import load_and_prepare, check_for_updates
 from classification import classify_events, enrich_events
 from charts import build_seasonal_chart, build_daily_ops_chart, build_combined_monthly_chart
@@ -813,6 +813,7 @@ def export_html(n_clicks, unit_types, regions, show_years, band_range, chart_reg
     .set_table_styles(TABLE_STYLES)
     .set_caption(f'Change Summary — {store.report_date.strftime("%d %b %Y")} vs {store.prev_report_date.strftime("%d %b %Y")}')
     .hide(axis='index').to_html()) if not summary_df.empty else ''
+
     # ── Collapsible detail matrix (same JS as notebook) ──
     # You can paste your matrix_to_collapsible_html() function here
     # and call it: detail_html = matrix_to_collapsible_html(detail_df, ml2, '...')

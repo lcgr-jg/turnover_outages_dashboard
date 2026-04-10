@@ -129,15 +129,15 @@ def build_seasonal_chart(df_ev, config, report_date):
         name=f'{cur_year}E', connectgaps=False))
 
     rgn = (config.get('region') or 'GLOBAL').upper()
-    etype = (et or 'ALL').upper()
+    etype = (et or 'Total (Planned + Unplanned)').upper()
     utype = (' + '.join(ut or []) or 'ALL').upper()
     fig.update_layout(
         title=dict(
             text=f'{rgn} PETROLEUM MARKETS<br><sub>{etype} {utype} MAINTENANCE</sub>',
-            font=dict(size=13, color='#1a3a5c'), x=0.02, y=0.98, yanchor='top'),
+            font=dict(size=13, color='#1a3a5c'), x=0.02, yanchor='top'),
         xaxis=dict(title='', showgrid=False),
         yaxis=dict(title='mb/d', showgrid=True, gridcolor='#ececec', rangemode='tozero'),
-        legend=dict(orientation='h', x=0.5, xanchor='center', y=1.12, yanchor= 'bottom', font =dict(size=9)),
+        legend=dict(orientation='h', x=0.5, xanchor='center', y=1, yanchor= 'top', font =dict(size=9), bgcolor='rgba(0,0,0,0)'),
         plot_bgcolor='white', paper_bgcolor='white', height=380,
         margin=dict(l=50, r=20, t=70, b=40),
         annotations=[dict(text='Source: IIR Energy, Jain Global Research Desk',
@@ -159,10 +159,12 @@ def build_daily_ops_chart(df_ev, report_date, config, lookback_days=90, forward_
     ut_list = config.get('unit_types')
     if ut_list:
         uc = next((c for c in ['UNIT_TYPE', 'UTYPE_DESC'] if c in ev.columns), None)
-        if uc: ev = ev[ev[uc].isin(ut_list)]
+        if uc:
+            ev = ev[ev[uc].isin(ut_list)]
     if config.get('region'):
         rc = next((c for c in ['WORLD_REG', 'WORLD_REGION'] if c in ev.columns), None)
-        if rc: ev = ev[ev[rc] == config['region']]
+        if rc:
+            ev = ev[ev[rc] == config['region']]
 
     date_start = report_date - pd.Timedelta(days=lookback_days)
     date_end = report_date + pd.Timedelta(days=forward_days)
@@ -187,36 +189,92 @@ def build_daily_ops_chart(df_ev, report_date, config, lookback_days=90, forward_
     total_daily = [p + u for p, u in zip(planned_daily, unplanned_daily)]
 
     fig = go.Figure()
-    fig.add_trace(go.Scatter(x=date_range, y=planned_daily, name='Planned',
-                             fill='tozeroy', fillcolor='rgba(26,58,92,0.3)',
-                             line=dict(color=CLR_PLANNED, width=1)))
-    fig.add_trace(go.Scatter(x=date_range, y=unplanned_daily, name='Unplanned',
-                             fill='tonexty', fillcolor='rgba(224,123,57,0.3)',
-                             line=dict(color=CLR_UNPLANNED, width=1)))
-    fig.add_trace(go.Scatter(x=date_range, y=total_daily, name='Total',
-                             line=dict(color=CLR_TOTAL, width=2, dash='dot'), fill=None))
 
-    fig.add_shape(type='line',
-                  x0=str(report_date.date()), x1=str(report_date.date()),
-                  y0=0, y1=1, yref='paper',
-                  line=dict(dash='dash', color='red', width=1))
-    fig.add_annotation(x=str(report_date.date()), y=1, yref='paper',
-                       text='Today', showarrow=False,
-                       font=dict(color='red', size=10),
-                       xanchor='left', yanchor='bottom')
+    fig.add_trace(
+        go.Scatter(
+            x=date_range,
+            y=planned_daily,
+            name='Planned',
+            mode='lines',
+            stackgroup='offline',
+            line=dict(color=CLR_PLANNED, width=1),
+            fillcolor='rgba(26,58,92,0.30)',
+            hovertemplate='Planned: %{y:.2f} mb/d<br>%{x|%Y-%m-%d}<extra></extra>',
+        )
+    )
+
+    fig.add_trace(
+        go.Scatter(
+            x=date_range,
+            y=unplanned_daily,
+            name='Unplanned',
+            mode='lines',
+            stackgroup='offline',
+            line=dict(color=CLR_UNPLANNED, width=1),
+            fillcolor='rgba(224,123,57,0.30)',
+            hovertemplate='Unplanned: %{y:.2f} mb/d<br>%{x|%Y-%m-%d}<extra></extra>',
+        )
+    )
+
+    fig.add_trace(
+        go.Scatter(
+            x=date_range,
+            y=total_daily,
+            name='Total',
+            mode='lines',
+            line=dict(color=CLR_TOTAL, width=2, dash='dot'),
+            hovertemplate='Total: %{y:.2f} mb/d<br>%{x|%Y-%m-%d}<extra></extra>',
+        )
+    )
+
+    fig.add_shape(
+        type='line',
+        x0=report_date,
+        x1=report_date,
+        y0=0,
+        y1=1,
+        yref='paper',
+        line=dict(dash='dash', color='red', width=1),
+    )
+
+    fig.add_annotation(
+        x=report_date,
+        y=1,
+        yref='paper',
+        text='Today',
+        showarrow=False,
+        font=dict(color='red', size=10),
+        xanchor='left',
+        yanchor='bottom',
+    )
 
     rgn = (config.get('region') or 'Global').title()
     fig.update_layout(
-        title=dict(text=f'{rgn} — Daily Offline Capacity',
-                   font=dict(size=13, color='#1a3a5c'), x=0.02),
+        title=dict(
+            text=f'{rgn} — Daily Offline Capacity',
+            font=dict(size=13, color='#1a3a5c'),
+            x=0.02
+        ),
         xaxis=dict(title='', showgrid=False),
         yaxis=dict(title='mb/d', showgrid=True, gridcolor='#ececec', rangemode='tozero'),
         legend=dict(orientation='h', x=0.5, xanchor='center', y=1.08),
-        plot_bgcolor='white', paper_bgcolor='white', height=350,
+        plot_bgcolor='white',
+        paper_bgcolor='white',
+        height=350,
         margin=dict(l=50, r=20, t=60, b=40),
-        annotations=[dict(text='Source: IIR Energy', xref='paper', yref='paper',
-                          x=0, y=-0.1, showarrow=False, font=dict(size=9, color='grey'))],
+        annotations=[
+            dict(
+                text='Source: IIR Energy',
+                xref='paper',
+                yref='paper',
+                x=0,
+                y=-0.1,
+                showarrow=False,
+                font=dict(size=9, color='grey'),
+            )
+        ],
     )
+
     return fig
 
 
