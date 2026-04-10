@@ -59,6 +59,7 @@ def build_seasonal_chart(df_ev, config, report_date):
     config keys:
         unit_types, event_type, region, country,
         hist_years, exclude_years, show_years (list of individual years to plot)
+        chart_scope_label — optional title scope when df is pre-filtered (e.g. daily report regions)
     """
     ut = config.get('unit_types')
     et = config.get('event_type')
@@ -128,7 +129,8 @@ def build_seasonal_chart(df_ev, config, report_date):
         line=dict(color=CLR_ESTIMATE, width=2, dash='dash', shape='spline'),
         name=f'{cur_year}E', connectgaps=False))
 
-    rgn = (config.get('region') or 'GLOBAL').upper()
+    scope = config.get('chart_scope_label')
+    rgn = scope.upper() if scope else (config.get('region') or 'GLOBAL').upper()
     etype = (et or 'Total (Planned + Unplanned)').upper()
     utype = (' + '.join(ut or []) or 'ALL').upper()
     fig.update_layout(
@@ -248,7 +250,11 @@ def build_daily_ops_chart(df_ev, report_date, config, lookback_days=90, forward_
         yanchor='bottom',
     )
 
-    rgn = (config.get('region') or 'Global').title()
+    scope = config.get('chart_scope_label')
+    if scope:
+        rgn = scope
+    else:
+        rgn = (config.get('region') or 'Global').title()
     fig.update_layout(
         title=dict(
             text=f'{rgn} — Daily Offline Capacity',
@@ -345,7 +351,8 @@ def build_combined_monthly_chart(df_ev, config, report_date):
             line=dict(color=CLR_MEDIAN, width=1.5, dash='dash', shape='spline'),
         ))
 
-    rgn = (config.get('region') or 'GLOBAL').upper()
+    scope = config.get('chart_scope_label')
+    rgn = scope.upper() if scope else (config.get('region') or 'GLOBAL').upper()
     fig.update_layout(
         barmode='stack',
         title=dict(
