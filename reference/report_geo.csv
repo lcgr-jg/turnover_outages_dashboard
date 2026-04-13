@@ -1,0 +1,17 @@
+report_region,jg_region
+Global,None
+Europe (NWE + MED),NWE
+Europe (NWE + MED),MED
+North America East (US + Canada),PADD I (East Coast)
+North America East (US + Canada),Eastern Canada
+North America West (US + Canada),PADD V (West Coast)
+North America West (US + Canada),Western Canada
+USGC,PADD III (USGC)
+Asia ex-China,East Asia
+Asia ex-China,SEAsia
+Asia ex-China,Sasia
+Asia ex-China,Oceania
+China,China
+Persian Gulf,PG
+WAF + Latam,WAF
+WAF + Latam,Latam

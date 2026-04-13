@@ -51,7 +51,7 @@ def monthly_capacity(df_ev, year, unit_types=None, countries=None,
     return monthly
 
 
-def build_seasonal_chart(df_ev, config, report_date):
+def build_seasonal_chart(df_ev, config, report_date, prev_week_monthly=None):
     """
     JG-style seasonal chart with historical band, median, individual years,
     current year actual + estimate. Returns Plotly figure.
@@ -60,6 +60,9 @@ def build_seasonal_chart(df_ev, config, report_date):
         unit_types, event_type, region, country,
         hist_years, exclude_years, show_years (list of individual years to plot)
         chart_scope_label — optional title scope when df is pre-filtered (e.g. daily report regions)
+
+    prev_week_monthly: optional 12-element list of monthly capacity values from last
+        week's snapshot for the same event_type.  Drawn as a dashed grey reference line.
     """
     ut = config.get('unit_types')
     et = config.get('event_type')
@@ -117,6 +120,20 @@ def build_seasonal_chart(df_ev, config, report_date):
             line=dict(color=year_colors[idx % len(year_colors)], width=1.5, shape='spline'),
             name=str(yr), connectgaps=True))
 
+    # Last-week reference for the current year
+    # Color (#607D8B blue-grey) and dot dash keep it distinct from the grey
+    # dashed Median line and from all other traces on this chart.
+    if prev_week_monthly is not None and len(prev_week_monthly) == 12:
+        try:
+            pw = [float(v) if v is not None else None for v in prev_week_monthly]
+            if any(v is not None and v > 0 for v in pw):
+                fig.add_trace(go.Scatter(
+                    x=MONTHS, y=pw, mode='lines',
+                    line=dict(color='#607D8B', width=1.5, dash='dot', shape='spline'),
+                    name='Last Week', connectgaps=True))
+        except Exception:
+            pass  # Never let a missing snapshot break the main chart
+
     # Current year actual
     fig.add_trace(go.Scatter(
         x=MONTHS, y=actual, mode='lines',
@@ -149,10 +166,16 @@ def build_seasonal_chart(df_ev, config, report_date):
     return fig
 
 
-def build_daily_ops_chart(df_ev, report_date, config, lookback_days=90, forward_days=120):
+def build_daily_ops_chart(df_ev, report_date, config, lookback_days=90, forward_days=120,
+                          prev_week=None):
     """
     Time-series chart of daily offline capacity (mb/d).
     Stacked Planned + Unplanned with Total line.
+
+    prev_week: optional dict from load_last_week_snapshot with keys
+        "daily_dates", "daily_planned", "daily_unplanned", "daily_total".
+        When supplied, a dashed grey "Last Week" total line is drawn for
+        visual comparison against the current curve.
     """
     cap_col = 'CAP_OFFLINE_STD' if 'CAP_OFFLINE_STD' in df_ev.columns else 'CAP_OFFLINE'
     ev = df_ev.copy()
@@ -229,6 +252,25 @@ def build_daily_ops_chart(df_ev, report_date, config, lookback_days=90, forward_
         )
     )
 
+    # Last-week reference line — drawn before the "Today" marker so it sits behind
+    if prev_week and prev_week.get('daily_dates') and prev_week.get('daily_total'):
+        try:
+            pw_dates = pd.to_datetime(prev_week['daily_dates'])
+            pw_total = prev_week['daily_total']
+            # Plot on the same calendar dates — no shifting needed.
+            # The comparison is: at each date, what was the projected offline
+            # capacity last week vs. now?  A rightward shift would misalign them.
+            fig.add_trace(go.Scatter(
+                x=pw_dates,
+                y=pw_total,
+                name='Last Week',
+                mode='lines',
+                line=dict(color='#607D8B', width=1.5, dash='dot'),
+                hovertemplate='Last Week Total: %{y:.2f} mb/d<br>%{x|%Y-%m-%d}<extra></extra>',
+            ))
+        except Exception:
+            pass  # Never let a missing snapshot break the main chart
+
     fig.add_shape(
         type='line',
         x0=report_date,
@@ -284,87 +326,3 @@ def build_daily_ops_chart(df_ev, report_date, config, lookback_days=90, forward_
     return fig
 
 
-def build_combined_monthly_chart(df_ev, config, report_date):
-    """
-    Combined monthly chart — stacked Planned + Unplanned bars with Total line.
-    Shows the full-year monthly picture in one view.
-    """
-    ut = config.get('unit_types')
-    hist_years = config.get('hist_years', [])
-    show_years = config.get('show_years', [])
-    cur_year = report_date.year
-
-    kw = dict(unit_types=ut, countries=None, world_regions=None)
-
-    # Current year
-    planned = monthly_capacity(df_ev, cur_year, event_type='Planned', **kw)
-    unplanned = monthly_capacity(df_ev, cur_year, event_type='Unplanned', **kw)
-    total = planned + unplanned
-
-    rm = report_date.month - 1  # last actual month index
-
-    fig = go.Figure()
-
-    # Planned bars
-    fig.add_trace(go.Bar(
-        x=MONTHS, y=planned.tolist(), name='Planned',
-        marker_color=CLR_PLANNED, opacity=0.85,
-    ))
-
-    # Unplanned bars (stacked)
-    fig.add_trace(go.Bar(
-        x=MONTHS, y=unplanned.tolist(), name='Unplanned',
-        marker_color=CLR_UNPLANNED, opacity=0.85,
-    ))
-
-    # Total line
-    fig.add_trace(go.Scatter(
-        x=MONTHS, y=total.tolist(), name='Total',
-        mode='lines+markers',
-        line=dict(color=CLR_TOTAL, width=2.5, dash='dot'),
-        marker=dict(size=5),
-    ))
-
-    # Vertical line at current month boundary (actual vs estimate)
-    if 0 < rm < 11:
-        fig.add_shape(type='line',
-                      x0=rm + 0.5, x1=rm + 0.5,
-                      y0=0, y1=1, yref='paper',
-                      line=dict(dash='dash', color='red', width=1))
-        fig.add_annotation(x=rm + 0.5, y=1, yref='paper',
-                           text='Actual | Estimate', showarrow=False,
-                           font=dict(size=9, color='red'),
-                           yanchor='bottom')
-
-    # Historical median total for context
-    exclude = config.get('exclude_years', [])
-    med_yrs = [y for y in hist_years if y not in exclude]
-    if med_yrs:
-        med_totals = np.median([
-            monthly_capacity(df_ev, y, event_type='Planned', **kw) +
-            monthly_capacity(df_ev, y, event_type='Unplanned', **kw)
-            for y in med_yrs
-        ], axis=0)
-        fig.add_trace(go.Scatter(
-            x=MONTHS, y=med_totals.tolist(), name='Median Total',
-            mode='lines',
-            line=dict(color=CLR_MEDIAN, width=1.5, dash='dash', shape='spline'),
-        ))
-
-    scope = config.get('chart_scope_label')
-    rgn = scope.upper() if scope else (config.get('region') or 'GLOBAL').upper()
-    fig.update_layout(
-        barmode='stack',
-        title=dict(
-            text=f'{rgn} — MONTHLY OFFLINE CAPACITY (PLANNED + UNPLANNED)',
-            font=dict(size=13, color='#1a3a5c'), x=0.02),
-        xaxis=dict(title='', showgrid=False),
-        yaxis=dict(title='mb/d', showgrid=True, gridcolor='#ececec', rangemode='tozero'),
-        legend=dict(orientation='h', x=0.5, xanchor='center', y=1.08),
-        plot_bgcolor='white', paper_bgcolor='white', height=380,
-        margin=dict(l=50, r=20, t=70, b=40),
-        annotations=[dict(text='Source: IIR Energy, Jain Global Research Desk',
-                          xref='paper', yref='paper', x=0, y=-0.12,
-                          showarrow=False, font=dict(size=9, color='grey'))],
-    )
-    return fig

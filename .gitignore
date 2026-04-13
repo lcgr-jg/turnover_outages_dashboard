@@ -6,3 +6,6 @@ login.py
 
 __pycache__/
 *.pyc
+
+# Snapshot database and HTML scratch outputs (local data, not committed)
+scratch/
