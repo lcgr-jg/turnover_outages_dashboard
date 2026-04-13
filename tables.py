@@ -52,7 +52,7 @@ def build_actions_table(classified):
         'CAP_OFFLINE_STD': 'Capacity (kbd)', 'CAP_UOM_STD': 'UOM',
         'Cap_Change_kbd': 'Cap Δ (kbd)',
         'Fwd_Impact_kb': 'Fwd Impact (kb)', 'Fwd_Impact_Delta_kb': 'Fwd Impact Δ (kb)',
-        'Utilisation_pct': 'Util %', 'Change_Detail': 'Change Detail',
+        'Utilisation_pct': 'Offline %', 'Change_Detail': 'Change Detail',
         'COMMENTS': 'Comments', 'EVENT_ID': 'Event ID',
     })
     for c in ['Prev Start', 'Prev End', 'Start', 'End']:
@@ -103,7 +103,8 @@ def build_change_summary(classified):
     return pd.DataFrame(rows)
 
 
-def build_forward_matrix(classified, config, report_date, group_col=None):
+def build_forward_matrix(classified, config, report_date, group_col=None,
+                         subgroup_col=None, aggregate_subgroup: bool = False):
     """Forward matrix in kbd (avg per month). Returns (df, month_labels)."""
     ps = report_date.to_period('M').to_timestamp()
     n = config.get('forward_months', 12)
@@ -146,6 +147,29 @@ def build_forward_matrix(classified, config, report_date, group_col=None):
     dm = pd.DataFrame(rows)
     if dm.empty:
         return dm, ml
+
+    if group_col and subgroup_col and group_col in dm.columns and subgroup_col in dm.columns:
+        # Two-level hierarchy: group subtotal header rows + subgroup detail rows
+        grand = dm[ml].sum().round(1)
+        parts = [pd.DataFrame([{group_col: '▸ TOTAL', subgroup_col: '', **grand.to_dict()}])]
+        for grp_val in sorted(dm[group_col].unique()):
+            subset = dm[dm[group_col] == grp_val].sort_values(subgroup_col).reset_index(drop=True)
+            sub = subset[ml].sum().round(1)
+            if aggregate_subgroup:
+                # One row per unique subgroup value (e.g. plant name), months summed
+                detail = (
+                    subset.groupby(subgroup_col)[ml].sum().round(1)
+                    .sort_index().reset_index()
+                )
+                detail.insert(0, group_col, grp_val)
+                label = f'▸ {grp_val} ({len(detail)} refineries)'
+            else:
+                # One row per individual event/unit
+                detail = subset[[group_col, subgroup_col] + ml].copy()
+                label = f'▸ {grp_val} ({len(subset)} events)'
+            parts.append(pd.DataFrame([{group_col: label, subgroup_col: '', **sub.to_dict()}]))
+            parts.append(detail[[group_col, subgroup_col] + ml])
+        return pd.concat(parts, ignore_index=True), ml
 
     if group_col and group_col in dm.columns:
         g = dm.groupby(group_col)[ml].sum().round(1).sort_values(ml[0], ascending=False)

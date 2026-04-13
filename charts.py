@@ -106,7 +106,7 @@ def build_seasonal_chart(df_ev, config, report_date, prev_week_monthly=None):
     if med is not None and med.sum() > 0:
         fig.add_trace(go.Scatter(
             x=MONTHS, y=med.tolist(), mode='lines',
-            line=dict(color=CLR_MEDIAN, width=1.5, dash='dash', shape='spline'),
+            line=dict(color=CLR_MEDIAN, width=1.5, shape='spline'),
             name='Median', connectgaps=True))
 
     # Individual years
@@ -143,7 +143,7 @@ def build_seasonal_chart(df_ev, config, report_date, prev_week_monthly=None):
     # Forward estimate
     fig.add_trace(go.Scatter(
         x=MONTHS, y=fwd, mode='lines',
-        line=dict(color=CLR_ESTIMATE, width=2, dash='dash', shape='spline'),
+        line=dict(color=CLR_PLANNED, width=2, dash='dash', shape='spline'),
         name=f'{cur_year}E', connectgaps=False))
 
     scope = config.get('chart_scope_label')
@@ -152,7 +152,7 @@ def build_seasonal_chart(df_ev, config, report_date, prev_week_monthly=None):
     utype = (' + '.join(ut or []) or 'ALL').upper()
     fig.update_layout(
         title=dict(
-            text=f'{rgn} PETROLEUM MARKETS<br><sub>{etype} {utype} MAINTENANCE</sub>',
+            text=f'{rgn} TAR<br><sub>{etype} {utype} MAINTENANCE</sub>',
             font=dict(size=13, color='#1a3a5c'), x=0.02, yanchor='top'),
         xaxis=dict(title='', showgrid=False),
         yaxis=dict(title='mb/d', showgrid=True, gridcolor='#ececec', rangemode='tozero'),

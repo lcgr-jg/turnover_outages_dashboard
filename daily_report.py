@@ -20,7 +20,7 @@ import pandas as pd
 sys.path.insert(0, os.path.dirname(__file__))
 
 from config import DEFAULT_UNIT_TYPES, TABLE_STYLES, SUMMARY_FMT
-from export import style_actions
+from export import style_actions, style_matrix
 from data import load_and_prepare
 from classification import classify_events, enrich_events
 from charts import build_seasonal_chart, build_daily_ops_chart, monthly_capacity
@@ -366,7 +366,8 @@ def fig_to_img_tag(fig, width=700, height=380):
 
 
 def generate_report_html(events_df: pd.DataFrame, today, prev, region_scope_label: str,
-                         prev_week_snapshot: dict | None = None):
+                         prev_week_snapshot: dict | None = None,
+                         is_regional: bool = False):
     """
     Build HTML + subject from an already-filtered event frame (unit types and optional region).
     region_scope_label: e.g. 'GLOBAL' or 'Europe (NEW + MED)' for chart titles and subject.
@@ -411,7 +412,17 @@ def generate_report_html(events_df: pd.DataFrame, today, prev, region_scope_labe
     summary_df = build_change_summary(cf)
     actions_df = build_actions_table(cf)
     matrix_config = {'unit_types': UNIT_TYPES, 'forward_months': 12}
-    regional_df, ml = build_forward_matrix(cf, matrix_config, today, group_col='Region')
+    if is_regional:
+        matrix_group_col = 'Country'
+        matrix_title = 'Forward Impact by Country (kbd)'
+    else:
+        matrix_group_col = 'Region'
+        matrix_title = 'Forward Impact by Region (kbd)'
+    sub_col = 'Refinery' if is_regional else None
+    regional_df, ml = build_forward_matrix(cf, matrix_config, today,
+                                            group_col=matrix_group_col,
+                                            subgroup_col=sub_col,
+                                            aggregate_subgroup=is_regional)
 
     summary_html = (
         summary_df.style.format(SUMMARY_FMT, na_rep='—')
@@ -424,7 +435,7 @@ def generate_report_html(events_df: pd.DataFrame, today, prev, region_scope_labe
             index=False, na_rep='—', classes='styled-table')
     ) if not actions_df.empty else ''
 
-    regional_html = regional_df.to_html(index=False, na_rep='—', border=0) if not regional_df.empty else ''
+    regional_html = style_matrix(regional_df, ml, matrix_title).to_html(index=False, na_rep='—', border=0) if not regional_df.empty else ''
 
     collapse_js = """
     <script>
@@ -480,12 +491,12 @@ td {{ padding: 5px 8px; border-bottom: 1px solid #ddd; white-space: nowrap; }}
 <h1>DAILY IIR REPORTED MAINTENANCE ACTIVITY</h1>
 <h2>Jain Global Research Desk &nbsp;|&nbsp; {dt} &nbsp;|&nbsp; {ut_label}{scope_html}</h2>
 
+<div class="tw">{chart_comb}</div>
+
 <div class="charts">
   <div class="chart">{chart1}</div>
   <div class="chart">{chart2}</div>
 </div>
-
-<div class="tw">{chart_comb}</div>
 
 <div class="tw">
   <h3>Daily Offline Capacity</h3>
@@ -510,7 +521,7 @@ td {{ padding: 5px 8px; border-bottom: 1px solid #ddd; white-space: nowrap; }}
 </div>
 
 <div class="tw">
-  <h3>Forward Impact by Region (kbd)</h3>
+  <h3>{matrix_title}</h3>
   {regional_html}
 </div>
     {collapse_js}
@@ -657,7 +668,8 @@ if __name__ == '__main__':
             print(f"  No last-week snapshot for '{tag}' — chart will not show reference line.", flush=True)
 
         html_body, subject = generate_report_html(events_df, today, prev, scope_label,
-                                                  prev_week_snapshot=prev_week_snap)
+                                                  prev_week_snapshot=prev_week_snap,
+                                                  is_regional=(tag != 'GLOBAL'))
 
         # Save today's snapshot so next week's run can draw the "Last Week" line
         daily_data, seasonal_data = _build_snapshot_data(events_df, today, UNIT_TYPES)

@@ -23,7 +23,7 @@ from config import DEFAULT_UNIT_TYPES, ACTION_COLORS, MONTHS
 from config import TABLE_STYLES, SUMMARY_FMT
 from data import load_and_prepare, check_for_updates
 from classification import classify_events, enrich_events
-from charts import build_seasonal_chart, build_daily_ops_chart, build_combined_monthly_chart
+from charts import build_seasonal_chart, build_daily_ops_chart
 from tables import build_actions_table, build_change_summary, build_forward_matrix
 from analytics import build_ta_cycle_analysis, build_reliability_scores, find_ta_announcement_gaps
 from core import get_latest_snapshot
@@ -314,17 +314,17 @@ app.layout = dbc.Container([
 def tab_dashboard():
     return html.Div([
 
+        # Combined monthly (NEW)
+        dbc.Card(dbc.CardBody([
+            dcc.Graph(id='chart-combined-monthly'),
+        ]), className="mb-3"),
+
         # Seasonal charts
         dbc.Row([
             dbc.Col(dcc.Graph(id='chart-planned'), md=6),
             dbc.Col(dcc.Graph(id='chart-unplanned'), md=6),
         ]),
 
-        # Combined monthly (NEW)
-        dbc.Card(dbc.CardBody([
-            dcc.Graph(id='chart-combined-monthly'),
-        ]), className="mb-3"),
-        
         # Daily ops
         dbc.Card(dbc.CardBody([
             html.H6("Daily Offline Capacity — Near-Term View", className="mb-2"),
@@ -933,14 +933,14 @@ def export_html(n_clicks, unit_types, regions, show_years, band_range, chart_reg
   <h1>DAILY IIR REPORTED MAINTENANCE ACTIVITY</h1>
   <h2>Jain Global Research Desk &nbsp;|&nbsp; {dt} &nbsp;|&nbsp; {ut_label}</h2>
 
-  <div class="charts">
-    <div class="chart">{chart1}</div>
-    <div class="chart">{chart2}</div>
-  </div>
-
   <div class="tw">
     <h3>Monthly Offline Capacity (Planned + Unplanned)</h3>
     {chart_comb}
+  </div>
+
+  <div class="charts">
+    <div class="chart">{chart1}</div>
+    <div class="chart">{chart2}</div>
   </div>
 
   <div class="tw">

@@ -26,16 +26,13 @@ def style_actions(df, unit_types, report_date):
     if 'Cap Δ (kbd)' in df.columns: fmt['Cap Δ (kbd)'] = '{:+.1f}'
     if 'Fwd Impact (kb)' in df.columns: fmt['Fwd Impact (kb)'] = '{:,.0f}'
     if 'Fwd Impact Δ (kb)' in df.columns: fmt['Fwd Impact Δ (kb)'] = '{:+,.0f}'
-    if 'Util %' in df.columns: fmt['Util %'] = '{:.1f}%'
+    if 'Offline %' in df.columns: fmt['Offline %'] = '{:.1f}%'
     return (df.style.apply(rs, axis=1).format(fmt, na_rep='—')
         .set_table_styles(TABLE_STYLES)
         .set_properties(subset=['Refinery'], **{'min-width': '180px', 'max-width': '250px', 'white-space': 'normal', 'word-wrap': 'break-word'})
         .set_properties(subset=['Change Detail'], **{'min-width': '200px', 'max-width': '320px', 'white-space': 'normal', 'word-wrap': 'break-word', 'font-size': '11px'})
         .set_caption(f'IIR Refinery Offline Events — {report_date.year} | {' & '.join(unit_types)} | Generated {report_date.date()}')
         .hide(axis='index'))
-
-
-
 
 
 def style_matrix(df, ml, caption=''):
