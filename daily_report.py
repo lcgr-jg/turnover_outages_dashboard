@@ -2,7 +2,7 @@ r"""
 daily_report.py — Generate HTML report and email to team.
 Run via Task Scheduler: .venv\Scripts\python.exe dash_irr_database\daily_report.py
 
-Schedule: Mon-Fri at 9:15 AM (before team arrives, after IIR overnight update)
+Schedule: Mon-Fri at 9:00 AM (before team arrives, after IIR overnight update)
 """
 
 import base64
@@ -41,7 +41,7 @@ RECIPIENTS = (
     'luiscarlos.gaitan@jainglobal.com, yves.Mindren@jainglobal.com, abderrahmane.mahoudi@jainglobal.com'
 )  # comma-separated string (do not use # inside quotes — it starts a comment)
 RECIPIENTS_CC = None  # e.g. 'teammate1@jainglobal.com,teammate2@jainglobal.com'
-FROM_ADDRESS = 'jg_research_desk@jainglobal.com'
+FROM_ADDRESS = 'oil.research.desk@jainglobal.com'
 
 UNIT_TYPES = DEFAULT_UNIT_TYPES
 SAVE_COPY = True

@@ -106,7 +106,7 @@ def build_seasonal_chart(df_ev, config, report_date, prev_week_monthly=None):
     if med is not None and med.sum() > 0:
         fig.add_trace(go.Scatter(
             x=MONTHS, y=med.tolist(), mode='lines',
-            line=dict(color=CLR_MEDIAN, width=1.5, shape='spline'),
+            line=dict(color=CLR_MEDIAN, width=1.5),#, shape='spline'),
             name='Median', connectgaps=True))
 
     # Individual years
@@ -117,7 +117,7 @@ def build_seasonal_chart(df_ev, config, report_date, prev_week_monthly=None):
         if sum(yr_data) == 0: continue
         fig.add_trace(go.Scatter(
             x=MONTHS, y=yr_data.tolist(), mode='lines',
-            line=dict(color=year_colors[idx % len(year_colors)], width=1.5, shape='spline'),
+            line=dict(color=year_colors[idx % len(year_colors)], width=1.5,),#, shape='spline'),
             name=str(yr), connectgaps=True))
 
     # Last-week reference for the current year
@@ -129,7 +129,7 @@ def build_seasonal_chart(df_ev, config, report_date, prev_week_monthly=None):
             if any(v is not None and v > 0 for v in pw):
                 fig.add_trace(go.Scatter(
                     x=MONTHS, y=pw, mode='lines',
-                    line=dict(color='#607D8B', width=1.5, dash='dot', shape='spline'),
+                    line=dict(color='#607D8B', width=1.5, dash='dot'),#, shape='spline'),
                     name='Last Week', connectgaps=True))
         except Exception:
             pass  # Never let a missing snapshot break the main chart
@@ -137,13 +137,13 @@ def build_seasonal_chart(df_ev, config, report_date, prev_week_monthly=None):
     # Current year actual
     fig.add_trace(go.Scatter(
         x=MONTHS, y=actual, mode='lines',
-        line=dict(color=CLR_PLANNED, width=2.5, shape='spline'),
+        line=dict(color=CLR_PLANNED, width=2.5),#, shape='spline'),
         name=str(cur_year), connectgaps=False))
 
     # Forward estimate
     fig.add_trace(go.Scatter(
         x=MONTHS, y=fwd, mode='lines',
-        line=dict(color=CLR_PLANNED, width=2, dash='dash', shape='spline'),
+        line=dict(color=CLR_PLANNED, width=2, dash='dash'),#, shape='spline'),
         name=f'{cur_year}E', connectgaps=False))
 
     scope = config.get('chart_scope_label')

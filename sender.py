@@ -37,7 +37,7 @@ def _ensure_logging_configured():
 def send_email(recipients,
                subject,
                body,
-               from_address='jg_research_desk@jainglobal.com',
+               from_address='oil.research.desk@jainglobal.com',
                recipients_cc=None,
                topic='fo_tools_alerts',
                attachment={},
