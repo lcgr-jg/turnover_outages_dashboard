@@ -39,14 +39,15 @@ def build_actions_table(classified):
 
     df['Change_Detail'] = df.apply(desc, axis=1)
 
-    keep = ['Action', 'Category', 'COUNTRY', 'PLANT_NAME', 'UNIT_TYPE',
+    keep = ['Action', 'Category', 'COUNTRY', 'PLANT_NAME', 'PARENTNAME', 'UNIT_TYPE',
             'PREV_START', 'PREV_END', 'START_DATE', 'END_DATE',
             'CAP_OFFLINE_STD', 'CAP_UOM_STD', 'Cap_Change_kbd',
             'Fwd_Impact_kb', 'Fwd_Impact_Delta_kb', 'Utilisation_pct',
             'Change_Detail', 'COMMENTS', 'EVENT_ID']
     out = df[[c for c in keep if c in df.columns]].copy()
     out = out.rename(columns={
-        'COUNTRY': 'Country', 'PLANT_NAME': 'Refinery', 'UNIT_TYPE': 'Unit Type',
+        'COUNTRY': 'Country', 'PLANT_NAME': 'Refinery', 'PARENTNAME': 'Parent',
+        'UNIT_TYPE': 'Unit Type',
         'PREV_START': 'Prev Start', 'PREV_END': 'Prev End',
         'START_DATE': 'Start', 'END_DATE': 'End',
         'CAP_OFFLINE_STD': 'Capacity (kbd)', 'CAP_UOM_STD': 'UOM',
@@ -138,6 +139,7 @@ def build_forward_matrix(classified, config, report_date, group_col=None,
             'Category': str(r.get('Category') or '—'),
             'Country': str(r[cc]) if cc else '—',
             'Refinery': str(r.get('PLANT_NAME', '')),
+            'Parent': str(r.get('PARENTNAME', '') or ''),
             'Unit': str(r.get('UNIT_NAME', '')),
             'Unit Type': str(r.get('UNIT_TYPE', '')),
             'Region': str(r.get('jg_region', r.get('WORLD_REG', ''))),
@@ -151,24 +153,31 @@ def build_forward_matrix(classified, config, report_date, group_col=None,
     if group_col and subgroup_col and group_col in dm.columns and subgroup_col in dm.columns:
         # Two-level hierarchy: group subtotal header rows + subgroup detail rows
         grand = dm[ml].sum().round(1)
-        parts = [pd.DataFrame([{group_col: '▸ TOTAL', subgroup_col: '', **grand.to_dict()}])]
+        parts = [pd.DataFrame([{group_col: '▸ TOTAL', subgroup_col: '', 'Parent': '', **grand.to_dict()}])]
         for grp_val in sorted(dm[group_col].unique()):
             subset = dm[dm[group_col] == grp_val].sort_values(subgroup_col).reset_index(drop=True)
             sub = subset[ml].sum().round(1)
             if aggregate_subgroup:
-                # One row per unique subgroup value (e.g. plant name), months summed
+                # One row per unique subgroup value (e.g. plant name), months summed;
+                # join back unique parent names per refinery as a comma-separated string
                 detail = (
                     subset.groupby(subgroup_col)[ml].sum().round(1)
                     .sort_index().reset_index()
                 )
+                parents = (
+                    subset.groupby(subgroup_col)['Parent']
+                    .apply(lambda x: ', '.join(sorted(x.dropna().unique())))
+                    .rename('Parent')
+                )
+                detail = detail.join(parents, on=subgroup_col)
                 detail.insert(0, group_col, grp_val)
                 label = f'▸ {grp_val} ({len(detail)} refineries)'
             else:
                 # One row per individual event/unit
-                detail = subset[[group_col, subgroup_col] + ml].copy()
+                detail = subset[[group_col, subgroup_col, 'Parent'] + ml].copy()
                 label = f'▸ {grp_val} ({len(subset)} events)'
-            parts.append(pd.DataFrame([{group_col: label, subgroup_col: '', **sub.to_dict()}]))
-            parts.append(detail[[group_col, subgroup_col] + ml])
+            parts.append(pd.DataFrame([{group_col: label, subgroup_col: '', 'Parent': '', **sub.to_dict()}]))
+            parts.append(detail[[group_col, subgroup_col, 'Parent'] + ml])
         return pd.concat(parts, ignore_index=True), ml
 
     if group_col and group_col in dm.columns:
@@ -181,7 +190,7 @@ def build_forward_matrix(classified, config, report_date, group_col=None,
     # Detail with region subtotals
     grand = dm[ml].sum().round(1)
     total_row = pd.DataFrame([{
-        'Category': '', 'Country': '', 'Refinery': '', 'Unit': '', 'Unit Type': '',
+        'Category': '', 'Country': '', 'Refinery': '', 'Parent': '', 'Unit': '', 'Unit Type': '',
         'Region': '▸ TOTAL', **grand.to_dict()
     }])
     detail_parts = [total_row]
@@ -189,7 +198,7 @@ def build_forward_matrix(classified, config, report_date, group_col=None,
         rg = dm[dm['Region'] == region].sort_values(['Country', 'Refinery']).reset_index(drop=True)
         sub = rg[ml].sum().round(1)
         header = pd.DataFrame([{
-            'Category': '', 'Country': '', 'Refinery': '', 'Unit': '', 'Unit Type': '',
+            'Category': '', 'Country': '', 'Refinery': '', 'Parent': '', 'Unit': '', 'Unit Type': '',
             'Region': f'▸ {region} ({len(rg)} events)', **sub.to_dict()
         }])
         detail_parts.append(header)

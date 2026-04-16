@@ -38,7 +38,7 @@ from sender import send_email
 # ═══════════════════════════════════════════════════════════════════════
 
 RECIPIENTS = (
-    'luiscarlos.gaitan@jainglobal.com, yves.Mindren@jainglobal.com, abderrahmane.mahoudi@jainglobal.com'
+    'luiscarlos.gaitan@jainglobal.com'#, yves.Mindren@jainglobal.com, abderrahmane.mahoudi@jainglobal.com'
 )  # comma-separated string (do not use # inside quotes — it starts a comment)
 RECIPIENTS_CC = None  # e.g. 'teammate1@jainglobal.com,teammate2@jainglobal.com'
 FROM_ADDRESS = 'oil.research.desk@jainglobal.com'
@@ -529,10 +529,10 @@ td {{ padding: 5px 8px; border-bottom: 1px solid #ddd; white-space: nowrap; }}
 </body></html>"""
 
     subject = (
-        f"TAR Report")
+        f"TAR Report ")
         
     if region_scope_label.upper() != 'GLOBAL':
-        subject += f" | {region_scope_label} "
+        subject += f"| {region_scope_label} "
         
     subject += f"| — {today.strftime('%d %b %Y')} — {n_actions} actions ({n_new} new, {n_updated} updated)"
     

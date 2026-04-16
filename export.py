@@ -27,12 +27,15 @@ def style_actions(df, unit_types, report_date):
     if 'Fwd Impact (kb)' in df.columns: fmt['Fwd Impact (kb)'] = '{:,.0f}'
     if 'Fwd Impact Δ (kb)' in df.columns: fmt['Fwd Impact Δ (kb)'] = '{:+,.0f}'
     if 'Offline %' in df.columns: fmt['Offline %'] = '{:.1f}%'
-    return (df.style.apply(rs, axis=1).format(fmt, na_rep='—')
+    styled = (df.style.apply(rs, axis=1).format(fmt, na_rep='—')
         .set_table_styles(TABLE_STYLES)
         .set_properties(subset=['Refinery'], **{'min-width': '180px', 'max-width': '250px', 'white-space': 'normal', 'word-wrap': 'break-word'})
         .set_properties(subset=['Change Detail'], **{'min-width': '200px', 'max-width': '320px', 'white-space': 'normal', 'word-wrap': 'break-word', 'font-size': '11px'})
         .set_caption(f'IIR Refinery Offline Events — {report_date.year} | {' & '.join(unit_types)} | Generated {report_date.date()}')
         .hide(axis='index'))
+    if 'Parent' in df.columns:
+        styled = styled.set_properties(subset=['Parent'], **{'min-width': '150px', 'max-width': '220px', 'white-space': 'normal', 'word-wrap': 'break-word'})
+    return styled
 
 
 def style_matrix(df, ml, caption=''):
@@ -48,4 +51,6 @@ def style_matrix(df, ml, caption=''):
         .set_caption(caption).hide(axis='index'))
     if 'Refinery' in df.columns:
         s = s.set_properties(subset=['Refinery'], **{'min-width':'160px','max-width':'220px','white-space':'normal','word-wrap':'break-word'})
+    if 'Parent' in df.columns:
+        s = s.set_properties(subset=['Parent'], **{'min-width':'140px','max-width':'200px','white-space':'normal','word-wrap':'break-word'})
     return s
