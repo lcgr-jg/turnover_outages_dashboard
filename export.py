@@ -35,6 +35,11 @@ def style_actions(df, unit_types, report_date):
         .hide(axis='index'))
     if 'Parent' in df.columns:
         styled = styled.set_properties(subset=['Parent'], **{'min-width': '150px', 'max-width': '220px', 'white-space': 'normal', 'word-wrap': 'break-word'})
+    if 'Event Type' in df.columns:
+        styled = styled.map(
+            lambda v: 'background-color:#e65100;color:white;font-weight:bold' if v == 'Unplanned' else '',
+            subset=['Event Type']
+        )
     return styled
 
 

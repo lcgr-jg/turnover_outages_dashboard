@@ -39,13 +39,14 @@ def build_actions_table(classified):
 
     df['Change_Detail'] = df.apply(desc, axis=1)
 
-    keep = ['Action', 'Category', 'COUNTRY', 'PLANT_NAME', 'PARENTNAME', 'UNIT_TYPE',
+    keep = ['Action', 'EVENT_TYPE', 'Category', 'COUNTRY', 'PLANT_NAME', 'PARENTNAME', 'UNIT_TYPE',
             'PREV_START', 'PREV_END', 'START_DATE', 'END_DATE',
             'CAP_OFFLINE_STD', 'CAP_UOM_STD', 'Cap_Change_kbd',
             'Fwd_Impact_kb', 'Fwd_Impact_Delta_kb', 'Utilisation_pct',
             'Change_Detail', 'COMMENTS', 'EVENT_ID']
     out = df[[c for c in keep if c in df.columns]].copy()
     out = out.rename(columns={
+        'EVENT_TYPE': 'Event Type',
         'COUNTRY': 'Country', 'PLANT_NAME': 'Refinery', 'PARENTNAME': 'Parent',
         'UNIT_TYPE': 'Unit Type',
         'PREV_START': 'Prev Start', 'PREV_END': 'Prev End',

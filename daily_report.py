@@ -38,7 +38,7 @@ from sender import send_email
 # ═══════════════════════════════════════════════════════════════════════
 
 RECIPIENTS = (
-    'luiscarlos.gaitan@jainglobal.com'#, yves.Mindren@jainglobal.com, abderrahmane.mahoudi@jainglobal.com'
+    'luiscarlos.gaitan@jainglobal.com, yves.Mindren@jainglobal.com, abderrahmane.mahoudi@jainglobal.com'
 )  # comma-separated string (do not use # inside quotes — it starts a comment)
 RECIPIENTS_CC = None  # e.g. 'teammate1@jainglobal.com,teammate2@jainglobal.com'
 FROM_ADDRESS = 'oil.research.desk@jainglobal.com'
