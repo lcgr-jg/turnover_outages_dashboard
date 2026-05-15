@@ -19,7 +19,7 @@ import pandas as pd
 # ── Add project root to path ──
 sys.path.insert(0, os.path.dirname(__file__))
 
-from config import DEFAULT_UNIT_TYPES, TABLE_STYLES, SUMMARY_FMT
+from config import DEFAULT_UNIT_TYPES, VGO_UNIT_TYPES, FCCU_UNIT_TYPES, HYDROCRACKING_UNIT_TYPES, TABLE_STYLES, SUMMARY_FMT, RECIPIENTS, RECIPIENTS_CC, FROM_ADDRESS
 from export import style_actions, style_matrix
 from data import load_and_prepare
 from classification import classify_events, enrich_events
@@ -37,14 +37,20 @@ from sender import send_email
 # CONFIG
 # ═══════════════════════════════════════════════════════════════════════
 
-RECIPIENTS = (
-    'luiscarlos.gaitan@jainglobal.com, yves.Mindren@jainglobal.com, abderrahmane.mahoudi@jainglobal.com'
-)  # comma-separated string (do not use # inside quotes — it starts a comment)
-RECIPIENTS_CC = None  # e.g. 'teammate1@jainglobal.com,teammate2@jainglobal.com'
-FROM_ADDRESS = 'oil.research.desk@jainglobal.com'
+# Each tuple is (display label used in subjects/slugs, list of unit types to filter on).
+# Adding a new group here automatically generates a GLOBAL + per-region email bundle
+# on the next scheduled run; snapshots are namespaced by label so the "Last Week"
+# reference line stays correct per group.
+REPORT_GROUPS = [
+    ('CDU',           DEFAULT_UNIT_TYPES),
+    ('VGO',           VGO_UNIT_TYPES),
+    ('FCCU',          FCCU_UNIT_TYPES),
+    ('Hydrocracking', HYDROCRACKING_UNIT_TYPES),
+]
 
-UNIT_TYPES = DEFAULT_UNIT_TYPES
-SAVE_COPY = True
+# Off by default: the email is the canonical archive. Flip to True only for
+# ad-hoc debugging when you want a local HTML copy.
+SAVE_COPY = False
 SAVE_DIR = os.path.join(os.path.dirname(__file__), 'scratch')
 
 REPORT_GEO_PATH = os.path.join(os.path.dirname(__file__), 'reference', 'report_geo.csv')
@@ -295,6 +301,31 @@ def load_snapshot_for_date(scope_slug: str, target_date) -> dict | None:
         return None
 
 
+def _migrate_legacy_cdu_snapshots() -> None:
+    """
+    Rename pre-multi-group scopes (e.g. 'GLOBAL', 'Europe (NEW + MED)') to 'CDU__<scope>'.
+
+    The slug scheme changed when the daily run started emitting 4 unit-type groups:
+    snapshots are now keyed by '<group>__<region_tag>'. Legacy rows from before that
+    change all belonged to the CDU group, so we prefix them in place. The double
+    underscore is the namespace separator and is also produced by _scope_file_slug
+    when the input already contains a literal '__' — so the predicate "scope has no
+    '__'" reliably identifies un-migrated rows and makes this helper idempotent.
+    """
+    try:
+        conn = _get_db_conn()
+        for table in ('daily_capacity', 'seasonal_capacity'):
+            conn.execute(
+                f"UPDATE {table} SET scope = 'CDU__' || scope "
+                f"WHERE instr(scope, '__') = 0"
+            )
+        conn.commit()
+        conn.close()
+    except Exception as exc:
+        # Non-fatal: worst case is one cycle without a "Last Week" line on CDU charts.
+        print(f"  [snapshot] legacy migration skipped ({exc})", flush=True)
+
+
 def _silence_noisy_loggers():
     """Keep chart/export and HTTP client libraries from flooding stdout during batch runs."""
     for name in (
@@ -367,20 +398,29 @@ def fig_to_img_tag(fig, width=700, height=380):
 
 def generate_report_html(events_df: pd.DataFrame, today, prev, region_scope_label: str,
                          prev_week_snapshot: dict | None = None,
-                         is_regional: bool = False):
+                         is_regional: bool = False,
+                         unit_types: list | None = None,
+                         group_label: str = 'CDU'):
     """
     Build HTML + subject from an already-filtered event frame (unit types and optional region).
     region_scope_label: e.g. 'GLOBAL' or 'Europe (NEW + MED)' for chart titles and subject.
+    unit_types: list of UNIT_TYPE values driving this report (used in headers and the
+        forward-impact matrix). Defaults to DEFAULT_UNIT_TYPES so callers that haven't
+        been updated keep working.
+    group_label: short display label (e.g. 'CDU', 'VGO') used in the email subject.
 
     prev_week_snapshot: optional dict returned by load_last_week_snapshot; when supplied,
         a dashed grey "Last Week" line is overlaid on each chart for quick visual comparison.
     """
+    if unit_types is None:
+        unit_types = DEFAULT_UNIT_TYPES
+
     cf = events_df
     current_year = today.year
     last_year = current_year - 1
     years = list(range(2021, last_year + 1))
     config = {
-        'unit_types': UNIT_TYPES,
+        'unit_types': unit_types,
         'event_type': 'Planned',
         'region': None,
         'country': None,
@@ -411,7 +451,7 @@ def generate_report_html(events_df: pd.DataFrame, today, prev, region_scope_labe
 
     summary_df = build_change_summary(cf)
     actions_df = build_actions_table(cf)
-    matrix_config = {'unit_types': UNIT_TYPES, 'forward_months': 12}
+    matrix_config = {'unit_types': unit_types, 'forward_months': 12}
     if is_regional:
         matrix_group_col = 'Country'
         matrix_title = 'Forward Impact by Country (kbd)'
@@ -464,7 +504,7 @@ def generate_report_html(events_df: pd.DataFrame, today, prev, region_scope_labe
     n_updated = len(cf[cf['Action'] == 'Updated']) if 'Action' in cf.columns else 0
 
     dt = today.strftime('%d %B %Y')
-    ut_label = ' & '.join(UNIT_TYPES)
+    ut_label = ' & '.join(unit_types)
     scope_html = '' if region_scope_label.upper() == 'GLOBAL' else f' &nbsp;|&nbsp; {region_scope_label}'
 
     html = f"""<!DOCTYPE html>
@@ -528,27 +568,33 @@ td {{ padding: 5px 8px; border-bottom: 1px solid #ddd; white-space: nowrap; }}
 
 </body></html>"""
 
-    subject = (
-        f"TAR Report ")
-        
+    subject = f"{group_label} TAR Report "
+
     if region_scope_label.upper() != 'GLOBAL':
         subject += f"| {region_scope_label} "
-        
+
     subject += f"| — {today.strftime('%d %b %Y')} — {n_actions} actions ({n_new} new, {n_updated} updated)"
-    
+
     return html, subject
 
 
-def generate_report():
-    """Load data, build global report only (backward-compatible wrapper)."""
+def generate_report(unit_types: list | None = None, group_label: str = 'CDU'):
+    """Load data, build global report only (backward-compatible wrapper).
+
+    Defaults to the CDU group so existing import call sites (e.g. ad-hoc notebooks)
+    keep producing the original report without changes.
+    """
+    if unit_types is None:
+        unit_types = DEFAULT_UNIT_TYPES
     today, prev = report_dates()
     print(f"Generating report: {today.date()} vs {prev.date()}")
     df = load_and_prepare()
     classified = classify_events(df, today, prev)
     classified = enrich_events(classified, today)
-    cf = filter_unit_types(classified, UNIT_TYPES)
+    cf = filter_unit_types(classified, unit_types)
     print(f"Events: {len(cf)}")
-    return generate_report_html(cf, today, prev, 'GLOBAL')
+    return generate_report_html(cf, today, prev, 'GLOBAL',
+                                unit_types=unit_types, group_label=group_label)
 
 
 def _scope_file_slug(scope_label: str) -> str:
@@ -622,42 +668,58 @@ def _build_snapshot_data(events_df: pd.DataFrame, today, unit_types,
 if __name__ == '__main__':
     _silence_noisy_loggers()
 
+    # One-time rename of pre-multi-group snapshots so the CDU "Last Week" line
+    # keeps working after the slug scheme changed. Safe to call on every run.
+    _migrate_legacy_cdu_snapshots()
+
     today, prev = report_dates()
     print(f"Generating report: {today.date()} vs {prev.date()}")
 
+    # Heavy data prep happens once and is reused across all groups — only the
+    # final unit-type filter changes per group.
     df = load_and_prepare()
     classified = classify_events(df, today, prev)
     classified = enrich_events(classified, today)
 
-    if 'jg_region' not in classified.columns:
+    has_region = 'jg_region' in classified.columns
+    if not has_region:
         print('Warning: jg_region missing after load — regional bundles skipped; geography join may have failed.')
-        cf = filter_unit_types(classified, UNIT_TYPES)
         bundles = {}
     else:
-        cf = filter_unit_types(classified, UNIT_TYPES)
         try:
             bundles = load_report_region_groups(REPORT_GEO_PATH)
         except FileNotFoundError:
             print(f'Warning: {REPORT_GEO_PATH} not found — regional emails skipped.')
             bundles = {}
 
-    print(f"Events (global scope): {len(cf)}")
+    # Build the full work list up-front so the [i/N] counter reflects the
+    # total send count across every group (easier to follow in the logs).
+    plan = []  # list of (group_label, unit_types, tag, events_df, scope_label)
+    for group_label, unit_types in REPORT_GROUPS:
+        cf = filter_unit_types(classified, unit_types)
+        print(f"Events ({group_label}, global scope): {len(cf)}")
 
-    sends = [('GLOBAL', cf, 'GLOBAL')]
+        plan.append((group_label, unit_types, 'GLOBAL', cf, 'GLOBAL'))
 
-    for report_region, jg_list in bundles.items():
-        sub = cf[cf['jg_region'].isin(jg_list)]
-        if sub.empty:
-            print(f"  Skip regional '{report_region}': no events for jg_regions {jg_list}")
+        if not has_region:
             continue
-        sends.append((report_region, sub, report_region))
+        for report_region, jg_list in bundles.items():
+            sub = cf[cf['jg_region'].isin(jg_list)]
+            if sub.empty:
+                print(f"  Skip {group_label} / '{report_region}': no events for jg_regions {jg_list}")
+                continue
+            plan.append((group_label, unit_types, report_region, sub, report_region))
 
-    total_sends = len(sends)
+    total_sends = len(plan)
     run_rows = []
 
-    for i, (tag, events_df, scope_label) in enumerate(sends, start=1):
-        print(f"[{i}/{total_sends}] {tag} — {len(events_df)} events, building…", flush=True)
-        slug = _scope_file_slug(tag)
+    for i, (group_label, unit_types, tag, events_df, scope_label) in enumerate(plan, start=1):
+        # Slug pattern: '<group>__<region_tag>'. The double underscore separates
+        # the namespace from the region; _migrate_legacy_cdu_snapshots() relies
+        # on its presence to detect already-migrated rows.
+        slug = f"{_scope_file_slug(group_label)}__{_scope_file_slug(tag)}"
+        run_tag = f"{group_label} / {tag}"
+        print(f"[{i}/{total_sends}] {run_tag} — {len(events_df)} events, building…", flush=True)
 
         # Load last-week snapshot (5–10 days old) for the "Last Week" reference line
         prev_week_snap = load_last_week_snapshot(slug, today)
@@ -665,14 +727,18 @@ if __name__ == '__main__':
             snap_date = prev_week_snap.get('run_date', '?')
             print(f"  Last-week snapshot found: {snap_date}", flush=True)
         else:
-            print(f"  No last-week snapshot for '{tag}' — chart will not show reference line.", flush=True)
+            print(f"  No last-week snapshot for '{run_tag}' — chart will not show reference line.", flush=True)
 
         html_body, subject = generate_report_html(events_df, today, prev, scope_label,
                                                   prev_week_snapshot=prev_week_snap,
-                                                  is_regional=(tag != 'GLOBAL'))
+                                                  is_regional=(tag != 'GLOBAL'),
+                                                  unit_types=unit_types,
+                                                  group_label=group_label)
 
-        # Save today's snapshot so next week's run can draw the "Last Week" line
-        daily_data, seasonal_data = _build_snapshot_data(events_df, today, UNIT_TYPES)
+        # Save today's snapshot so next week's run can draw the "Last Week" line.
+        # Filtering uses this group's unit_types — not the global default — so each
+        # group's history stays independent.
+        daily_data, seasonal_data = _build_snapshot_data(events_df, today, unit_types)
         save_snapshot(slug, today, daily_data, seasonal_data)
 
         saved_path = ''
@@ -698,7 +764,7 @@ if __name__ == '__main__':
             flush=True,
         )
         print(f"         subject: {subj_short}", flush=True)
-        run_rows.append((tag, ok, kafka_detail, subj_short))
+        run_rows.append((run_tag, ok, kafka_detail, subj_short))
 
     print()
     print('--- Email run summary (Kafka broker accepted message) ---')
@@ -706,8 +772,8 @@ if __name__ == '__main__':
     print(f"  Handed off: {ok_count}/{total_sends} OK")
     if ok_count < total_sends:
         print('  If OK count matches run but inbox is short, check the fo_tools_alerts consumer / mail gateway.')
-    for tag, ok, detail, subj_short in run_rows:
-        line = f"  [{'OK' if ok else 'FAIL'}] {tag}: {detail}"
+    for run_tag, ok, detail, subj_short in run_rows:
+        line = f"  [{'OK' if ok else 'FAIL'}] {run_tag}: {detail}"
         if not ok:
             line += f" | {subj_short}"
         print(line, flush=True)

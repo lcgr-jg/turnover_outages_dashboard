@@ -4,6 +4,37 @@ Shared configuration — constants, defaults, conversion factors.
 
 DEFAULT_UNIT_TYPES = ['Atmospheric Distillation', 'Condensate Splitter']
 
+VGO_UNIT_TYPES = ['Vacuum Distillation', 'Vacuum (No Atmospheric)']
+
+FCCU_UNIT_TYPES = ['FCCU (Fluid Catalytic Cracker)', 'RFCCU (Residue Fluid Catalytic Cracker)']
+
+HYDROCRACKING_UNIT_TYPES = ['Distillate Hydrocracker', 'Residual Hydrocracker']
+
+# Unit types whose source CAP_OFFLINE is NOT measured in BBL/d (i.e. they use
+# Metric T/yr, M Lbs/yr, T/d, etc.).  data.apply_conversion() uses this set to
+# decide whether a missing UOM can safely be defaulted to BBL/d: volumetric
+# units (everything not in this set) get the BBL/d default; non-volumetric
+# units are left with NaN CAP_OFFLINE_STD because we cannot safely guess
+# between Metric T/yr, M Lbs/yr, etc.  Defaulting them to BBL/d would inflate
+# values ~365x for Metric T/yr units, etc.  Add to this set if you discover
+# new non-volumetric unit types that lack a UOM in the source data.
+NON_VOLUMETRIC_UNIT_TYPES = frozenset({
+    'Amine Treatment',
+    'Benzene',
+    'Hydrodealkylation',
+    'Propylene Splitter',
+    'Sulfur Recovery (SRU)',
+})
+
+
+# ── Email configuration ──
+# ───────────────────────────────────────────────────────────────────────
+RECIPIENTS = (
+    'luiscarlos.gaitan@jainglobal.com, yves.Mindren@jainglobal.com, abderrahmane.mahoudi@jainglobal.com'
+)  # comma-separated string (do not use # inside quotes — it starts a comment)
+RECIPIENTS_CC = None  # e.g. 'teammate1@jainglobal.com,teammate2@jainglobal.com'
+FROM_ADDRESS = 'oil.research.desk@jainglobal.com'
+
 CONVERSION_FACTORS = {
     'BBL/d': 1 / 1_000, 'M Lbs/yr': 453.592 / 1_000 / 365,
     'Metric T/yr': 1 / 1_000 / 365, 'T/d': 1 / 1_000, 'MMSCFD': 1.0,
