@@ -43,7 +43,7 @@ from sender import send_email
 # reference line stays correct per group.
 REPORT_GROUPS = [
     ('CDU',           DEFAULT_UNIT_TYPES),
-    ('VGO',           VGO_UNIT_TYPES),
+    ('VDU',           VGO_UNIT_TYPES),
     ('FCCU',          FCCU_UNIT_TYPES),
     ('Hydrocracking', HYDROCRACKING_UNIT_TYPES),
 ]

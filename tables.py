@@ -107,35 +107,66 @@ def build_change_summary(classified):
 
 def build_forward_matrix(classified, config, report_date, group_col=None,
                          subgroup_col=None, aggregate_subgroup: bool = False):
-    """Forward matrix in kbd (avg per month). Returns (df, month_labels)."""
+    """Forward matrix in kbd (avg per month). Returns (df, month_labels).
+
+    First column is the previous calendar month (all non-cancelled events that
+    overlapped it). Remaining columns are forward months (Future/Ongoing only).
+    """
     ps = report_date.to_period('M').to_timestamp()
     n = config.get('forward_months', 12)
     pe = ps + pd.DateOffset(months=n) - pd.Timedelta(days=1)
     ut_list = config.get('unit_types')
 
-    mask = ((classified['START_DATE'] <= pe) &
-            (classified['END_DATE'].fillna(pe) >= ps) &
-            classified['CAP_OFFLINE_STD'].notna() &
-            classified['E_STATUS_RESEARCH'].isin(['Future', 'Ongoing']))
-    if ut_list:
-        uc = next((c for c in ['UNIT_TYPE', 'UTYPE_DESC'] if c in classified.columns), None)
-        if uc: mask &= classified[uc].isin(ut_list)
-    fwd = classified[mask].copy()
+    # Previous month — historical reference (same logic as seasonal charts)
+    prev_ps = ps - pd.DateOffset(months=1)
+    prev_pe = prev_ps + pd.offsets.MonthEnd(0)
+    prev_ml = f"{prev_ps.strftime('%b %y')} (prev)"
+    prev_dim = days_in_month(prev_ps.year, prev_ps.month)
 
     months = pd.date_range(ps, periods=n, freq='MS')
-    ml = [m.strftime('%b %y') for m in months]
-    dim = [days_in_month(m.year, m.month) for m in months]
+    ml_fwd = [m.strftime('%b %y') for m in months]
+    ml = [prev_ml] + ml_fwd
+    dim_fwd = [days_in_month(m.year, m.month) for m in months]
+    sort_col = ml_fwd[0] if ml_fwd else ml[0]
 
-    def impact_kbd(start, end, cap):
+    base = classified[classified['CAP_OFFLINE_STD'].notna()].copy()
+    if ut_list:
+        uc = next((c for c in ['UNIT_TYPE', 'UTYPE_DESC'] if c in base.columns), None)
+        if uc:
+            base = base[base[uc].isin(ut_list)]
+
+    not_cancelled = base['E_STATUS_RESEARCH'] != 'Cancelled'
+    prev_overlap = (
+        (base['START_DATE'] <= prev_pe) &
+        (base['END_DATE'].fillna(prev_pe) >= prev_ps)
+    )
+    fwd_status = base['E_STATUS_RESEARCH'].isin(['Future', 'Ongoing'])
+    fwd_overlap = (
+        (base['START_DATE'] <= pe) &
+        (base['END_DATE'].fillna(pe) >= ps)
+    )
+    candidates = base[(not_cancelled & prev_overlap) | (fwd_status & fwd_overlap)].copy()
+
+    def prev_impact_kbd(start, end, cap):
+        ed = end if pd.notna(end) else prev_pe
+        overlap = max((min(ed, prev_pe) - max(start, prev_ps)).days + 1, 0)
+        return round(float(cap) * overlap / prev_dim, 1) if overlap > 0 else 0.0
+
+    def fwd_impact_kbd(start, end, cap):
         ed = end if pd.notna(end) else pe
-        return [round(float(cap) * max((min(ed, ms + pd.offsets.MonthEnd(0)) - max(start, ms)).days + 1, 0) / dim[i], 1)
-                for i, ms in enumerate(months)]
+        return [
+            round(float(cap) * max((min(ed, ms + pd.offsets.MonthEnd(0)) - max(start, ms)).days + 1, 0) / dim_fwd[i], 1)
+            for i, ms in enumerate(months)
+        ]
 
-    cc = next((c for c in ['COUNTRY', 'P_COUNTRY'] if c in fwd.columns), None)
+    cc = next((c for c in ['COUNTRY', 'P_COUNTRY'] if c in candidates.columns), None)
     rows = []
-    for _, r in fwd.iterrows():
-        v = impact_kbd(r['START_DATE'], r['END_DATE'], r['CAP_OFFLINE_STD'])
-        if sum(v) == 0: continue
+    for _, r in candidates.iterrows():
+        st = r['E_STATUS_RESEARCH']
+        prev_v = prev_impact_kbd(r['START_DATE'], r['END_DATE'], r['CAP_OFFLINE_STD']) if st != 'Cancelled' else 0.0
+        fwd_v = fwd_impact_kbd(r['START_DATE'], r['END_DATE'], r['CAP_OFFLINE_STD']) if st in ('Future', 'Ongoing') else [0.0] * n
+        if prev_v == 0 and sum(fwd_v) == 0:
+            continue
         rows.append({
             'Category': str(r.get('Category') or '—'),
             'Country': str(r[cc]) if cc else '—',
@@ -144,7 +175,8 @@ def build_forward_matrix(classified, config, report_date, group_col=None,
             'Unit': str(r.get('UNIT_NAME', '')),
             'Unit Type': str(r.get('UNIT_TYPE', '')),
             'Region': str(r.get('jg_region', r.get('WORLD_REG', ''))),
-            **dict(zip(ml, v)),
+            prev_ml: prev_v,
+            **dict(zip(ml_fwd, fwd_v)),
         })
 
     dm = pd.DataFrame(rows)
@@ -182,7 +214,7 @@ def build_forward_matrix(classified, config, report_date, group_col=None,
         return pd.concat(parts, ignore_index=True), ml
 
     if group_col and group_col in dm.columns:
-        g = dm.groupby(group_col)[ml].sum().round(1).sort_values(ml[0], ascending=False)
+        g = dm.groupby(group_col)[ml].sum().round(1).sort_values(sort_col, ascending=False)
         grand = g.sum().round(1)
         grand.name = 'TOTAL'
         g = pd.concat([pd.DataFrame([grand]), g])

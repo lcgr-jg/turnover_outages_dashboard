@@ -27,7 +27,7 @@ from charts import build_seasonal_chart, build_daily_ops_chart
 from tables import build_actions_table, build_change_summary, build_forward_matrix
 from analytics import build_ta_cycle_analysis, build_reliability_scores, find_ta_announcement_gaps
 from core import get_latest_snapshot
-from export import style_actions, style_matrix, fmt_kbd
+from export import style_actions, style_matrix, fmt_kbd, matrix_prev_col, matrix_forward_cols
 
 # ═══════════════════════════════════════════════════════════════════════
 # DATA STORE (in-memory, shared across all users)
@@ -573,10 +573,12 @@ def update_forward_matrix(version, n_clicks, unit_types, regions):
 
     regional_table = html.Div()
     if not regional_df.empty:
-        # Style: heatmap on numeric columns
-        num_max = regional_df[ml].max().max() if not regional_df[ml].empty else 1
+        prev_col = matrix_prev_col(ml)
+        fwd_cols = matrix_forward_cols(ml)
+        # Heatmap on forward months only — prev column is historical reference
+        num_max = regional_df[fwd_cols].max().max() if fwd_cols and not regional_df[fwd_cols].empty else 1
         heat_conditions = []
-        for m in ml:
+        for m in fwd_cols:
             for threshold in [0.25, 0.5, 0.75]:
                 heat_conditions.append({
                     'if': {'column_id': m,
@@ -586,6 +588,20 @@ def update_forward_matrix(version, n_clicks, unit_types, regions):
 
         idx_col = regional_df.columns[0]  # 'index' or region col name
         display_cols = [idx_col] + ml
+        prev_style = []
+        if prev_col:
+            prev_style = [
+                {'if': {'column_id': prev_col},
+                 'backgroundColor': '#f0f2f4', 'color': '#607D8B', 'fontStyle': 'italic',
+                 'borderRight': '2px solid #adb5bd'},
+            ]
+        prev_header = []
+        if prev_col:
+            prev_header = [
+                {'if': {'column_id': prev_col},
+                 'backgroundColor': '#607D8B', 'fontStyle': 'italic',
+                 'borderRight': '2px solid #adb5bd'},
+            ]
         regional_table = html.Div([
             html.H6("Regional Summary (kbd)", className="mb-2",
                      style={'color': '#1a1a2e'}),
@@ -597,12 +613,13 @@ def update_forward_matrix(version, n_clicks, unit_types, regions):
                 style_header={'backgroundColor': '#1a1a2e', 'color': 'white',
                               'fontWeight': 'bold', 'fontSize': '11px',
                               'textAlign': 'center', 'padding': '6px 8px'},
+                style_header_conditional=prev_header,
                 style_cell={'fontSize': '12px', 'padding': '5px 8px',
                             'textAlign': 'center', 'whiteSpace': 'nowrap'},
                 style_cell_conditional=[
                     {'if': {'column_id': idx_col}, 'textAlign': 'left',
                      'fontWeight': 'bold', 'minWidth': '120px'},
-                ],
+                ] + prev_style,
                 style_data_conditional=[
                     {'if': {'filter_query': f'{{{idx_col}}} = "TOTAL"'},
                      'fontWeight': 'bold', 'backgroundColor': '#d5dbe0'},
@@ -627,10 +644,11 @@ def update_forward_matrix(version, n_clicks, unit_types, regions):
             region_rows[current_region]['detail'].append(row)
 
     # Build accordion
+    fwd_cols2 = matrix_forward_cols(ml2)
     items = []
     for region_label, data in sorted(region_rows.items(),
                                       key=lambda x: -sum(x[1]['header'].get(m, 0)
-                                                         for m in ml2
+                                                         for m in fwd_cols2
                                                          if isinstance(x[1]['header'].get(m, 0), (int, float)))):
         detail_list = data['detail']
         if not detail_list:
@@ -643,15 +661,30 @@ def update_forward_matrix(version, n_clicks, unit_types, regions):
         n_events = match.group(1) if match else len(detail_list)
         clean_name = re.sub(r'\s*\(\d+ events?\)', '', region_label)
 
-        # First-month total for the title
+        # First forward-month total for the accordion title
         first_nonzero = next(
-            (f"{data['header'].get(m, 0):.1f} kbd" for m in ml2
+            (f"{data['header'].get(m, 0):.1f} kbd" for m in fwd_cols2
              if isinstance(data['header'].get(m, 0), (int, float)) and data['header'].get(m, 0) > 0.05),
             '—'
         )
 
         detail_cols = ['Country', 'Refinery', 'Unit'] + ml2
         detail_cols = [c for c in detail_cols if c in detail.columns]
+        prev_col2 = matrix_prev_col(ml2)
+        prev_detail_style = []
+        if prev_col2:
+            prev_detail_style = [
+                {'if': {'column_id': prev_col2},
+                 'backgroundColor': '#f0f2f4', 'color': '#607D8B', 'fontStyle': 'italic',
+                 'borderRight': '2px solid #adb5bd'},
+            ]
+        prev_detail_header = []
+        if prev_col2:
+            prev_detail_header = [
+                {'if': {'column_id': prev_col2},
+                 'backgroundColor': '#607D8B', 'fontStyle': 'italic',
+                 'borderRight': '2px solid #adb5bd'},
+            ]
 
         detail_table = dash_table.DataTable(
             columns=[{'name': c, 'id': c} for c in detail_cols],
@@ -662,6 +695,7 @@ def update_forward_matrix(version, n_clicks, unit_types, regions):
             style_header={'backgroundColor': '#1a1a2e', 'color': 'white',
                           'fontWeight': 'bold', 'fontSize': '10px',
                           'textAlign': 'center', 'padding': '4px 6px'},
+            style_header_conditional=prev_detail_header,
             style_cell={'fontSize': '11px', 'padding': '4px 6px',
                         'whiteSpace': 'nowrap', 'textAlign': 'center'},
             style_cell_conditional=[
@@ -669,12 +703,13 @@ def update_forward_matrix(version, n_clicks, unit_types, regions):
                  'whiteSpace': 'normal', 'textAlign': 'left'},
                 {'if': {'column_id': 'Country'}, 'textAlign': 'left', 'minWidth': '80px'},
                 {'if': {'column_id': 'Unit'}, 'textAlign': 'left', 'minWidth': '120px'},
-            ],
+            ] + prev_detail_style,
         )
 
+        title_month = fwd_cols2[0] if fwd_cols2 else ml2[0]
         items.append(dbc.AccordionItem(
             detail_table,
-            title=f"{clean_name}  ({n_events} events,  {ml2[0]}: {first_nonzero})",
+            title=f"{clean_name}  ({n_events} events,  {title_month}: {first_nonzero})",
         ))
 
     accordion = dbc.Accordion(items, start_collapsed=True, flush=True)
@@ -848,11 +883,15 @@ def export_html(n_clicks, unit_types, regions, show_years, band_range, chart_reg
         if df.empty: return ''
         header_cols = ['Country','Refinery','Unit','Unit Type'] + ml
         cols = [c for c in header_cols if c in df.columns]
+        prev_col = matrix_prev_col(ml)
+        prev_th = 'background:#607D8B;color:white;font-style:italic;border-right:2px solid #adb5bd'
+        prev_td = 'background:#f0f2f4;color:#607D8B;font-style:italic;border-right:2px solid #adb5bd'
         h = f'<table style="border-collapse:collapse;width:100%;font-family:Calibri,sans-serif;font-size:12px">'
         h += f'<caption style="font-size:14px;font-weight:bold;text-align:left;padding:10px 0">{caption}</caption>'
         h += '<thead><tr>'
         for c in cols:
-            h += f'<th style="background:#1a1a2e;color:white;font-size:11px;padding:8px 10px;text-align:center;white-space:nowrap">{c}</th>'
+            th_style = prev_th if c == prev_col else 'background:#1a1a2e;color:white'
+            h += f'<th style="{th_style};font-size:11px;padding:8px 10px;text-align:center;white-space:nowrap">{c}</th>'
         h += '</tr></thead><tbody>'
         for _, row in df.iterrows():
             rgn = str(row.get('Region',''))
@@ -863,7 +902,8 @@ def export_html(n_clicks, unit_types, regions, show_years, band_range, chart_reg
                     if c in ml:
                         try: v = fmt_kbd(v)
                         except: pass
-                    h += f'<td style="padding:6px 10px;border-bottom:2px solid #1a1a2e">{v}</td>'
+                    extra = f';{prev_td}' if c == prev_col else ''
+                    h += f'<td style="padding:6px 10px;border-bottom:2px solid #1a1a2e{extra}">{v}</td>'
                 h += '</tr>'
             elif rgn.startswith('▸'):
                 import re
@@ -877,7 +917,8 @@ def export_html(n_clicks, unit_types, regions, show_years, band_range, chart_reg
                     elif c in ml:
                         try: v = fmt_kbd(v)
                         except: pass
-                    h += f'<td style="padding:6px 10px;border-bottom:1px solid #ccc">{v}</td>'
+                    extra = f';{prev_td}' if c == prev_col else ''
+                    h += f'<td style="padding:6px 10px;border-bottom:1px solid #ccc{extra}">{v}</td>'
                 h += '</tr>'
             else:
                 clean_rgn = str(row.get('Region',''))
@@ -888,6 +929,8 @@ def export_html(n_clicks, unit_types, regions, show_years, band_range, chart_reg
                         try: v = fmt_kbd(v)
                         except: pass
                     style = 'padding:5px 10px;border-bottom:1px solid #eee'
+                    if c == prev_col:
+                        style += f';{prev_td}'
                     if c == 'Refinery':
                         style += ';min-width:160px;max-width:220px;white-space:normal;word-wrap:break-word'
                     h += f'<td style="{style}">{v}</td>'

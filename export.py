@@ -16,6 +16,16 @@ def fmt_kbd(v):
     except: return ''
 
 
+def matrix_prev_col(ml):
+    """First month label when it is the historical reference column."""
+    return ml[0] if ml and str(ml[0]).endswith('(prev)') else None
+
+
+def matrix_forward_cols(ml):
+    prev = matrix_prev_col(ml)
+    return ml[1:] if prev else ml
+
+
 def style_actions(df, unit_types, report_date):
     cm = {'Cancelled': 'background-color:#fce4ec', 'Completed': 'background-color:#d1ecf1',
           'New': 'background-color:#d4edda', 'Updated': 'background-color:#fff3cd',
@@ -45,6 +55,8 @@ def style_actions(df, unit_types, report_date):
 
 def style_matrix(df, ml, caption=''):
     if df.empty: return None
+    prev_col = matrix_prev_col(ml)
+
     def rs(row):
         rgn = str(row.get('Region','')) if 'Region' in row.index else str(row.iloc[0])
         if rgn.startswith('▸') or rgn=='TOTAL':
@@ -58,4 +70,21 @@ def style_matrix(df, ml, caption=''):
         s = s.set_properties(subset=['Refinery'], **{'min-width':'160px','max-width':'220px','white-space':'normal','word-wrap':'break-word'})
     if 'Parent' in df.columns:
         s = s.set_properties(subset=['Parent'], **{'min-width':'140px','max-width':'200px','white-space':'normal','word-wrap':'break-word'})
+    # Previous month reads as historical reference, not forward impact
+    if prev_col and prev_col in df.columns:
+        s = s.set_properties(subset=[prev_col], **{
+            'background-color': '#f0f2f4',
+            'color': '#607D8B',
+            'font-style': 'italic',
+            'border-right': '2px solid #adb5bd',
+        })
+        col_idx = list(df.columns).index(prev_col) + 1
+        s = s.set_table_styles([{
+            'selector': f'thead th:nth-child({col_idx})',
+            'props': [
+                ('background-color', '#607D8B'),
+                ('font-style', 'italic'),
+                ('border-right', '2px solid #adb5bd'),
+            ],
+        }], overwrite=False)
     return s
