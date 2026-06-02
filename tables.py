@@ -9,6 +9,9 @@ import calendar
 from core import safe_ne, safe_ne_numeric, fmt_date, filter_event_type, days_in_month
 from config import ACTION_COLORS
 
+INSTALLED_CAP_COL = 'Installed (kbd)'
+MATRIX_CAP_COLS = [INSTALLED_CAP_COL]
+
 
 def build_actions_table(classified):
     """Build the Recent Event Actions table. Sorted by |Fwd Impact Δ|."""
@@ -105,19 +108,78 @@ def build_change_summary(classified):
     return pd.DataFrame(rows)
 
 
+def _filter_units_for_nameplate(classified, ut_list):
+    """Units in scope with a usable nameplate capacity."""
+    base = classified.copy()
+    if ut_list:
+        uc = next((c for c in ['UNIT_TYPE', 'UTYPE_DESC'] if c in base.columns), None)
+        if uc:
+            base = base[base[uc].isin(ut_list)]
+    cap = pd.to_numeric(base.get('U_CAPACITY_STD'), errors='coerce')
+    base = base[cap.notna() & (cap > 0)].copy()
+    if base.empty:
+        return base
+    if 'UNIT_ID' in base.columns:
+        return base.sort_values('U_CAPACITY_STD').drop_duplicates('UNIT_ID', keep='last')
+    return base.drop_duplicates(subset=['PLANT_NAME', 'UNIT_NAME'], keep='last')
+
+
+def _nameplate_scope_total(classified, ut_list):
+    units = _filter_units_for_nameplate(classified, ut_list)
+    if units.empty:
+        return 0.0
+    return round(float(units['U_CAPACITY_STD'].sum()), 1)
+
+
+def _resolve_group_col(df, group_col):
+    if group_col in df.columns:
+        return group_col
+    if group_col == 'Region':
+        if 'jg_region' in df.columns:
+            return 'jg_region'
+        return next((c for c in ['WORLD_REG', 'WORLD_REGION'] if c in df.columns), None)
+    if group_col == 'Country':
+        return next((c for c in ['COUNTRY', 'P_COUNTRY'] if c in df.columns), None)
+    return None
+
+
+def _nameplate_by_group(classified, ut_list, group_col):
+    units = _filter_units_for_nameplate(classified, ut_list)
+    col = _resolve_group_col(units, group_col)
+    if units.empty or not col:
+        return {}
+    return (
+        units.groupby(col)['U_CAPACITY_STD']
+        .sum()
+        .round(1)
+        .to_dict()
+    )
+
+
+def _installed_cap_val(row):
+    val = pd.to_numeric(row.get('U_CAPACITY_STD'), errors='coerce')
+    return round(float(val), 1) if pd.notna(val) else None
+
+
+def _installed_col_for_row(nameplate_sum=None):
+    if nameplate_sum is None:
+        return {}
+    return {INSTALLED_CAP_COL: round(float(nameplate_sum), 1)}
+
+
 def build_forward_matrix(classified, config, report_date, group_col=None,
                          subgroup_col=None, aggregate_subgroup: bool = False):
     """Forward matrix in kbd (avg per month). Returns (df, month_labels).
 
     First column is the previous calendar month (all non-cancelled events that
     overlapped it). Remaining columns are forward months (Future/Ongoing only).
+    Installed (kbd) is unit nameplate capacity; month columns are avg daily offline.
     """
     ps = report_date.to_period('M').to_timestamp()
     n = config.get('forward_months', 12)
     pe = ps + pd.DateOffset(months=n) - pd.Timedelta(days=1)
     ut_list = config.get('unit_types')
 
-    # Previous month — historical reference (same logic as seasonal charts)
     prev_ps = ps - pd.DateOffset(months=1)
     prev_pe = prev_ps + pd.offsets.MonthEnd(0)
     prev_ml = f"{prev_ps.strftime('%b %y')} (prev)"
@@ -175,6 +237,7 @@ def build_forward_matrix(classified, config, report_date, group_col=None,
             'Unit': str(r.get('UNIT_NAME', '')),
             'Unit Type': str(r.get('UNIT_TYPE', '')),
             'Region': str(r.get('jg_region', r.get('WORLD_REG', ''))),
+            INSTALLED_CAP_COL: _installed_cap_val(r),
             prev_ml: prev_v,
             **dict(zip(ml_fwd, fwd_v)),
         })
@@ -183,18 +246,26 @@ def build_forward_matrix(classified, config, report_date, group_col=None,
     if dm.empty:
         return dm, ml
 
+    scope_nameplate = _nameplate_scope_total(classified, ut_list)
+    group_nameplate = _nameplate_by_group(classified, ut_list, group_col or 'Region')
+
     if group_col and subgroup_col and group_col in dm.columns and subgroup_col in dm.columns:
-        # Two-level hierarchy: group subtotal header rows + subgroup detail rows
         grand = dm[ml].sum().round(1)
-        parts = [pd.DataFrame([{group_col: '▸ TOTAL', subgroup_col: '', 'Parent': '', **grand.to_dict()}])]
+        parts = [pd.DataFrame([{
+            group_col: '▸ TOTAL', subgroup_col: '', 'Parent': '',
+            **_installed_col_for_row(scope_nameplate),
+            **grand.to_dict(),
+        }])]
         for grp_val in sorted(dm[group_col].unique()):
             subset = dm[dm[group_col] == grp_val].sort_values(subgroup_col).reset_index(drop=True)
             sub = subset[ml].sum().round(1)
+            grp_nameplate = group_nameplate.get(grp_val, 0.0)
             if aggregate_subgroup:
-                # One row per unique subgroup value (e.g. plant name), months summed;
-                # join back unique parent names per refinery as a comma-separated string
                 detail = (
-                    subset.groupby(subgroup_col)[ml].sum().round(1)
+                    subset.groupby(subgroup_col)[ml + [INSTALLED_CAP_COL]].agg({
+                        **{m: 'sum' for m in ml},
+                        INSTALLED_CAP_COL: 'max',
+                    }).round(1)
                     .sort_index().reset_index()
                 )
                 parents = (
@@ -206,25 +277,33 @@ def build_forward_matrix(classified, config, report_date, group_col=None,
                 detail.insert(0, group_col, grp_val)
                 label = f'▸ {grp_val} ({len(detail)} refineries)'
             else:
-                # One row per individual event/unit
-                detail = subset[[group_col, subgroup_col, 'Parent'] + ml].copy()
+                detail = subset[[group_col, subgroup_col, 'Parent'] + MATRIX_CAP_COLS + ml].copy()
                 label = f'▸ {grp_val} ({len(subset)} events)'
-            parts.append(pd.DataFrame([{group_col: label, subgroup_col: '', 'Parent': '', **sub.to_dict()}]))
-            parts.append(detail[[group_col, subgroup_col, 'Parent'] + ml])
+            parts.append(pd.DataFrame([{
+                group_col: label, subgroup_col: '', 'Parent': '',
+                **_installed_col_for_row(grp_nameplate),
+                **sub.to_dict(),
+            }]))
+            cap_detail_cols = [group_col, subgroup_col, 'Parent'] + MATRIX_CAP_COLS + ml
+            parts.append(detail[cap_detail_cols])
         return pd.concat(parts, ignore_index=True), ml
 
     if group_col and group_col in dm.columns:
-        g = dm.groupby(group_col)[ml].sum().round(1).sort_values(sort_col, ascending=False)
-        grand = g.sum().round(1)
+        g = dm.groupby(group_col)[ml].sum().round(1)
+        g[INSTALLED_CAP_COL] = g.index.map(lambda k: group_nameplate.get(k, 0.0))
+        g = g.sort_values(sort_col, ascending=False)
+        grand = g[ml].sum().round(1)
+        grand[INSTALLED_CAP_COL] = scope_nameplate
         grand.name = 'TOTAL'
         g = pd.concat([pd.DataFrame([grand]), g])
         return g.reset_index(), ml
 
-    # Detail with region subtotals
     grand = dm[ml].sum().round(1)
     total_row = pd.DataFrame([{
         'Category': '', 'Country': '', 'Refinery': '', 'Parent': '', 'Unit': '', 'Unit Type': '',
-        'Region': '▸ TOTAL', **grand.to_dict()
+        'Region': '▸ TOTAL',
+        **_installed_col_for_row(scope_nameplate),
+        **grand.to_dict(),
     }])
     detail_parts = [total_row]
     for region in sorted(dm['Region'].unique()):
@@ -232,7 +311,9 @@ def build_forward_matrix(classified, config, report_date, group_col=None,
         sub = rg[ml].sum().round(1)
         header = pd.DataFrame([{
             'Category': '', 'Country': '', 'Refinery': '', 'Parent': '', 'Unit': '', 'Unit Type': '',
-            'Region': f'▸ {region} ({len(rg)} events)', **sub.to_dict()
+            'Region': f'▸ {region} ({len(rg)} events)',
+            **_installed_col_for_row(group_nameplate.get(region, 0.0)),
+            **sub.to_dict(),
         }])
         detail_parts.append(header)
         detail_parts.append(rg)

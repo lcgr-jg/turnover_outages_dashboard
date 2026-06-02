@@ -63,7 +63,8 @@ def style_matrix(df, ml, caption=''):
             return ['background-color:#e9ecef;font-weight:bold']*len(row)
         return ['']*len(row)
     s = (df.style.apply(rs, axis=1)
-        .format({m:fmt_kbd for m in ml if m in df.columns})
+        .format({m: fmt_kbd for m in ml if m in df.columns}
+                | {c: fmt_kbd for c in ('Installed (kbd)',) if c in df.columns})
         .set_table_styles(TABLE_STYLES)
         .set_caption(caption).hide(axis='index'))
     if 'Refinery' in df.columns:

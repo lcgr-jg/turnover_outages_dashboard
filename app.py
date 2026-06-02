@@ -24,9 +24,18 @@ from config import TABLE_STYLES, SUMMARY_FMT
 from data import load_and_prepare, check_for_updates
 from classification import classify_events, enrich_events
 from charts import build_seasonal_chart, build_daily_ops_chart
-from tables import build_actions_table, build_change_summary, build_forward_matrix
+from tables import (build_actions_table, build_change_summary, build_forward_matrix,
+                    MATRIX_CAP_COLS, INSTALLED_CAP_COL)
 from analytics import build_ta_cycle_analysis, build_reliability_scores, find_ta_announcement_gaps
 from core import get_latest_snapshot
+from daily_report import (
+    REPORT_GROUPS,
+    REPORT_GEO_PATH,
+    load_last_week_snapshot,
+    load_report_region_groups,
+    _build_snapshot_data,
+    _scope_file_slug,
+)
 from export import style_actions, style_matrix, fmt_kbd, matrix_prev_col, matrix_forward_cols
 
 # ═══════════════════════════════════════════════════════════════════════
@@ -41,6 +50,7 @@ class DataStore:
         self.available_years = []
         self.available_unit_types = []
         self.available_regions = []
+        self.available_countries = []
         self.available_event_types = []
         self.report_date = None
         self.prev_report_date = None
@@ -74,6 +84,10 @@ class DataStore:
         rgn_col = 'jg_region' if 'jg_region' in self.classified.columns else 'WORLD_REG'
         self.available_regions = sorted(self.classified[rgn_col].dropna().unique().tolist())
 
+        cc = next((c for c in ['COUNTRY', 'P_COUNTRY'] if c in self.classified.columns), None)
+        if cc:
+            self.available_countries = sorted(self.classified[cc].dropna().unique().tolist())
+
         et_col = next((c for c in ['EVENT_TYPE'] if c in self.classified.columns), None)
         if et_col:
             self.available_event_types = sorted(self.classified[et_col].dropna().unique().tolist())
@@ -83,9 +97,14 @@ class DataStore:
         self.available_years = sorted([int(y) for y in years if 2010 <= y <= 2040])
 
         print(f"Loaded: {len(self.classified)} events, {len(self.available_unit_types)} unit types, "
-              f"{len(self.available_regions)} regions, years {self.available_years[0]}-{self.available_years[-1]}")
+              f"{len(self.available_regions)} regions, {len(self.available_countries)} countries, "
+              f"years {self.available_years[0]}-{self.available_years[-1]}")
 
-    def filter(self, unit_types=None, regions=None, event_type=None):
+    @staticmethod
+    def _country_col(df):
+        return next((c for c in ['COUNTRY', 'P_COUNTRY'] if c in df.columns), None)
+
+    def filter(self, unit_types=None, regions=None, countries=None, event_type=None):
         """Return filtered classified DataFrame."""
         df = self.classified.copy()
         if unit_types:
@@ -95,14 +114,22 @@ class DataStore:
         if regions:
             rgn_col = 'jg_region' if 'jg_region' in df.columns else 'WORLD_REG'
             df = df[df[rgn_col].isin(regions)]
+        if countries:
+            cc = self._country_col(df)
+            if cc:
+                df = df[df[cc].isin(countries)]
         return df
 
-    def filter_for_chart(self, regions=None):
-        """Return filtered data for charts (pre-filtered by region at DataFrame level)."""
+    def filter_for_chart(self, regions=None, countries=None):
+        """Return filtered data for charts (pre-filtered at DataFrame level)."""
         df = self.classified.copy()
         if regions:
             rgn_col = 'jg_region' if 'jg_region' in df.columns else 'WORLD_REG'
             df = df[df[rgn_col].isin(regions)]
+        if countries:
+            cc = self._country_col(df)
+            if cc:
+                df = df[df[cc].isin(countries)]
         return df
 
 
@@ -141,7 +168,7 @@ def make_filter_bar():
                     options=[], value=DEFAULT_UNIT_TYPES,
                     multi=True, placeholder="All unit types",
                 ),
-            ], md=3),
+            ], md=2),
             dbc.Col([
                 html.Label("Regions", className="small fw-bold"),
                 dcc.Dropdown(
@@ -149,7 +176,15 @@ def make_filter_bar():
                     options=[], value=[], multi=True,
                     placeholder="All regions",
                 ),
-            ], md=3),
+            ], md=2),
+            dbc.Col([
+                html.Label("Countries", className="small fw-bold"),
+                dcc.Dropdown(
+                    id='filter-countries',
+                    options=[], value=[], multi=True,
+                    placeholder="All countries",
+                ),
+            ], md=2),
             dbc.Col([
                 html.Label("Event Type", className="small fw-bold"),
                 dcc.Dropdown(
@@ -169,7 +204,7 @@ def make_filter_bar():
                 html.Label("Compare vs", className="small fw-bold"),
                 dcc.DatePickerSingle(id='filter-prev-date', date=prev,
                                      display_format='DD MMM YYYY'),
-            ], md=2),
+            ], md=1),
             dbc.Col([
                 html.Label(" ", className="small"),
                 dbc.Button("▶ Apply", id='btn-apply', color='primary',
@@ -352,7 +387,7 @@ def tab_dashboard():
 
         # Forward Matrix (collapsible by region)
         dbc.Card(dbc.CardBody([
-            html.H6("12-Month Forward Offline Capacity (kbd)", className="mb-2"),
+            html.H6("12-Month Forward Capacity", className="mb-2"),
             html.Div(id='forward-matrix-container'),
         ]), className="mb-3"),
 
@@ -413,6 +448,7 @@ def render_tab(active_tab):
     [Output('filter-unit-types', 'options'),
      Output('filter-unit-types', 'value'),      # ← ADD this
      Output('filter-regions', 'options'),
+     Output('filter-countries', 'options'),
      Output('chart-show-years', 'options'),
      Output('chart-region-select', 'options'),
      Output('header-subtitle', 'children'),
@@ -440,6 +476,7 @@ def load_data(n_clicks, report_date, prev_date, current_ut_value):
         ut_value = DEFAULT_UNIT_TYPES
 
     rgn_options = [{'label': r, 'value': r} for r in store.available_regions]
+    country_options = [{'label': c, 'value': c} for c in store.available_countries]
     yr_options = [{'label': str(y), 'value': y} for y in store.available_years]
 
     subtitle = (f"Jain Global Research Desk | {store.report_date.strftime('%d %B %Y')} | "
@@ -447,7 +484,136 @@ def load_data(n_clicks, report_date, prev_date, current_ut_value):
     refreshed = f"Last refreshed: {store.last_loaded.strftime('%H:%M')}"
     version = (n_clicks or 0) + 1
 
-    return ut_options, ut_value, rgn_options, yr_options, rgn_options, subtitle, refreshed, version
+    return ut_options, ut_value, rgn_options, country_options, yr_options, rgn_options, subtitle, refreshed, version
+
+
+def _chart_scope_label(chart_region, regions, countries):
+    """Title scope for charts when a geographic filter is active."""
+    if chart_region:
+        return chart_region
+    if countries:
+        return countries[0] if len(countries) == 1 else ', '.join(countries)
+    if regions:
+        return regions[0] if len(regions) == 1 else ', '.join(regions)
+    return None
+
+
+_REPORT_REGION_BUNDLES = None
+
+
+def _report_region_bundles():
+    global _REPORT_REGION_BUNDLES
+    if _REPORT_REGION_BUNDLES is None:
+        try:
+            _REPORT_REGION_BUNDLES = load_report_region_groups(REPORT_GEO_PATH)
+        except (FileNotFoundError, ValueError):
+            _REPORT_REGION_BUNDLES = {}
+    return _REPORT_REGION_BUNDLES
+
+
+def _unit_types_group_label(unit_types):
+    """Map dashboard unit-type selection to email report group (CDU, VDU, …)."""
+    if not unit_types:
+        return 'CDU'
+    ut_set = set(unit_types)
+    for label, group_ut in REPORT_GROUPS:
+        if ut_set == set(group_ut):
+            return label
+    for label, group_ut in REPORT_GROUPS:
+        if ut_set <= set(group_ut):
+            return label
+    return None
+
+
+def _resolve_snapshot_slug(unit_types, chart_region, regions, countries):
+    """
+    Snapshot scope slug when dashboard filters match a daily-report bundle exactly.
+    Country filters or partial region sets have no stored slug — caller uses on-the-fly.
+    """
+    if countries:
+        return None
+    group = _unit_types_group_label(unit_types)
+    if not group:
+        return None
+
+    if chart_region:
+        active_jg = {chart_region}
+    elif regions:
+        active_jg = set(regions)
+    else:
+        return f"{_scope_file_slug(group)}__{_scope_file_slug('GLOBAL')}"
+
+    for report_region, jg_list in _report_region_bundles().items():
+        if set(jg_list) == active_jg:
+            return f"{_scope_file_slug(group)}__{_scope_file_slug(report_region)}"
+    return None
+
+
+def _last_week_anchor(report_date):
+    """Anchor date in the same 5–10 day window used by email snapshots."""
+    today = pd.Timestamp(report_date).normalize()
+    target = today - pd.Timedelta(days=7)
+    lo = today - pd.Timedelta(days=10)
+    hi = today - pd.Timedelta(days=5)
+    return max(lo, min(hi, target))
+
+
+def _filter_events_geo(df, regions, countries):
+    out = df
+    if regions:
+        rgn_col = 'jg_region' if 'jg_region' in out.columns else 'WORLD_REG'
+        out = out[out[rgn_col].isin(regions)]
+    if countries:
+        cc = DataStore._country_col(out)
+        if cc:
+            out = out[out[cc].isin(countries)]
+    return out
+
+
+def _snapshot_dict_from_build(daily_data, seasonal_data, run_date):
+    return {
+        'run_date': pd.Timestamp(run_date).strftime('%Y-%m-%d'),
+        'daily_dates': daily_data.get('dates', []),
+        'daily_planned': daily_data.get('planned', []),
+        'daily_unplanned': daily_data.get('unplanned', []),
+        'daily_total': daily_data.get('total', []),
+        'seasonal_planned': seasonal_data.get('planned', []),
+        'seasonal_unplanned': seasonal_data.get('unplanned', []),
+        'seasonal_combined': seasonal_data.get('combined', []),
+    }
+
+
+def _compute_prev_week_on_the_fly(df_raw, report_date, unit_types,
+                                  chart_region, regions, countries):
+    """Rebuild last-week capacity series from historical IIR snapshots + current filters."""
+    if df_raw is None or df_raw.empty:
+        return None
+    anchor = _last_week_anchor(report_date)
+    events = get_latest_snapshot(df_raw, anchor)
+    drill_regions = [chart_region] if chart_region else (regions or None)
+    events = _filter_events_geo(events, drill_regions, countries or None)
+    if events.empty:
+        return None
+    daily_data, seasonal_data = _build_snapshot_data(
+        events, anchor, unit_types or None,
+    )
+    return _snapshot_dict_from_build(daily_data, seasonal_data, anchor)
+
+
+def load_prev_week_for_charts(report_date, df_raw, unit_types,
+                              chart_region, regions, countries):
+    """
+    Last-week reference data for charts: stored email snapshot when scope matches,
+    otherwise computed on-the-fly (e.g. Russia-only or partial region filters).
+    """
+    slug = _resolve_snapshot_slug(unit_types, chart_region, regions, countries)
+    if slug:
+        snap = load_last_week_snapshot(slug, report_date)
+        if snap:
+            return snap
+    return _compute_prev_week_on_the_fly(
+        df_raw, report_date, unit_types, chart_region, regions, countries,
+    )
 
 
 @callback(
@@ -459,52 +625,56 @@ def load_data(n_clicks, report_date, prev_date, current_ut_value):
      Input('btn-apply', 'n_clicks')],
     [State('filter-unit-types', 'value'),
      State('filter-regions', 'value'),
+     State('filter-countries', 'value'),
      State('chart-show-years', 'value'),
      State('chart-band-range', 'value'),
      State('chart-region-select', 'value')],
 )
-def update_charts(version, n_clicks, unit_types, regions, show_years, band_range, chart_region):
+def update_charts(version, n_clicks, unit_types, regions, countries, show_years, band_range, chart_region):
     if store.classified is None:
         empty = go.Figure()
         return empty, empty, empty, empty
 
-    # Pre-filter by region if selected in drill-down
-    if chart_region:
-        df_chart = store.filter_for_chart(regions=[chart_region])
-        chart_config_region = None  # already filtered
-    elif regions:
-        df_chart = store.filter_for_chart(regions=regions)
-        chart_config_region = None
-    else:
-        df_chart = store.classified
-        chart_config_region = None
+    drill_regions = [chart_region] if chart_region else (regions or None)
+    df_chart = store.filter_for_chart(regions=drill_regions, countries=countries or None)
 
     hist_years = list(range(band_range[0], band_range[1] + 1)) if band_range else []
 
+    scope = _chart_scope_label(chart_region, regions, countries)
     config_base = {
         'unit_types': unit_types or None,
-        'region': chart_config_region,
+        'region': None,
         'country': None,
+        'chart_scope_label': scope,
         'hist_years': hist_years,
         'exclude_years': [2020],
         'show_years': show_years or [],
     }
 
-    fig_p = build_seasonal_chart(df_chart, {**config_base, 'event_type': 'Planned'},
-                                  store.report_date)
-    fig_u = build_seasonal_chart(df_chart, {**config_base, 'event_type': 'Unplanned'},
-                                  store.report_date)
-    fig_c = build_seasonal_chart(df_chart, {**config_base, 'event_type': None},
-                                  store.report_date)
-    fig_d = build_daily_ops_chart(df_chart, store.report_date,
-                                   {'unit_types': unit_types or None, 'region': None})
+    daily_config = {
+        'unit_types': unit_types or None,
+        'region': None,
+        'chart_scope_label': scope,
+    }
 
-    # Override titles if region selected
-    if chart_region:
-        fig_p.update_layout(title_text=f'{chart_region.upper()}<br><sub>PLANNED MAINTENANCE</sub>')
-        fig_u.update_layout(title_text=f'{chart_region.upper()}<br><sub>UNPLANNED MAINTENANCE</sub>')
-        fig_c.update_layout(title_text=f'{chart_region.upper()}<br><sub>MONTHLY OFFLINE CAPACITY</sub>')
-        fig_d.update_layout(title_text=f'{chart_region} — Daily Offline Capacity')
+    prev_week = load_prev_week_for_charts(
+        store.report_date, store.df_raw, unit_types, chart_region, regions, countries,
+    ) or {}
+
+    fig_p = build_seasonal_chart(
+        df_chart, {**config_base, 'event_type': 'Planned'}, store.report_date,
+        prev_week_monthly=prev_week.get('seasonal_planned'),
+    )
+    fig_u = build_seasonal_chart(
+        df_chart, {**config_base, 'event_type': 'Unplanned'}, store.report_date,
+        prev_week_monthly=prev_week.get('seasonal_unplanned'),
+    )
+    fig_c = build_seasonal_chart(
+        df_chart, {**config_base, 'event_type': None}, store.report_date,
+        prev_week_monthly=prev_week.get('seasonal_combined'),
+    )
+    fig_d = build_daily_ops_chart(df_chart, store.report_date, daily_config,
+                                  prev_week=prev_week or None)
 
     return fig_p, fig_u, fig_c, fig_d
 
@@ -519,13 +689,14 @@ def update_charts(version, n_clicks, unit_types, regions, show_years, band_range
     [Input('data-version', 'data'),
      Input('btn-apply', 'n_clicks')],
     [State('filter-unit-types', 'value'),
-     State('filter-regions', 'value')],
+     State('filter-regions', 'value'),
+     State('filter-countries', 'value')],
 )
-def update_tables(version, n_clicks, unit_types, regions):
+def update_tables(version, n_clicks, unit_types, regions, countries):
     if store.classified is None:
         return [], [], [], [], [], [], []
 
-    df = store.filter(unit_types=unit_types, regions=regions or None)
+    df = store.filter(unit_types=unit_types, regions=regions or None, countries=countries or None)
 
     # ── Change Summary ──
     summary = build_change_summary(df)
@@ -553,29 +724,101 @@ def update_tables(version, n_clicks, unit_types, regions):
     return sum_cols, sum_data, act_cols, act_data, tooltips
 
 
+def _matrix_detail_columns(ml):
+    """Unit-detail columns: identity, installed capacity, then monthly offline."""
+    return ['Country', 'Refinery', 'Unit'] + MATRIX_CAP_COLS + ml
+
+
+def _matrix_installed_table_styles(prev_col=None):
+    """Highlight the installed-capacity column; separate it from monthly offline heatmap."""
+    installed = INSTALLED_CAP_COL  # 'Installed (kbd)' — single capacity column only
+    cell = [
+        {'if': {'column_id': installed},
+         'backgroundColor': '#eef2f7', 'fontWeight': '600',
+         'borderRight': '2px solid #c5cdd8', 'textAlign': 'right', 'minWidth': '92px'},
+    ]
+    header = [
+        {'if': {'column_id': installed},
+         'backgroundColor': '#607D8B', 'borderRight': '2px solid #adb5bd'},
+    ]
+    if prev_col:
+        cell.append({
+            'if': {'column_id': prev_col},
+            'backgroundColor': '#f0f2f4', 'color': '#607D8B', 'fontStyle': 'italic',
+            'borderRight': '2px solid #adb5bd',
+        })
+        header.append({
+            'if': {'column_id': prev_col},
+            'backgroundColor': '#607D8B', 'fontStyle': 'italic',
+            'borderRight': '2px solid #adb5bd',
+        })
+    return cell, header
+
+
+def _matrix_subtotal_record(header_row, detail_cols, label='Total'):
+    record = {}
+    for c in detail_cols:
+        if c == 'Refinery':
+            record[c] = label
+        elif c in ('Country', 'Unit'):
+            record[c] = ''
+        else:
+            val = header_row.get(c, '')
+            record[c] = '' if pd.isna(val) else val
+    return record
+
+
+def _should_show_regional_summary(regional_df, countries):
+    """Hide redundant regional table when the view is already a single scope."""
+    if regional_df.empty:
+        return False
+    if countries and len(countries) == 1:
+        return False
+    idx_col = regional_df.columns[0]
+    non_total = regional_df[regional_df[idx_col].astype(str) != 'TOTAL']
+    return len(non_total) > 1
+
+
+def _scope_installed_kpi(scope_label, installed_val):
+    """Compact scope header when regional summary is hidden."""
+    if pd.isna(installed_val):
+        return html.Div()
+    label = scope_label or 'Filtered scope'
+    return dbc.Card(dbc.CardBody([
+        html.Div(label, className='text-muted text-uppercase', style={'fontSize': '11px', 'letterSpacing': '0.04em'}),
+        html.Div(f'{float(installed_val):,.1f}', className='mb-0 mt-1',
+                 style={'fontSize': '1.75rem', 'fontWeight': '600', 'color': '#1a3a5c', 'lineHeight': '1.1'}),
+        html.Div('kbd installed capacity', className='text-muted', style={'fontSize': '12px'}),
+        html.Div('Month columns show average daily offline (kbd).', className='text-muted mt-2',
+                 style={'fontSize': '11px'}),
+    ], className='py-3 px-3'), className='mb-3 border-0 shadow-sm', style={'maxWidth': '320px', 'background': '#f8f9fb'})
+
+
 @callback(
     Output('forward-matrix-container', 'children'),
     [Input('data-version', 'data'),
      Input('btn-apply', 'n_clicks')],
     [State('filter-unit-types', 'value'),
-     State('filter-regions', 'value')],
+     State('filter-regions', 'value'),
+     State('filter-countries', 'value')],
 )
-def update_forward_matrix(version, n_clicks, unit_types, regions):
+def update_forward_matrix(version, n_clicks, unit_types, regions, countries):
     if store.classified is None:
         return html.P("No data loaded.")
 
-    df = store.filter(unit_types=unit_types, regions=regions or None)
+    df = store.filter(unit_types=unit_types, regions=regions or None, countries=countries or None)
     matrix_config = {'unit_types': unit_types or None, 'forward_months': 12}
+    scope_label = _chart_scope_label(None, regions, countries)
 
     # ── Regional summary (one row per region) ──
     rgn_col = 'jg_region' if 'jg_region' in df.columns else 'Region'
     regional_df, ml = build_forward_matrix(df, matrix_config, store.report_date, group_col='Region')
 
     regional_table = html.Div()
-    if not regional_df.empty:
+    show_regional = _should_show_regional_summary(regional_df, countries)
+    if show_regional:
         prev_col = matrix_prev_col(ml)
         fwd_cols = matrix_forward_cols(ml)
-        # Heatmap on forward months only — prev column is historical reference
         num_max = regional_df[fwd_cols].max().max() if fwd_cols and not regional_df[fwd_cols].empty else 1
         heat_conditions = []
         for m in fwd_cols:
@@ -586,25 +829,15 @@ def update_forward_matrix(version, n_clicks, unit_types, regions):
                     'backgroundColor': f'rgba(255, {int(200 - 150 * threshold)}, {int(200 - 200 * threshold)}, 0.3)',
                 })
 
-        idx_col = regional_df.columns[0]  # 'index' or region col name
-        display_cols = [idx_col] + ml
-        prev_style = []
-        if prev_col:
-            prev_style = [
-                {'if': {'column_id': prev_col},
-                 'backgroundColor': '#f0f2f4', 'color': '#607D8B', 'fontStyle': 'italic',
-                 'borderRight': '2px solid #adb5bd'},
-            ]
-        prev_header = []
-        if prev_col:
-            prev_header = [
-                {'if': {'column_id': prev_col},
-                 'backgroundColor': '#607D8B', 'fontStyle': 'italic',
-                 'borderRight': '2px solid #adb5bd'},
-            ]
+        idx_col = regional_df.columns[0]
+        display_cols = [idx_col, INSTALLED_CAP_COL] + ml if INSTALLED_CAP_COL in regional_df.columns else [idx_col] + ml
+        display_cols = [c for c in display_cols if c in regional_df.columns]
+        inst_cell, inst_header = _matrix_installed_table_styles(prev_col)
+
         regional_table = html.Div([
-            html.H6("Regional Summary (kbd)", className="mb-2",
-                     style={'color': '#1a1a2e'}),
+            html.H6("By region", className="mb-1", style={'color': '#1a1a2e'}),
+            html.P('Installed capacity vs average daily offline by month (kbd).',
+                   className='text-muted small mb-2'),
             dash_table.DataTable(
                 columns=[{'name': c, 'id': c} for c in display_cols],
                 data=regional_df[display_cols].to_dict('records'),
@@ -613,13 +846,13 @@ def update_forward_matrix(version, n_clicks, unit_types, regions):
                 style_header={'backgroundColor': '#1a1a2e', 'color': 'white',
                               'fontWeight': 'bold', 'fontSize': '11px',
                               'textAlign': 'center', 'padding': '6px 8px'},
-                style_header_conditional=prev_header,
+                style_header_conditional=inst_header,
                 style_cell={'fontSize': '12px', 'padding': '5px 8px',
                             'textAlign': 'center', 'whiteSpace': 'nowrap'},
                 style_cell_conditional=[
                     {'if': {'column_id': idx_col}, 'textAlign': 'left',
                      'fontWeight': 'bold', 'minWidth': '120px'},
-                ] + prev_style,
+                ] + inst_cell,
                 style_data_conditional=[
                     {'if': {'filter_query': f'{{{idx_col}}} = "TOTAL"'},
                      'fontWeight': 'bold', 'backgroundColor': '#d5dbe0'},
@@ -627,12 +860,16 @@ def update_forward_matrix(version, n_clicks, unit_types, regions):
             ),
         ], className="mb-4")
 
-    # ── Detail matrix (collapsible by region) ──
     detail_df, ml2 = build_forward_matrix(df, matrix_config, store.report_date)
     if detail_df.empty:
-        return html.Div([regional_table, html.P("No detail events.")])
+        return html.Div([regional_table, html.P("No detail events.", className="text-muted")])
 
-    # Parse into region groups
+    detail_cols = _matrix_detail_columns(ml2)
+    scope_kpi = html.Div()
+    total_mask = detail_df['Region'].astype(str).str.contains('TOTAL', na=False)
+    if total_mask.any() and not show_regional:
+        tr = detail_df.loc[total_mask].iloc[0]
+        scope_kpi = _scope_installed_kpi(scope_label, tr.get(INSTALLED_CAP_COL))
     current_region = None
     region_rows = {}
     for _, row in detail_df.iterrows():
@@ -654,6 +891,9 @@ def update_forward_matrix(version, n_clicks, unit_types, regions):
         if not detail_list:
             continue
         detail = pd.DataFrame(detail_list)
+        for c in MATRIX_CAP_COLS:
+            if c not in detail.columns:
+                detail[c] = None
 
         # Clean event count from label
         import re
@@ -667,35 +907,25 @@ def update_forward_matrix(version, n_clicks, unit_types, regions):
              if isinstance(data['header'].get(m, 0), (int, float)) and data['header'].get(m, 0) > 0.05),
             '—'
         )
+        hdr = data['header']
+        inst = hdr.get(INSTALLED_CAP_COL, '')
+        inst_label = f' · {float(inst):,.0f} kbd installed' if pd.notna(inst) else ''
 
-        detail_cols = ['Country', 'Refinery', 'Unit'] + ml2
-        detail_cols = [c for c in detail_cols if c in detail.columns]
+        subtotal = _matrix_subtotal_record(hdr, detail_cols, label='Total')
+        table_data = [subtotal] + detail[detail_cols].to_dict('records')
         prev_col2 = matrix_prev_col(ml2)
-        prev_detail_style = []
-        if prev_col2:
-            prev_detail_style = [
-                {'if': {'column_id': prev_col2},
-                 'backgroundColor': '#f0f2f4', 'color': '#607D8B', 'fontStyle': 'italic',
-                 'borderRight': '2px solid #adb5bd'},
-            ]
-        prev_detail_header = []
-        if prev_col2:
-            prev_detail_header = [
-                {'if': {'column_id': prev_col2},
-                 'backgroundColor': '#607D8B', 'fontStyle': 'italic',
-                 'borderRight': '2px solid #adb5bd'},
-            ]
+        inst_cell, inst_header = _matrix_installed_table_styles(prev_col2)
 
         detail_table = dash_table.DataTable(
             columns=[{'name': c, 'id': c} for c in detail_cols],
-            data=detail[detail_cols].to_dict('records'),
+            data=table_data,
             sort_action='native',
             page_size=25,
             style_table={'overflowX': 'auto'},
             style_header={'backgroundColor': '#1a1a2e', 'color': 'white',
                           'fontWeight': 'bold', 'fontSize': '10px',
                           'textAlign': 'center', 'padding': '4px 6px'},
-            style_header_conditional=prev_detail_header,
+            style_header_conditional=inst_header,
             style_cell={'fontSize': '11px', 'padding': '4px 6px',
                         'whiteSpace': 'nowrap', 'textAlign': 'center'},
             style_cell_conditional=[
@@ -703,21 +933,25 @@ def update_forward_matrix(version, n_clicks, unit_types, regions):
                  'whiteSpace': 'normal', 'textAlign': 'left'},
                 {'if': {'column_id': 'Country'}, 'textAlign': 'left', 'minWidth': '80px'},
                 {'if': {'column_id': 'Unit'}, 'textAlign': 'left', 'minWidth': '120px'},
-            ] + prev_detail_style,
+            ] + inst_cell,
+            style_data_conditional=[
+                {'if': {'filter_query': '{Refinery} = "Total"'},
+                 'fontWeight': 'bold', 'backgroundColor': '#e9ecef'},
+            ],
         )
 
         title_month = fwd_cols2[0] if fwd_cols2 else ml2[0]
         items.append(dbc.AccordionItem(
             detail_table,
-            title=f"{clean_name}  ({n_events} events,  {title_month}: {first_nonzero})",
+            title=f'{clean_name} · {n_events} events · {title_month} offline {first_nonzero}{inst_label}',
         ))
 
     accordion = dbc.Accordion(items, start_collapsed=True, flush=True)
 
     return html.Div([
         regional_table,
-        html.H6("Unit Detail — click region to expand", className="mb-2",
-                 style={'color': '#1a1a2e'}),
+        scope_kpi,
+        html.H6("Unit detail", className="mb-2 mt-1", style={'color': '#1a1a2e'}),
         accordion,
     ])
 
@@ -793,40 +1027,57 @@ def update_analytics(active_tab, unit_types):
     Input('btn-export', 'n_clicks'),
     [State('filter-unit-types', 'value'),
      State('filter-regions', 'value'),
+     State('filter-countries', 'value'),
      State('chart-show-years', 'value'),
      State('chart-band-range', 'value'),
      State('chart-region-select', 'value')],
     prevent_initial_call=True,
 )
-def export_html(n_clicks, unit_types, regions, show_years, band_range, chart_region):
+def export_html(n_clicks, unit_types, regions, countries, show_years, band_range, chart_region):
     """Export current dashboard state as standalone HTML — same format as notebook."""
     from plotly.io import to_html
     import re
 
-    df = store.filter(unit_types=unit_types, regions=regions or None)
-    if chart_region:
-        rgn_col = 'jg_region' if 'jg_region' in df.columns else 'WORLD_REG'
-        df = df[df[rgn_col] == chart_region]
+    drill_regions = [chart_region] if chart_region else (regions or None)
+    df = store.filter(unit_types=unit_types, regions=drill_regions, countries=countries or None)
 
     hist_years = list(range(band_range[0], band_range[1] + 1)) if band_range else list(range(2021, 2026))
+    scope = _chart_scope_label(chart_region, regions, countries)
     config_base = {
         'unit_types': unit_types or None,
         'region': None, 'country': None,
+        'chart_scope_label': scope,
         'hist_years': hist_years,
         'exclude_years': [2020],
         'show_years': show_years or [],
     }
 
     # ── Build all charts ──
-    fig_planned = build_seasonal_chart(df, {**config_base, 'event_type': 'Planned'}, store.report_date)
-    fig_unplanned = build_seasonal_chart(df, {**config_base, 'event_type': 'Unplanned'}, store.report_date)
-    fig_combined = build_seasonal_chart(df, {**config_base, 'event_type': None}, store.report_date)
-    fig_daily = build_daily_ops_chart(df, store.report_date,
-                                       {'unit_types': unit_types or None, 'region': None})
+    prev_week = load_prev_week_for_charts(
+        store.report_date, store.df_raw, unit_types, chart_region, regions, countries,
+    ) or {}
 
-    chart1 = to_html(fig_planned, full_html=False, include_plotlyjs='cdn')
+    fig_planned = build_seasonal_chart(
+        df, {**config_base, 'event_type': 'Planned'}, store.report_date,
+        prev_week_monthly=prev_week.get('seasonal_planned'),
+    )
+    fig_unplanned = build_seasonal_chart(
+        df, {**config_base, 'event_type': 'Unplanned'}, store.report_date,
+        prev_week_monthly=prev_week.get('seasonal_unplanned'),
+    )
+    fig_combined = build_seasonal_chart(
+        df, {**config_base, 'event_type': None}, store.report_date,
+        prev_week_monthly=prev_week.get('seasonal_combined'),
+    )
+    fig_daily = build_daily_ops_chart(df, store.report_date, {
+        'unit_types': unit_types or None,
+        'region': None,
+        'chart_scope_label': scope,
+    }, prev_week=prev_week or None)
+
+    chart_comb = to_html(fig_combined, full_html=False, include_plotlyjs='cdn')
+    chart1 = to_html(fig_planned, full_html=False, include_plotlyjs=False)
     chart2 = to_html(fig_unplanned, full_html=False, include_plotlyjs=False)
-    chart_comb = to_html(fig_combined, full_html=False, include_plotlyjs=False)
     chart_daily = to_html(fig_daily, full_html=False, include_plotlyjs=False)
 
     # ── Build all tables ──
@@ -881,7 +1132,8 @@ def export_html(n_clicks, unit_types, regions, show_years, band_range, chart_reg
     # Build collapsible detail matrix HTML manually
     def matrix_to_collapsible_html(df, ml, caption):
         if df.empty: return ''
-        header_cols = ['Country','Refinery','Unit','Unit Type'] + ml
+        header_cols = (['Country', 'Refinery', 'Unit', 'Unit Type']
+                       + MATRIX_CAP_COLS + ml)
         cols = [c for c in header_cols if c in df.columns]
         prev_col = matrix_prev_col(ml)
         prev_th = 'background:#607D8B;color:white;font-style:italic;border-right:2px solid #adb5bd'
@@ -899,7 +1151,7 @@ def export_html(n_clicks, unit_types, regions, show_years, band_range, chart_reg
                 h += '<tr style="background:#d5dbe0;font-weight:bold">'
                 for c in cols:
                     v = row.get(c,'')
-                    if c in ml:
+                    if c in ml or c in MATRIX_CAP_COLS:
                         try: v = fmt_kbd(v)
                         except: pass
                     extra = f';{prev_td}' if c == prev_col else ''
@@ -914,7 +1166,7 @@ def export_html(n_clicks, unit_types, regions, show_years, band_range, chart_reg
                     v = row.get(c,'')
                     if c == cols[0]:
                         v = f'<span class="arrow">▸</span> {rgn.replace("▸ ","")}'
-                    elif c in ml:
+                    elif c in ml or c in MATRIX_CAP_COLS:
                         try: v = fmt_kbd(v)
                         except: pass
                     extra = f';{prev_td}' if c == prev_col else ''
@@ -925,7 +1177,7 @@ def export_html(n_clicks, unit_types, regions, show_years, band_range, chart_reg
                 h += f'<tr class="region-detail" data-region="{clean_rgn}">'
                 for c in cols:
                     v = row.get(c,'')
-                    if c in ml:
+                    if c in ml or c in MATRIX_CAP_COLS:
                         try: v = fmt_kbd(v)
                         except: pass
                     style = 'padding:5px 10px;border-bottom:1px solid #eee'
