@@ -562,6 +562,7 @@ td {{ padding: 5px 8px; border-bottom: 1px solid #ddd; white-space: nowrap; }}
 
 <div class="tw">
   <h3>{matrix_title}</h3>
+  <p style="font-size:11px;color:#666;margin:0 0 8px 0">Installed = nameplate capacity (kbd); month columns = average daily offline (kbd).</p>
   {regional_html}
 </div>
     {collapse_js}

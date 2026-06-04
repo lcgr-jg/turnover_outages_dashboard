@@ -4,6 +4,8 @@ from datetime import datetime
 import pandas as pd
 import numpy as np
 
+from tables import INSTALLED_CAP_COL
+
 
 REPORT_YEAR = datetime.now().year
 REPORT_DATE = datetime.now()
@@ -24,6 +26,17 @@ def matrix_prev_col(ml):
 def matrix_forward_cols(ml):
     prev = matrix_prev_col(ml)
     return ml[1:] if prev else ml
+
+
+def matrix_display_columns(df, ml):
+    """Identity columns, then installed capacity, then months (matches dashboard layout)."""
+    month_cols = [c for c in ml if c in df.columns]
+    id_cols = [c for c in df.columns if c not in month_cols and c != INSTALLED_CAP_COL]
+    ordered = list(id_cols)
+    if INSTALLED_CAP_COL in df.columns:
+        ordered.append(INSTALLED_CAP_COL)
+    ordered.extend(month_cols)
+    return ordered
 
 
 def style_actions(df, unit_types, report_date):
@@ -54,23 +67,51 @@ def style_actions(df, unit_types, report_date):
 
 
 def style_matrix(df, ml, caption=''):
-    if df.empty: return None
+    if df.empty:
+        return None
+    df = df[matrix_display_columns(df, ml)].copy()
     prev_col = matrix_prev_col(ml)
 
     def rs(row):
-        rgn = str(row.get('Region','')) if 'Region' in row.index else str(row.iloc[0])
-        if rgn.startswith('▸') or rgn=='TOTAL':
-            return ['background-color:#e9ecef;font-weight:bold']*len(row)
-        return ['']*len(row)
+        label = str(row.get('Region', '')) if 'Region' in row.index else str(row.iloc[0])
+        if label.startswith('▸') or label == 'TOTAL':
+            return ['background-color:#e9ecef;font-weight:bold'] * len(row)
+        return [''] * len(row)
+
+    fmt = {m: fmt_kbd for m in ml if m in df.columns}
+    if INSTALLED_CAP_COL in df.columns:
+        fmt[INSTALLED_CAP_COL] = fmt_kbd
+
     s = (df.style.apply(rs, axis=1)
-        .format({m: fmt_kbd for m in ml if m in df.columns}
-                | {c: fmt_kbd for c in ('Installed (kbd)',) if c in df.columns})
-        .set_table_styles(TABLE_STYLES)
-        .set_caption(caption).hide(axis='index'))
+         .format(fmt, na_rep='—')
+         .set_table_styles(TABLE_STYLES)
+         .set_caption(caption)
+         .hide(axis='index'))
     if 'Refinery' in df.columns:
-        s = s.set_properties(subset=['Refinery'], **{'min-width':'160px','max-width':'220px','white-space':'normal','word-wrap':'break-word'})
+        s = s.set_properties(subset=['Refinery'], **{
+            'min-width': '160px', 'max-width': '220px',
+            'white-space': 'normal', 'word-wrap': 'break-word',
+        })
     if 'Parent' in df.columns:
-        s = s.set_properties(subset=['Parent'], **{'min-width':'140px','max-width':'200px','white-space':'normal','word-wrap':'break-word'})
+        s = s.set_properties(subset=['Parent'], **{
+            'min-width': '140px', 'max-width': '200px',
+            'white-space': 'normal', 'word-wrap': 'break-word',
+        })
+    if INSTALLED_CAP_COL in df.columns:
+        s = s.set_properties(subset=[INSTALLED_CAP_COL], **{
+            'background-color': '#eef2f7',
+            'font-weight': '600',
+            'border-right': '2px solid #c5cdd8',
+            'text-align': 'right',
+        })
+        inst_idx = list(df.columns).index(INSTALLED_CAP_COL) + 1
+        s = s.set_table_styles([{
+            'selector': f'thead th:nth-child({inst_idx})',
+            'props': [
+                ('background-color', '#607D8B'),
+                ('border-right', '2px solid #adb5bd'),
+            ],
+        }], overwrite=False)
     # Previous month reads as historical reference, not forward impact
     if prev_col and prev_col in df.columns:
         s = s.set_properties(subset=[prev_col], **{
